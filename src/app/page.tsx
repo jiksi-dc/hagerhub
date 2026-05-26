@@ -139,7 +139,20 @@ export default function Home() {
           </div>
         ) : (
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'10px'}}>
-            {filtered.map(l => (
+            {filtered.map((l, idx2) => (
+              idx2 === 8 ? [
+                <div key="ad-banner-2" style={{gridColumn:'span 2'}}>
+                  <div style={{fontSize:'9px',color:'#aaa',letterSpacing:'1px',marginBottom:'4px',textAlign:'center'}}>ADVERTISEMENT</div>
+                  <div style={{background:'linear-gradient(135deg,#EF2118,#c91a12)',borderRadius:'10px',padding:'16px',display:'flex',alignItems:'center',gap:'12px',cursor:'pointer'}}>
+                    <div style={{width:'48px',height:'48px',borderRadius:'8px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'20px'}}>🚗</div>
+                    <div style={{flex:1}}>
+                      <div style={{fontSize:'13px',fontWeight:700,color:'white',marginBottom:'2px'}}>Toyota Ethiopia</div>
+                      <div style={{fontSize:'11px',color:'rgba(255,255,255,.8)'}}>New Land Cruiser 2025 — Now Available</div>
+                    </div>
+                    <div style={{background:'white',color:'#EF2118',fontSize:'11px',fontWeight:700,padding:'8px 12px',borderRadius:'8px',whiteSpace:'nowrap',flexShrink:0}}>View Offer</div>
+                  </div>
+                </div>,
+                <div key={l.id} style={{border:'1px solid #eee',borderRadius:'10px',overflow:'hidden',background:'white'}}>
               <div key={l.id} style={{border:'1px solid #eee',borderRadius:'10px',overflow:'hidden',background:'white'}}>
                 <div style={{height:'120px',overflow:'hidden',position:'relative'}}>
                   <img
