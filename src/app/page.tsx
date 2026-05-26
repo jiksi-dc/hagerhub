@@ -141,9 +141,22 @@ export default function Home() {
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'10px'}}>
             {filtered.map(l => (
               <div key={l.id} style={{border:'1px solid #eee',borderRadius:'10px',overflow:'hidden',background:'white'}}>
-                <div style={{background:'#f5f5f5',height:'80px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'4px',padding:'8px'}}>
-                  <div style={{fontSize:'10px',fontWeight:600,color:'#078754',background:'rgba(7,135,84,.08)',padding:'2px 8px',borderRadius:'4px',textAlign:'center'}}>{l.category}</div>
-                  <div style={{fontSize:'10px',color:'#aaa',textAlign:'center'}}>{l.subcategory}</div>
+                <div style={{height:'120px',overflow:'hidden',position:'relative'}}>
+                  <img
+                    src={
+                      l.category === 'Properties' ? 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80' :
+                      l.category === 'Vehicles' ? 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80' :
+                      l.category === 'Machinery' ? 'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=400&q=80' :
+                      l.category === 'Classifieds' ? 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80' :
+                      l.category === 'Jobs' ? 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80' :
+                      'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80'
+                    }
+                    alt={l.category}
+                    style={{width:'100%',height:'100%',objectFit:'cover'}}
+                  />
+                  <div style={{position:'absolute',top:'6px',left:'6px',background:'rgba(0,0,0,.55)',color:'white',fontSize:'9px',fontWeight:600,padding:'2px 7px',borderRadius:'4px'}}>
+                    {l.category}
+                  </div>
                 </div>
                 <div style={{padding:'8px'}}>
                   <div style={{color:'#EF2118',fontWeight:700,fontSize:'12px',marginBottom:'2px'}}>{l.price_label}</div>
