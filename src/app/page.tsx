@@ -11,36 +11,6 @@ const POPULAR = [
   { name: 'Jobs', items: ['Accounting & Finance', 'Engineering', 'Healthcare', 'NGO & Charity', 'Government', 'Internships'] },
 ]
 
-const BANNER_ADS = [
-  {
-    bg: 'linear-gradient(135deg,#1a1a2e,#16213e)',
-    icon: '🏦',
-    title: 'Commercial Bank of Ethiopia',
-    desc: 'Get a home loan up to ETB 5,000,000',
-    cta: 'Apply Now',
-    ctaColor: '#FCDD09',
-    ctaText: '#111',
-  },
-  {
-    bg: 'linear-gradient(135deg,#EF2118,#c91a12)',
-    icon: '🚗',
-    title: 'Toyota Ethiopia',
-    desc: 'New Land Cruiser 2025 — Now Available',
-    cta: 'View Offer',
-    ctaColor: 'white',
-    ctaText: '#EF2118',
-  },
-  {
-    bg: 'linear-gradient(135deg,#078754,#0a9e62)',
-    icon: '🏢',
-    title: 'Tsehay Real Estate',
-    desc: 'Premium apartments in Bole from ETB 3M',
-    cta: 'See Listings',
-    ctaColor: 'white',
-    ctaText: '#078754',
-  },
-]
-
 const IMG: Record<string, string> = {
   Properties: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80',
   Vehicles: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80',
@@ -80,20 +50,30 @@ export default function Home() {
 
   const filtered = listings.filter(l => search === '' || l.title.toLowerCase().includes(search.toLowerCase()))
 
-  const renderBannerAd = (ad: typeof BANNER_ADS[0], key: string) => (
-    <div key={key} style={{gridColumn:'span 2',marginBottom:'4px'}}>
-      <div style={{fontSize:'9px',color:'#bbb',letterSpacing:'1px',textAlign:'center',marginBottom:'4px'}}>ADVERTISEMENT</div>
-      <div style={{background:ad.bg,borderRadius:'10px',padding:'14px',display:'flex',alignItems:'center',gap:'12px',cursor:'pointer'}}>
-        <div style={{width:'44px',height:'44px',borderRadius:'8px',background:'rgba(255,255,255,.15)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>
-          {ad.icon}
-        </div>
+  const BannerAd1 = () => (
+    <div style={{gridColumn:'span 2'}}>
+      <div style={{fontSize:'9px',color:'#bbb',textAlign:'center',marginBottom:'3px',letterSpacing:'1px'}}>ADVERTISEMENT</div>
+      <div style={{background:'linear-gradient(135deg,#1a1a2e,#16213e)',borderRadius:'10px',padding:'14px',display:'flex',alignItems:'center',gap:'12px',cursor:'pointer'}}>
+        <div style={{width:'44px',height:'44px',borderRadius:'8px',background:'#FCDD09',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>🏦</div>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:'13px',fontWeight:700,color:'white',marginBottom:'2px'}}>{ad.title}</div>
-          <div style={{fontSize:'11px',color:'rgba(255,255,255,.8)'}}>{ad.desc}</div>
+          <div style={{fontSize:'13px',fontWeight:700,color:'white',marginBottom:'2px'}}>Commercial Bank of Ethiopia</div>
+          <div style={{fontSize:'11px',color:'rgba(255,255,255,.75)'}}>Home loans up to ETB 5,000,000</div>
         </div>
-        <div style={{background:ad.ctaColor,color:ad.ctaText,fontSize:'11px',fontWeight:700,padding:'8px 12px',borderRadius:'8px',whiteSpace:'nowrap',flexShrink:0}}>
-          {ad.cta}
+        <div style={{background:'#FCDD09',color:'#111',fontSize:'11px',fontWeight:700,padding:'8px 12px',borderRadius:'8px',whiteSpace:'nowrap',flexShrink:0}}>Apply Now</div>
+      </div>
+    </div>
+  )
+
+  const BannerAd2 = () => (
+    <div style={{gridColumn:'span 2'}}>
+      <div style={{fontSize:'9px',color:'#bbb',textAlign:'center',marginBottom:'3px',letterSpacing:'1px'}}>ADVERTISEMENT</div>
+      <div style={{background:'linear-gradient(135deg,#c00,#ff4444)',borderRadius:'10px',padding:'14px',display:'flex',alignItems:'center',gap:'12px',cursor:'pointer'}}>
+        <div style={{width:'44px',height:'44px',borderRadius:'8px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>🚗</div>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:'13px',fontWeight:700,color:'white',marginBottom:'2px'}}>Toyota Ethiopia</div>
+          <div style={{fontSize:'11px',color:'rgba(255,255,255,.85)'}}>New Land Cruiser 2025 — Book Now</div>
         </div>
+        <div style={{background:'white',color:'#c00',fontSize:'11px',fontWeight:700,padding:'8px 12px',borderRadius:'8px',whiteSpace:'nowrap',flexShrink:0}}>View Offer</div>
       </div>
     </div>
   )
@@ -118,22 +98,41 @@ export default function Home() {
   const renderListingsWithAds = () => {
     const items: React.ReactNode[] = []
     filtered.forEach((l, i) => {
-      if (i === 4) items.push(renderBannerAd(BANNER_ADS[0], 'ad-1'))
-      if (i === 8) items.push(renderBannerAd(BANNER_ADS[1], 'ad-2'))
+      if (i === 4) items.push(<BannerAd1 key="ad-1"/>)
+      if (i === 8) items.push(<BannerAd2 key="ad-2"/>)
       items.push(renderListingCard(l))
     })
     return items
   }
 
   return (
-    <main style={{fontFamily:'inherit',background:'white',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
+    <main style={{fontFamily:'inherit',background:'#f5f5f5',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
 
-      <section style={{background:'#f9fafb',padding:'24px 16px 20px',textAlign:'center',borderBottom:'1px solid #eee',width:'100%'}}>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',marginBottom:'8px'}}>
+      {/* TOP BILLBOARD AD — Pepsi style */}
+      <div style={{background:'#1a1a1a',padding:'0',overflow:'hidden',cursor:'pointer'}}>
+        <div style={{fontSize:'9px',color:'#555',textAlign:'center',padding:'4px 0 0',letterSpacing:'1px'}}>ADVERTISEMENT</div>
+        <div style={{background:'linear-gradient(90deg,#004b93,#0073e6,#004b93)',padding:'12px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'12px'}}>
+          <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+            <div style={{width:'40px',height:'40px',borderRadius:'50%',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'20px',fontWeight:900,color:'#004b93'}}>P</div>
+            <div>
+              <div style={{fontSize:'14px',fontWeight:800,color:'white',letterSpacing:'1px'}}>PEPSI ETHIOPIA</div>
+              <div style={{fontSize:'10px',color:'rgba(255,255,255,.7)'}}>Refresh your day — every day</div>
+            </div>
+          </div>
+          <div style={{textAlign:'right'}}>
+            <div style={{fontSize:'18px',fontWeight:900,color:'#FCDD09'}}>🥤</div>
+            <div style={{fontSize:'10px',color:'rgba(255,255,255,.6)'}}>Now in Ethiopia</div>
+          </div>
+        </div>
+      </div>
+
+      {/* HERO */}
+      <section style={{background:'white',padding:'20px 16px 16px',textAlign:'center',borderBottom:'1px solid #eee',width:'100%'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',marginBottom:'6px'}}>
           <img src="/lion.jpg" alt="lion" style={{width:'44px',height:'44px',borderRadius:'50%',objectFit:'cover',objectPosition:'center 15%',border:'2px solid #ddd',flexShrink:0}}/>
           <span style={{fontSize:'26px',fontWeight:800,letterSpacing:'1px',color:'#111'}}>HAGERHUB</span>
         </div>
-        <p style={{color:'#aaa',fontSize:'10px',letterSpacing:'1px',textTransform:'uppercase',marginBottom:'16px'}}>The Hub of the Homeland · ሃገር ሃብ</p>
+        <p style={{color:'#aaa',fontSize:'10px',letterSpacing:'1px',textTransform:'uppercase',marginBottom:'14px'}}>The Hub of the Homeland · ሃገር ሃብ</p>
         <div style={{display:'flex',background:'white',border:'1.5px solid #ddd',borderRadius:'10px',overflow:'hidden',boxShadow:'0 2px 8px rgba(0,0,0,.06)',marginBottom:'12px'}}>
           <input style={{flex:1,border:'none',padding:'12px 14px',fontSize:'14px',outline:'none',fontFamily:'inherit',minWidth:0}}
             placeholder="What are you looking for?"
@@ -143,6 +142,19 @@ export default function Home() {
             Search
           </button>
         </div>
+
+        {/* BELOW SEARCH AD — Telebirr style */}
+        <div style={{background:'linear-gradient(90deg,#e65c00,#f9d423)',borderRadius:'10px',padding:'12px 14px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'10px',cursor:'pointer',marginBottom:'12px'}}>
+          <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+            <div style={{width:'36px',height:'36px',borderRadius:'8px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'18px'}}>📱</div>
+            <div style={{textAlign:'left'}}>
+              <div style={{fontSize:'12px',fontWeight:800,color:'white',letterSpacing:'0.5px'}}>Telebirr — Pay Instantly</div>
+              <div style={{fontSize:'10px',color:'rgba(255,255,255,.85)'}}>Send & receive money across Ethiopia</div>
+            </div>
+          </div>
+          <div style={{background:'white',color:'#e65c00',fontSize:'10px',fontWeight:800,padding:'7px 10px',borderRadius:'7px',whiteSpace:'nowrap',flexShrink:0}}>Get App</div>
+        </div>
+
         <div style={{display:'flex',gap:'6px',overflowX:'auto',paddingBottom:'4px'}}>
           {CATS.map(c => (
             <button key={c} onClick={() => setActiveCat(c)}
@@ -175,11 +187,11 @@ export default function Home() {
       </div>
 
       {activeCat === 'All' && (
-        <section style={{background:'white',borderBottom:'1px solid #f5f5f5',padding:'16px'}}>
+        <section style={{background:'white',borderBottom:'1px solid #eee',padding:'16px'}}>
           <h2 style={{fontSize:'18px',fontWeight:700,color:'#111',marginBottom:'14px'}}>Popular Categories</h2>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'}}>
             {POPULAR.map(cat => (
-              <div key={cat.name} style={{background:'#f9fafb',borderRadius:'10px',padding:'12px'}}>
+              <div key={cat.name} style={{background:'#f9fafb',borderRadius:'10px',padding:'12px',border:'1px solid #eee'}}>
                 <h3 style={{fontSize:'13px',fontWeight:700,color:'#078754',marginBottom:'8px'}}>| {cat.name}</h3>
                 <ul style={{listStyle:'none',padding:0,margin:0}}>
                   {cat.items.slice(0,3).map(item => (
@@ -199,9 +211,9 @@ export default function Home() {
         </section>
       )}
 
-      <section style={{background:'white',padding:'16px'}}>
+      <section style={{background:'#f5f5f5',padding:'16px'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}}>
-          <h2 style={{fontSize:'16px',fontWeight:700,margin:0}}>
+          <h2 style={{fontSize:'16px',fontWeight:700,margin:0,color:'#111'}}>
             {activeCat === 'All' ? 'Latest Listings' : activeCat}
             <span style={{fontSize:'12px',color:'#999',fontWeight:400,marginLeft:'6px'}}>({filtered.length})</span>
           </h2>
@@ -227,7 +239,7 @@ export default function Home() {
         )}
       </section>
 
-      <section style={{margin:'16px',background:'#f8f8f8',border:'1px solid #eee',borderRadius:'12px',padding:'20px'}}>
+      <section style={{margin:'16px',background:'white',border:'1px solid #eee',borderRadius:'12px',padding:'20px'}}>
         <h3 style={{fontSize:'16px',fontWeight:700,marginBottom:'4px'}}>Find amazing deals on the go.</h3>
         <p style={{color:'#EF2118',fontWeight:500,fontSize:'13px',margin:'0 0 14px'}}>Download the HagerHub app now!</p>
         <div style={{display:'flex',gap:'10px'}}>
@@ -236,7 +248,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer style={{background:'#f8f8f8',borderTop:'1px solid #eee',padding:'24px 16px'}}>
+      <footer style={{background:'white',borderTop:'1px solid #eee',padding:'24px 16px'}}>
         <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'20px',marginBottom:'20px'}}>
           {[
             {title:'Company',links:['About Us','Careers','Advertising','Legal Hub']},
