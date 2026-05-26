@@ -11,6 +11,44 @@ const POPULAR = [
   { name: 'Jobs', items: ['Accounting & Finance', 'Engineering', 'Healthcare', 'NGO & Charity', 'Government', 'Internships'] },
 ]
 
+const BANNER_ADS = [
+  {
+    bg: 'linear-gradient(135deg,#1a1a2e,#16213e)',
+    icon: '🏦',
+    title: 'Commercial Bank of Ethiopia',
+    desc: 'Get a home loan up to ETB 5,000,000',
+    cta: 'Apply Now',
+    ctaColor: '#FCDD09',
+    ctaText: '#111',
+  },
+  {
+    bg: 'linear-gradient(135deg,#EF2118,#c91a12)',
+    icon: '🚗',
+    title: 'Toyota Ethiopia',
+    desc: 'New Land Cruiser 2025 — Now Available',
+    cta: 'View Offer',
+    ctaColor: 'white',
+    ctaText: '#EF2118',
+  },
+  {
+    bg: 'linear-gradient(135deg,#078754,#0a9e62)',
+    icon: '🏢',
+    title: 'Tsehay Real Estate',
+    desc: 'Premium apartments in Bole from ETB 3M',
+    cta: 'See Listings',
+    ctaColor: 'white',
+    ctaText: '#078754',
+  },
+]
+
+const IMG: Record<string, string> = {
+  Properties: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80',
+  Vehicles: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80',
+  Machinery: 'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=400&q=80',
+  Classifieds: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80',
+  Jobs: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80',
+}
+
 interface Listing {
   id: string
   title: string
@@ -42,17 +80,62 @@ export default function Home() {
 
   const filtered = listings.filter(l => search === '' || l.title.toLowerCase().includes(search.toLowerCase()))
 
+  const renderBannerAd = (ad: typeof BANNER_ADS[0], key: string) => (
+    <div key={key} style={{gridColumn:'span 2',marginBottom:'4px'}}>
+      <div style={{fontSize:'9px',color:'#bbb',letterSpacing:'1px',textAlign:'center',marginBottom:'4px'}}>ADVERTISEMENT</div>
+      <div style={{background:ad.bg,borderRadius:'10px',padding:'14px',display:'flex',alignItems:'center',gap:'12px',cursor:'pointer'}}>
+        <div style={{width:'44px',height:'44px',borderRadius:'8px',background:'rgba(255,255,255,.15)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>
+          {ad.icon}
+        </div>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:'13px',fontWeight:700,color:'white',marginBottom:'2px'}}>{ad.title}</div>
+          <div style={{fontSize:'11px',color:'rgba(255,255,255,.8)'}}>{ad.desc}</div>
+        </div>
+        <div style={{background:ad.ctaColor,color:ad.ctaText,fontSize:'11px',fontWeight:700,padding:'8px 12px',borderRadius:'8px',whiteSpace:'nowrap',flexShrink:0}}>
+          {ad.cta}
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderListingCard = (l: Listing) => (
+    <div key={l.id} style={{border:'1px solid #eee',borderRadius:'10px',overflow:'hidden',background:'white'}}>
+      <div style={{height:'110px',overflow:'hidden',position:'relative'}}>
+        <img src={IMG[l.category] || IMG.Properties} alt={l.category}
+          style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+        <div style={{position:'absolute',top:'6px',left:'6px',background:'rgba(0,0,0,.55)',color:'white',fontSize:'9px',fontWeight:600,padding:'2px 7px',borderRadius:'4px'}}>
+          {l.category}
+        </div>
+      </div>
+      <div style={{padding:'8px'}}>
+        <div style={{color:'#EF2118',fontWeight:700,fontSize:'13px',marginBottom:'2px'}}>{l.price_label}</div>
+        <div style={{color:'#333',fontSize:'11px',marginBottom:'2px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
+        <div style={{color:'#aaa',fontSize:'10px'}}>📍 {l.city}</div>
+      </div>
+    </div>
+  )
+
+  const renderListingsWithAds = () => {
+    const items: React.ReactNode[] = []
+    filtered.forEach((l, i) => {
+      if (i === 4) items.push(renderBannerAd(BANNER_ADS[0], 'ad-1'))
+      if (i === 8) items.push(renderBannerAd(BANNER_ADS[1], 'ad-2'))
+      items.push(renderListingCard(l))
+    })
+    return items
+  }
+
   return (
     <main style={{fontFamily:'inherit',background:'white',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
 
       <section style={{background:'#f9fafb',padding:'24px 16px 20px',textAlign:'center',borderBottom:'1px solid #eee',width:'100%'}}>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',marginBottom:'8px',width:'100%'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',marginBottom:'8px'}}>
           <img src="/lion.jpg" alt="lion" style={{width:'44px',height:'44px',borderRadius:'50%',objectFit:'cover',objectPosition:'center 15%',border:'2px solid #ddd',flexShrink:0}}/>
           <span style={{fontSize:'26px',fontWeight:800,letterSpacing:'1px',color:'#111'}}>HAGERHUB</span>
         </div>
         <p style={{color:'#aaa',fontSize:'10px',letterSpacing:'1px',textTransform:'uppercase',marginBottom:'16px'}}>The Hub of the Homeland · ሃገር ሃብ</p>
-        <div style={{display:'flex',background:'white',border:'1.5px solid #ddd',borderRadius:'10px',overflow:'hidden',boxShadow:'0 2px 8px rgba(0,0,0,.06)',marginBottom:'12px',width:'100%'}}>
-          <input style={{flex:1,border:'none',padding:'12px 14px',fontSize:'14px',outline:'none',fontFamily:'inherit',minWidth:0,width:'100%'}}
+        <div style={{display:'flex',background:'white',border:'1.5px solid #ddd',borderRadius:'10px',overflow:'hidden',boxShadow:'0 2px 8px rgba(0,0,0,.06)',marginBottom:'12px'}}>
+          <input style={{flex:1,border:'none',padding:'12px 14px',fontSize:'14px',outline:'none',fontFamily:'inherit',minWidth:0}}
             placeholder="What are you looking for?"
             value={search} onChange={e => setSearch(e.target.value)}/>
           <button onClick={fetchListings}
@@ -60,7 +143,7 @@ export default function Home() {
             Search
           </button>
         </div>
-        <div style={{display:'flex',gap:'6px',overflowX:'auto',paddingBottom:'4px',width:'100%'}}>
+        <div style={{display:'flex',gap:'6px',overflowX:'auto',paddingBottom:'4px'}}>
           {CATS.map(c => (
             <button key={c} onClick={() => setActiveCat(c)}
               style={{padding:'6px 14px',borderRadius:'20px',fontSize:'12px',fontWeight:500,cursor:'pointer',border:'1.5px solid',flexShrink:0,
@@ -73,13 +156,13 @@ export default function Home() {
         </div>
       </section>
 
-      <div style={{display:'flex',height:'3px',width:'100%'}}>
+      <div style={{display:'flex',height:'3px'}}>
         <div style={{flex:1,background:'#078754'}}/>
         <div style={{flex:1,background:'#FCDD09'}}/>
         <div style={{flex:1,background:'#EF2118'}}/>
       </div>
 
-      <div style={{display:'flex',gap:'0',overflowX:'auto',borderBottom:'1px solid #f0f0f0',background:'white',width:'100%'}}>
+      <div style={{display:'flex',overflowX:'auto',borderBottom:'1px solid #f0f0f0',background:'white'}}>
         {CATS.map(c => (
           <button key={c} onClick={() => setActiveCat(c)}
             style={{padding:'12px 16px',fontSize:'13px',border:'none',flexShrink:0,
@@ -139,45 +222,7 @@ export default function Home() {
           </div>
         ) : (
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'10px'}}>
-            {filtered.map((l, idx2) => (
-              idx2 === 8 ? [
-                <div key="ad-banner-2" style={{gridColumn:'span 2'}}>
-                  <div style={{fontSize:'9px',color:'#aaa',letterSpacing:'1px',marginBottom:'4px',textAlign:'center'}}>ADVERTISEMENT</div>
-                  <div style={{background:'linear-gradient(135deg,#EF2118,#c91a12)',borderRadius:'10px',padding:'16px',display:'flex',alignItems:'center',gap:'12px',cursor:'pointer'}}>
-                    <div style={{width:'48px',height:'48px',borderRadius:'8px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'20px'}}>🚗</div>
-                    <div style={{flex:1}}>
-                      <div style={{fontSize:'13px',fontWeight:700,color:'white',marginBottom:'2px'}}>Toyota Ethiopia</div>
-                      <div style={{fontSize:'11px',color:'rgba(255,255,255,.8)'}}>New Land Cruiser 2025 — Now Available</div>
-                    </div>
-                    <div style={{background:'white',color:'#EF2118',fontSize:'11px',fontWeight:700,padding:'8px 12px',borderRadius:'8px',whiteSpace:'nowrap',flexShrink:0}}>View Offer</div>
-                  </div>
-                </div>,
-                <div key={l.id} style={{border:'1px solid #eee',borderRadius:'10px',overflow:'hidden',background:'white'}}>
-              <div key={l.id} style={{border:'1px solid #eee',borderRadius:'10px',overflow:'hidden',background:'white'}}>
-                <div style={{height:'120px',overflow:'hidden',position:'relative'}}>
-                  <img
-                    src={
-                      l.category === 'Properties' ? 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80' :
-                      l.category === 'Vehicles' ? 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80' :
-                      l.category === 'Machinery' ? 'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=400&q=80' :
-                      l.category === 'Classifieds' ? 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80' :
-                      l.category === 'Jobs' ? 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80' :
-                      'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80'
-                    }
-                    alt={l.category}
-                    style={{width:'100%',height:'100%',objectFit:'cover'}}
-                  />
-                  <div style={{position:'absolute',top:'6px',left:'6px',background:'rgba(0,0,0,.55)',color:'white',fontSize:'9px',fontWeight:600,padding:'2px 7px',borderRadius:'4px'}}>
-                    {l.category}
-                  </div>
-                </div>
-                <div style={{padding:'8px'}}>
-                  <div style={{color:'#EF2118',fontWeight:700,fontSize:'12px',marginBottom:'2px'}}>{l.price_label}</div>
-                  <div style={{color:'#333',fontSize:'11px',marginBottom:'2px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
-                  <div style={{color:'#aaa',fontSize:'10px'}}>📍 {l.city}</div>
-                </div>
-              </div>
-            ))}
+            {renderListingsWithAds()}
           </div>
         )}
       </section>
