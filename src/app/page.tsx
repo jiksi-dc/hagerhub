@@ -4,30 +4,43 @@ import { supabase } from '@/lib/supabase'
 
 const CATS = ['All', 'Properties', 'Vehicles', 'Machinery', 'Classifieds', 'Jobs']
 const POPULAR = [
-  { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots', 'Holiday Homes', 'Off-plan / New'] },
-  { name: 'Vehicles', items: ['Used Cars', 'New Cars', 'Trucks & LGVs', 'Motorcycles', 'Bajaj / Tuk-tuks', 'Car Rentals'] },
-  { name: 'Machinery', items: ['Farm Equipment', 'Construction', 'Generators', 'Industrial Tools', 'Spare Parts', 'Irrigation'] },
-  { name: 'Classifieds', items: ['Mobile Phones', 'Electronics', 'Furniture & Home', 'Clothing', 'Food & Agriculture', 'Kids & Baby'] },
-  { name: 'Jobs', items: ['Accounting & Finance', 'Engineering', 'Healthcare', 'NGO & Charity', 'Government', 'Internships'] },
+  { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots'], color: '#078754', emoji: '🏠' },
+  { name: 'Vehicles', items: ['Used Cars', 'New Cars', 'Trucks & LGVs', 'Bajaj / Tuk-tuks'], color: '#1B6BB5', emoji: '🚗' },
+  { name: 'Machinery', items: ['Farm Equipment', 'Construction', 'Generators', 'Industrial Tools'], color: '#C9A84C', emoji: '⚙️' },
+  { name: 'Classifieds', items: ['Mobile Phones', 'Electronics', 'Furniture & Home', 'Clothing'], color: '#8B5E3C', emoji: '📱' },
+  { name: 'Jobs', items: ['Accounting & Finance', 'Engineering', 'Healthcare', 'Government'], color: '#EF2118', emoji: '💼' },
 ]
-
-const IMG: Record<string, string> = {
-  Properties: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80',
-  Vehicles: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80',
-  Machinery: 'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=400&q=80',
-  Classifieds: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80',
-  Jobs: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80',
+const IMGS: Record<string, string[]> = {
+  Properties: [
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=85',
+    'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=85',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=85',
+  ],
+  Vehicles: [
+    'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600&q=85',
+    'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=85',
+    'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=85',
+  ],
+  Machinery: [
+    'https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=600&q=85',
+    'https://images.unsplash.com/photo-1530685932526-48ec92998eaa?w=600&q=85',
+  ],
+  Classifieds: [
+    'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=85',
+    'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&q=85',
+  ],
+  Jobs: [
+    'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=85',
+    'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=85',
+  ],
+}
+const CAT_COLORS: Record<string,string> = {
+  Properties:'#078754', Vehicles:'#1B6BB5', Machinery:'#C9A84C', Classifieds:'#8B5E3C', Jobs:'#EF2118'
 }
 
 interface Listing {
-  id: string
-  title: string
-  price_label: string
-  city: string
-  neighbourhood: string
-  category: string
-  subcategory: string
-  created_at: string
+  id: string; title: string; price_label: string; city: string
+  neighbourhood: string; category: string; subcategory: string; created_at: string
 }
 
 export default function Home() {
@@ -40,238 +53,257 @@ export default function Home() {
 
   async function fetchListings() {
     setLoading(true)
-    let query = supabase.from('listings').select('*').eq('status', 'active').order('created_at', { ascending: false })
-    if (activeCat !== 'All') query = query.eq('category', activeCat)
-    const { data, error } = await query.limit(20)
-    if (error) console.error(error)
-    else setListings(data || [])
+    let q = supabase.from('listings').select('*').eq('status','active').order('created_at',{ascending:false})
+    if (activeCat !== 'All') q = q.eq('category', activeCat)
+    const { data } = await q.limit(20)
+    setListings(data || [])
     setLoading(false)
   }
 
-  const filtered = listings.filter(l => search === '' || l.title.toLowerCase().includes(search.toLowerCase()))
-
-  const BannerAd1 = () => (
-    <div style={{gridColumn:'span 2'}}>
-      <div style={{fontSize:'9px',color:'#bbb',textAlign:'center',marginBottom:'3px',letterSpacing:'1px'}}>ADVERTISEMENT</div>
-      <div style={{background:'linear-gradient(135deg,#1a1a2e,#16213e)',borderRadius:'10px',padding:'14px',display:'flex',alignItems:'center',gap:'12px',cursor:'pointer'}}>
-        <div style={{width:'44px',height:'44px',borderRadius:'8px',background:'#FCDD09',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>🏦</div>
-        <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:'13px',fontWeight:700,color:'white',marginBottom:'2px'}}>Commercial Bank of Ethiopia</div>
-          <div style={{fontSize:'11px',color:'rgba(255,255,255,.75)'}}>Home loans up to ETB 5,000,000</div>
-        </div>
-        <div style={{background:'#FCDD09',color:'#111',fontSize:'11px',fontWeight:700,padding:'8px 12px',borderRadius:'8px',whiteSpace:'nowrap',flexShrink:0}}>Apply Now</div>
-      </div>
-    </div>
-  )
-
-  const BannerAd2 = () => (
-    <div style={{gridColumn:'span 2'}}>
-      <div style={{fontSize:'9px',color:'#bbb',textAlign:'center',marginBottom:'3px',letterSpacing:'1px'}}>ADVERTISEMENT</div>
-      <div style={{background:'linear-gradient(135deg,#c00,#ff4444)',borderRadius:'10px',padding:'14px',display:'flex',alignItems:'center',gap:'12px',cursor:'pointer'}}>
-        <div style={{width:'44px',height:'44px',borderRadius:'8px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>🚗</div>
-        <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:'13px',fontWeight:700,color:'white',marginBottom:'2px'}}>Toyota Ethiopia</div>
-          <div style={{fontSize:'11px',color:'rgba(255,255,255,.85)'}}>New Land Cruiser 2025 — Book Now</div>
-        </div>
-        <div style={{background:'white',color:'#c00',fontSize:'11px',fontWeight:700,padding:'8px 12px',borderRadius:'8px',whiteSpace:'nowrap',flexShrink:0}}>View Offer</div>
-      </div>
-    </div>
-  )
-
-  const renderListingCard = (l: Listing) => (
-    <div key={l.id} style={{border:'1px solid #eee',borderRadius:'10px',overflow:'hidden',background:'white'}}>
-      <div style={{height:'110px',overflow:'hidden',position:'relative'}}>
-        <img src={IMG[l.category] || IMG.Properties} alt={l.category}
-          style={{width:'100%',height:'100%',objectFit:'cover'}}/>
-        <div style={{position:'absolute',top:'6px',left:'6px',background:'rgba(0,0,0,.55)',color:'white',fontSize:'9px',fontWeight:600,padding:'2px 7px',borderRadius:'4px'}}>
-          {l.category}
-        </div>
-      </div>
-      <div style={{padding:'8px'}}>
-        <div style={{color:'#EF2118',fontWeight:700,fontSize:'13px',marginBottom:'2px'}}>{l.price_label}</div>
-        <div style={{color:'#333',fontSize:'11px',marginBottom:'2px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
-        <div style={{color:'#aaa',fontSize:'10px'}}>📍 {l.city}</div>
-      </div>
-    </div>
-  )
-
-  const renderListingsWithAds = () => {
-    const items: React.ReactNode[] = []
-    filtered.forEach((l, i) => {
-      if (i === 4) items.push(<BannerAd1 key="ad-1"/>)
-      if (i === 8) items.push(<BannerAd2 key="ad-2"/>)
-      items.push(renderListingCard(l))
-    })
-    return items
+  const filtered = listings.filter(l => search==='' || l.title.toLowerCase().includes(search.toLowerCase()))
+  const getImg = (cat: string, id: string) => {
+    const a = IMGS[cat] || IMGS.Properties
+    return a[id.charCodeAt(0) % a.length]
   }
 
   return (
-    <main style={{fontFamily:'inherit',background:'#f5f5f5',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
+    <main style={{fontFamily:'inherit',background:'#F0F2F5',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
 
-      {/* TOP BILLBOARD AD — Pepsi style */}
-      <div style={{background:'#1a1a1a',padding:'0',overflow:'hidden',cursor:'pointer'}}>
-        <div style={{fontSize:'9px',color:'#555',textAlign:'center',padding:'4px 0 0',letterSpacing:'1px'}}>ADVERTISEMENT</div>
-        <div style={{background:'linear-gradient(90deg,#004b93,#0073e6,#004b93)',padding:'12px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'12px'}}>
-          <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-            <div style={{width:'40px',height:'40px',borderRadius:'50%',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'20px',fontWeight:900,color:'#004b93'}}>P</div>
-            <div>
-              <div style={{fontSize:'14px',fontWeight:800,color:'white',letterSpacing:'1px'}}>PEPSI ETHIOPIA</div>
-              <div style={{fontSize:'10px',color:'rgba(255,255,255,.7)'}}>Refresh your day — every day</div>
-            </div>
-          </div>
-          <div style={{textAlign:'right'}}>
-            <div style={{fontSize:'18px',fontWeight:900,color:'#FCDD09'}}>🥤</div>
-            <div style={{fontSize:'10px',color:'rgba(255,255,255,.6)'}}>Now in Ethiopia</div>
+      <section style={{background:'linear-gradient(170deg,#060606 0%,#141414 100%)',padding:'28px 16px 24px',textAlign:'center',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',top:'-80px',left:'50%',transform:'translateX(-50%)',width:'500px',height:'500px',background:'radial-gradient(circle,rgba(7,135,84,0.1) 0%,transparent 60%)',pointerEvents:'none'}}/>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'14px',marginBottom:'10px',position:'relative'}}>
+          <img src="/lion.jpg" alt="lion" style={{width:'54px',height:'54px',borderRadius:'50%',objectFit:'cover',objectPosition:'center 15%',border:'2.5px solid rgba(252,221,9,0.6)',boxShadow:'0 0 30px rgba(252,221,9,0.15)',flexShrink:0}}/>
+          <div style={{textAlign:'left'}}>
+            <div style={{fontSize:'30px',fontWeight:900,color:'white',letterSpacing:'2px',lineHeight:1}}>HAGERHUB</div>
+            <div style={{fontSize:'9px',color:'rgba(255,255,255,0.3)',letterSpacing:'2px',textTransform:'uppercase',marginTop:'3px'}}>Ethiopia's #1 Marketplace · ሃገር ሃብ</div>
           </div>
         </div>
-      </div>
-
-      {/* HERO */}
-      <section style={{background:'white',padding:'20px 16px 16px',textAlign:'center',borderBottom:'1px solid #eee',width:'100%'}}>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',marginBottom:'6px'}}>
-          <img src="/lion.jpg" alt="lion" style={{width:'44px',height:'44px',borderRadius:'50%',objectFit:'cover',objectPosition:'center 15%',border:'2px solid #ddd',flexShrink:0}}/>
-          <span style={{fontSize:'26px',fontWeight:800,letterSpacing:'1px',color:'#111'}}>HAGERHUB</span>
+        <div style={{display:'flex',height:'2px',margin:'10px auto 16px',width:'100px',borderRadius:'2px',overflow:'hidden'}}>
+          <div style={{flex:1,background:'#078754'}}/><div style={{flex:1,background:'#FCDD09'}}/><div style={{flex:1,background:'#EF2118'}}/>
         </div>
-        <p style={{color:'#aaa',fontSize:'10px',letterSpacing:'1px',textTransform:'uppercase',marginBottom:'14px'}}>The Hub of the Homeland · ሃገር ሃብ</p>
-        <div style={{display:'flex',background:'white',border:'1.5px solid #ddd',borderRadius:'10px',overflow:'hidden',boxShadow:'0 2px 8px rgba(0,0,0,.06)',marginBottom:'12px'}}>
-          <input style={{flex:1,border:'none',padding:'12px 14px',fontSize:'14px',outline:'none',fontFamily:'inherit',minWidth:0}}
-            placeholder="What are you looking for?"
-            value={search} onChange={e => setSearch(e.target.value)}/>
-          <button onClick={fetchListings}
-            style={{background:'#078754',border:'none',color:'white',padding:'12px 18px',fontSize:'13px',fontWeight:600,cursor:'pointer',whiteSpace:'nowrap'}}>
-            Search
-          </button>
+        <div style={{display:'flex',background:'rgba(255,255,255,0.97)',borderRadius:'14px',overflow:'hidden',boxShadow:'0 8px 40px rgba(0,0,0,0.5)',marginBottom:'16px'}}>
+          <input style={{flex:1,border:'none',padding:'15px 16px',fontSize:'15px',outline:'none',fontFamily:'inherit',minWidth:0,background:'transparent',color:'#111'}}
+            placeholder="Search properties, cars, jobs..."
+            value={search} onChange={e=>setSearch(e.target.value)}/>
+          <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
-
-        {/* BELOW SEARCH AD — Telebirr style */}
-        <div style={{background:'linear-gradient(90deg,#e65c00,#f9d423)',borderRadius:'10px',padding:'12px 14px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'10px',cursor:'pointer',marginBottom:'12px'}}>
-          <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-            <div style={{width:'36px',height:'36px',borderRadius:'8px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'18px'}}>📱</div>
-            <div style={{textAlign:'left'}}>
-              <div style={{fontSize:'12px',fontWeight:800,color:'white',letterSpacing:'0.5px'}}>Telebirr — Pay Instantly</div>
-              <div style={{fontSize:'10px',color:'rgba(255,255,255,.85)'}}>Send & receive money across Ethiopia</div>
-            </div>
-          </div>
-          <div style={{background:'white',color:'#e65c00',fontSize:'10px',fontWeight:800,padding:'7px 10px',borderRadius:'7px',whiteSpace:'nowrap',flexShrink:0}}>Get App</div>
-        </div>
-
-        <div style={{display:'flex',gap:'6px',overflowX:'auto',paddingBottom:'4px'}}>
-          {CATS.map(c => (
-            <button key={c} onClick={() => setActiveCat(c)}
-              style={{padding:'6px 14px',borderRadius:'20px',fontSize:'12px',fontWeight:500,cursor:'pointer',border:'1.5px solid',flexShrink:0,
-                borderColor:activeCat===c?'#078754':'#ddd',
-                background:activeCat===c?'#078754':'white',
-                color:activeCat===c?'white':'#555'}}>
+        <div style={{display:'flex',gap:'8px',overflowX:'auto',paddingBottom:'2px',justifyContent:'center'}}>
+          {CATS.map(c=>(
+            <button key={c} onClick={()=>setActiveCat(c)}
+              style={{padding:'8px 18px',borderRadius:'20px',fontSize:'12px',fontWeight:700,cursor:'pointer',border:'none',flexShrink:0,
+                background:activeCat===c?'#FCDD09':'rgba(255,255,255,0.09)',
+                color:activeCat===c?'#111':'rgba(255,255,255,0.75)'}}>
               {c}
             </button>
           ))}
         </div>
       </section>
 
-      <div style={{display:'flex',height:'3px'}}>
-        <div style={{flex:1,background:'#078754'}}/>
-        <div style={{flex:1,background:'#FCDD09'}}/>
-        <div style={{flex:1,background:'#EF2118'}}/>
+      <div style={{background:'linear-gradient(90deg,#001489 0%,#0033cc 50%,#001489 100%)',cursor:'pointer',overflow:'hidden',position:'relative'}}>
+        <div style={{position:'absolute',right:0,top:0,bottom:0,width:'120px',background:'radial-gradient(circle at right,rgba(200,0,0,0.4),transparent)'}}/>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',gap:'12px'}}>
+          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+            <div style={{width:'48px',height:'48px',borderRadius:'50%',flexShrink:0,position:'relative',overflow:'hidden',border:'3px solid rgba(255,255,255,0.3)'}}>
+              <div style={{position:'absolute',top:0,left:0,right:0,height:'50%',background:'#c00'}}/>
+              <div style={{position:'absolute',bottom:0,left:0,right:0,height:'50%',background:'#001489'}}/>
+              <div style={{position:'absolute',top:'46%',left:0,right:0,height:'8%',background:'white'}}/>
+            </div>
+            <div>
+              <div style={{fontSize:'20px',fontWeight:900,color:'white',letterSpacing:'2px'}}>PEPSI</div>
+              <div style={{fontSize:'10px',color:'rgba(255,255,255,0.6)'}}>Taste the Extraordinary</div>
+            </div>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+            <div style={{fontSize:'36px'}}>🥤</div>
+            <div style={{background:'linear-gradient(135deg,#EF2118,#ff5544)',color:'white',fontSize:'12px',fontWeight:900,padding:'10px 18px',borderRadius:'20px',whiteSpace:'nowrap'}}>Win Prizes!</div>
+          </div>
+        </div>
+        <div style={{fontSize:'8px',color:'rgba(255,255,255,0.2)',textAlign:'center',padding:'2px 0 5px',letterSpacing:'2px'}}>SPONSORED ADVERTISEMENT</div>
       </div>
 
-      <div style={{display:'flex',overflowX:'auto',borderBottom:'1px solid #f0f0f0',background:'white'}}>
-        {CATS.map(c => (
-          <button key={c} onClick={() => setActiveCat(c)}
-            style={{padding:'12px 16px',fontSize:'13px',border:'none',flexShrink:0,
-              borderBottom:activeCat===c?'2px solid #078754':'2px solid transparent',
-              background:'none',color:activeCat===c?'#078754':'#666',
-              fontWeight:activeCat===c?600:400,cursor:'pointer',whiteSpace:'nowrap'}}>
+      <div style={{display:'flex',overflowX:'auto',background:'white',boxShadow:'0 2px 10px rgba(0,0,0,0.07)'}}>
+        {CATS.map(c=>(
+          <button key={c} onClick={()=>setActiveCat(c)}
+            style={{padding:'15px 20px',fontSize:'13px',border:'none',flexShrink:0,
+              borderBottom:activeCat===c?'3px solid #078754':'3px solid transparent',
+              background:'none',color:activeCat===c?'#078754':'#777',
+              fontWeight:activeCat===c?800:500,cursor:'pointer',whiteSpace:'nowrap'}}>
             {c}
           </button>
         ))}
       </div>
 
-      {activeCat === 'All' && (
-        <section style={{background:'white',borderBottom:'1px solid #eee',padding:'16px'}}>
-          <h2 style={{fontSize:'18px',fontWeight:700,color:'#111',marginBottom:'14px'}}>Popular Categories</h2>
+      <div style={{background:'linear-gradient(90deg,#CC4A00,#FF7A00)',padding:'13px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',cursor:'pointer',gap:'12px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+          <div style={{width:'42px',height:'42px',borderRadius:'12px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>📱</div>
+          <div>
+            <div style={{fontSize:'14px',fontWeight:900,color:'white'}}>telebirr — Pay Smarter</div>
+            <div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)'}}>Send · Receive · Pay bills across Ethiopia</div>
+          </div>
+        </div>
+        <div style={{background:'white',color:'#CC4A00',fontSize:'12px',fontWeight:900,padding:'10px 18px',borderRadius:'20px',whiteSpace:'nowrap',flexShrink:0}}>Get App</div>
+      </div>
+
+      {activeCat==='All' && (
+        <section style={{background:'white',padding:'22px 16px',borderBottom:'8px solid #F0F2F5'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px'}}>
+            <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:0}}>Browse Categories</h2>
+            <span style={{fontSize:'13px',color:'#078754',fontWeight:700,cursor:'pointer'}}>See all →</span>
+          </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'}}>
-            {POPULAR.map(cat => (
-              <div key={cat.name} style={{background:'#f9fafb',borderRadius:'10px',padding:'12px',border:'1px solid #eee'}}>
-                <h3 style={{fontSize:'13px',fontWeight:700,color:'#078754',marginBottom:'8px'}}>| {cat.name}</h3>
-                <ul style={{listStyle:'none',padding:0,margin:0}}>
-                  {cat.items.slice(0,3).map(item => (
-                    <li key={item} onClick={() => setActiveCat(cat.name)}
-                      style={{fontSize:'11px',color:'#666',padding:'2px 0',cursor:'pointer'}}>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <div onClick={() => setActiveCat(cat.name)}
-                  style={{fontSize:'11px',color:'#078754',fontWeight:600,marginTop:'6px',cursor:'pointer'}}>
-                  All in {cat.name} →
+            {POPULAR.map(cat=>(
+              <div key={cat.name} onClick={()=>setActiveCat(cat.name)}
+                style={{background:`linear-gradient(135deg,${cat.color}15,${cat.color}05)`,border:`1.5px solid ${cat.color}20`,borderRadius:'16px',padding:'16px 14px',cursor:'pointer'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}}>
+                  <span style={{fontSize:'24px'}}>{cat.emoji}</span>
+                  <span style={{fontSize:'15px',fontWeight:800,color:cat.color}}>{cat.name}</span>
                 </div>
+                {cat.items.slice(0,3).map(item=>(
+                  <div key={item} style={{fontSize:'11px',color:'#777',padding:'1.5px 0'}}>{item}</div>
+                ))}
+                <div style={{fontSize:'12px',color:cat.color,fontWeight:800,marginTop:'12px'}}>View all →</div>
               </div>
             ))}
           </div>
         </section>
       )}
 
-      <section style={{background:'#f5f5f5',padding:'16px'}}>
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}}>
-          <h2 style={{fontSize:'16px',fontWeight:700,margin:0,color:'#111'}}>
-            {activeCat === 'All' ? 'Latest Listings' : activeCat}
-            <span style={{fontSize:'12px',color:'#999',fontWeight:400,marginLeft:'6px'}}>({filtered.length})</span>
-          </h2>
-          {activeCat !== 'All' && (
-            <button onClick={() => setActiveCat('All')}
-              style={{fontSize:'12px',color:'#078754',background:'none',border:'none',cursor:'pointer'}}>← All</button>
+      <section style={{padding:'18px 16px'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px'}}>
+          <div>
+            <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:'0 0 3px'}}>{activeCat==='All'?'Latest Listings':activeCat}</h2>
+            <div style={{fontSize:'12px',color:'#999'}}>{filtered.length} listings available</div>
+          </div>
+          {activeCat!=='All' && (
+            <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#078754',background:'white',border:'1.5px solid #078754',borderRadius:'20px',padding:'8px 18px',cursor:'pointer',fontWeight:700}}>← All</button>
           )}
         </div>
+
         {loading ? (
-          <div style={{textAlign:'center',padding:'40px',color:'#aaa'}}>Loading...</div>
-        ) : filtered.length === 0 ? (
-          <div style={{textAlign:'center',padding:'40px',color:'#aaa'}}>
-            <p>No listings found.</p>
-            <button onClick={() => {setActiveCat('All');setSearch('')}}
-              style={{marginTop:'12px',background:'#078754',color:'white',border:'none',borderRadius:'8px',padding:'10px 20px',cursor:'pointer',fontSize:'13px'}}>
-              View all
-            </button>
+          <div style={{textAlign:'center',padding:'60px 0'}}>
+            <div style={{fontSize:'40px',marginBottom:'12px'}}>⏳</div>
+            <div style={{color:'#aaa',fontSize:'15px'}}>Loading listings...</div>
+          </div>
+        ) : filtered.length===0 ? (
+          <div style={{textAlign:'center',padding:'60px 0'}}>
+            <div style={{fontSize:'48px',marginBottom:'14px'}}>🔍</div>
+            <p style={{color:'#aaa',marginBottom:'18px',fontSize:'15px'}}>No listings found</p>
+            <button onClick={()=>{setActiveCat('All');setSearch('')}} style={{background:'#078754',color:'white',border:'none',borderRadius:'14px',padding:'14px 32px',cursor:'pointer',fontSize:'15px',fontWeight:800}}>View all</button>
           </div>
         ) : (
-          <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'10px'}}>
-            {renderListingsWithAds()}
+          <div style={{display:'flex',flexDirection:'column',gap:'16px'}}>
+            {filtered.map((l,i)=>(
+              <div key={l.id}>
+                {i===2 && (
+                  <div style={{background:'linear-gradient(135deg,#001A6E,#0041C4)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,26,110,0.4)',marginBottom:'16px'}}>
+                    <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>🏦</div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>ADVERTISEMENT</div>
+                      <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Commercial Bank of Ethiopia</div>
+                      <div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>🏠 Home loans up to ETB 5,000,000 · Low interest</div>
+                    </div>
+                    <div style={{background:'#FCDD09',color:'#001A6E',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Apply Now</div>
+                  </div>
+                )}
+                {i===5 && (
+                  <div style={{borderRadius:'18px',overflow:'hidden',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,0,0,0.2)',marginBottom:'16px',position:'relative'}}>
+                    <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&q=85" alt="Toyota" style={{width:'100%',height:'170px',objectFit:'cover',display:'block'}}/>
+                    <div style={{position:'absolute',inset:0,background:'linear-gradient(to right,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.15) 100%)',display:'flex',alignItems:'center',padding:'22px',gap:'14px'}}>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'8px'}}>ADVERTISEMENT · TOYOTA ETHIOPIA</div>
+                        <div style={{fontSize:'26px',fontWeight:900,color:'white',marginBottom:'4px',lineHeight:1}}>Land Cruiser</div>
+                        <div style={{fontSize:'14px',fontWeight:700,color:'#FCDD09',marginBottom:'6px'}}>2025 Edition</div>
+                        <div style={{fontSize:'11px',color:'rgba(255,255,255,0.65)'}}>The ultimate off-roader</div>
+                      </div>
+                      <div style={{background:'#EF2118',color:'white',fontSize:'13px',fontWeight:900,padding:'14px 20px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Book Now</div>
+                    </div>
+                  </div>
+                )}
+                {i===8 && (
+                  <div style={{background:'linear-gradient(135deg,#5C0000,#8B0000)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(92,0,0,0.4)',marginBottom:'16px'}}>
+                    <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>💳</div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>ADVERTISEMENT</div>
+                      <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Dashen Bank</div>
+                      <div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>💰 Business loans · Digital banking · Instant transfers</div>
+                    </div>
+                    <div style={{background:'white',color:'#5C0000',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Learn More</div>
+                  </div>
+                )}
+                <div style={{background:'white',borderRadius:'18px',overflow:'hidden',boxShadow:'0 3px 14px rgba(0,0,0,0.08)',cursor:'pointer'}}>
+                  <div style={{position:'relative',height:'210px',overflow:'hidden'}}>
+                    <img src={getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+                    <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0) 55%)'}}/>
+                    <div style={{position:'absolute',top:'12px',left:'12px',background:CAT_COLORS[l.category]||'#078754',color:'white',fontSize:'10px',fontWeight:800,padding:'5px 14px',borderRadius:'20px',letterSpacing:'0.5px'}}>{l.category.toUpperCase()}</div>
+                    <button style={{position:'absolute',top:'10px',right:'12px',background:'rgba(0,0,0,0.35)',color:'white',border:'none',fontSize:'18px',width:'36px',height:'36px',borderRadius:'10px',cursor:'pointer'}}>♡</button>
+                    <div style={{position:'absolute',bottom:'14px',left:'14px',right:'14px'}}>
+                      <div style={{fontSize:'24px',fontWeight:900,color:'white',marginBottom:'4px',textShadow:'0 2px 8px rgba(0,0,0,0.5)'}}>{l.price_label}</div>
+                      <div style={{fontSize:'13px',color:'rgba(255,255,255,0.9)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
+                    </div>
+                  </div>
+                  <div style={{padding:'14px 16px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
+                      <span>📍</span>
+                      <span style={{fontSize:'13px',color:'#555',fontWeight:600}}>{l.neighbourhood?l.neighbourhood+', ':''}{l.city}</span>
+                    </div>
+                    <button style={{background:'#078754',color:'white',border:'none',borderRadius:'12px',padding:'9px 22px',fontSize:'13px',fontWeight:800,cursor:'pointer'}}>View →</button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </section>
 
-      <section style={{margin:'16px',background:'white',border:'1px solid #eee',borderRadius:'12px',padding:'20px'}}>
-        <h3 style={{fontSize:'16px',fontWeight:700,marginBottom:'4px'}}>Find amazing deals on the go.</h3>
-        <p style={{color:'#EF2118',fontWeight:500,fontSize:'13px',margin:'0 0 14px'}}>Download the HagerHub app now!</p>
-        <div style={{display:'flex',gap:'10px'}}>
-          <button style={{background:'#111',color:'white',border:'none',borderRadius:'8px',padding:'10px 20px',fontSize:'12px',fontWeight:500,cursor:'pointer'}}>App Store</button>
-          <button style={{background:'#111',color:'white',border:'none',borderRadius:'8px',padding:'10px 20px',fontSize:'12px',fontWeight:500,cursor:'pointer'}}>Google Play</button>
+      <div style={{margin:'0 16px 20px',borderRadius:'18px',overflow:'hidden',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,0,0,0.2)',position:'relative'}}>
+        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=85" alt="Ethiopian Airlines" style={{width:'100%',height:'140px',objectFit:'cover',display:'block'}}/>
+        <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg,rgba(0,100,0,0.93) 0%,rgba(0,60,0,0.55) 100%)',display:'flex',alignItems:'center',padding:'20px',gap:'16px'}}>
+          <div style={{fontSize:'44px'}}>✈️</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'5px'}}>ADVERTISEMENT</div>
+            <div style={{fontSize:'20px',fontWeight:900,color:'white',marginBottom:'4px'}}>Ethiopian Airlines</div>
+            <div style={{fontSize:'12px',color:'rgba(255,255,255,0.8)'}}>Fly to 130+ destinations worldwide</div>
+          </div>
+          <div style={{background:'#FCDD09',color:'#111',fontSize:'12px',fontWeight:900,padding:'12px 18px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Book Now</div>
+        </div>
+      </div>
+
+      <section style={{margin:'0 16px 24px',background:'linear-gradient(135deg,#090909,#191919)',borderRadius:'22px',padding:'30px 22px',textAlign:'center'}}>
+        <div style={{fontSize:'48px',marginBottom:'14px'}}>📲</div>
+        <h3 style={{fontSize:'24px',fontWeight:900,color:'white',marginBottom:'8px'}}>HagerHub on your phone</h3>
+        <p style={{color:'rgba(255,255,255,0.45)',fontSize:'14px',margin:'0 0 24px',lineHeight:1.6}}>Buy, sell and connect from anywhere in Ethiopia</p>
+        <div style={{display:'flex',gap:'12px',justifyContent:'center'}}>
+          <button style={{background:'white',color:'#111',border:'none',borderRadius:'14px',padding:'14px 24px',fontSize:'14px',fontWeight:800,cursor:'pointer'}}>🍎 App Store</button>
+          <button style={{background:'#078754',color:'white',border:'none',borderRadius:'14px',padding:'14px 24px',fontSize:'14px',fontWeight:800,cursor:'pointer'}}>▶ Google Play</button>
         </div>
       </section>
 
-      <footer style={{background:'white',borderTop:'1px solid #eee',padding:'24px 16px'}}>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'20px',marginBottom:'20px'}}>
+      <footer style={{background:'#090909',padding:'32px 16px 28px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'24px',paddingBottom:'20px',borderBottom:'1px solid rgba(255,255,255,0.06)'}}>
+          <img src="/lion.jpg" alt="lion" style={{width:'42px',height:'42px',borderRadius:'50%',objectFit:'cover',border:'1.5px solid rgba(255,255,255,0.15)'}}/>
+          <div>
+            <div style={{fontSize:'18px',fontWeight:900,color:'white',letterSpacing:'1.5px'}}>HAGERHUB</div>
+            <div style={{fontSize:'10px',color:'rgba(255,255,255,0.25)',letterSpacing:'1px'}}>The Hub of the Homeland · ሃገር ሃብ</div>
+          </div>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'22px',marginBottom:'24px'}}>
           {[
-            {title:'Company',links:['About Us','Careers','Advertising','Legal Hub']},
+            {title:'Company',links:['About Us','Careers','Advertise with Us','Legal Hub']},
             {title:'Ethiopia',links:['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa']},
-            {title:'East Africa',links:['Kenya','Tanzania','Uganda','Rwanda']},
-            {title:'Get Social',links:['Facebook','Telegram','Instagram','YouTube']},
-            {title:'Support',links:['Help Center','Contact Us','Safety Tips','Call Us']},
-            {title:'Languages',links:['English','አማርኛ','Afaan Oromoo','Tigrinya']},
-          ].map(col => (
+            {title:'Support',links:['Help Center','Contact Us','Safety Tips','Report Listing']},
+            {title:'Follow Us',links:['Facebook','Telegram','Instagram','TikTok']},
+          ].map(col=>(
             <div key={col.title}>
-              <h4 style={{fontSize:'11px',fontWeight:700,textTransform:'uppercase',color:'#111',marginBottom:'8px'}}>{col.title}</h4>
-              {col.links.map(l => <div key={l} style={{fontSize:'12px',color:'#777',marginBottom:'4px',cursor:'pointer'}}>{l}</div>)}
+              <h4 style={{fontSize:'10px',fontWeight:800,textTransform:'uppercase',color:'rgba(255,255,255,0.3)',marginBottom:'12px',letterSpacing:'1.5px'}}>{col.title}</h4>
+              {col.links.map(l=><div key={l} style={{fontSize:'13px',color:'rgba(255,255,255,0.22)',marginBottom:'8px',cursor:'pointer'}}>{l}</div>)}
             </div>
           ))}
         </div>
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'1px solid #eee',paddingTop:'16px'}}>
-          <span style={{color:'#aaa',fontSize:'10px'}}>© 2025 HagerHub · Jiksi Michael</span>
-          <div style={{display:'flex',height:'3px',width:'36px',borderRadius:'2px',overflow:'hidden'}}>
-            <div style={{flex:1,background:'#078754'}}/>
-            <div style={{flex:1,background:'#FCDD09'}}/>
-            <div style={{flex:1,background:'#EF2118'}}/>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'1px solid rgba(255,255,255,0.05)',paddingTop:'18px'}}>
+          <span style={{color:'rgba(255,255,255,0.12)',fontSize:'11px'}}>© 2025 HagerHub · Jiksi Michael</span>
+          <div style={{display:'flex',height:'3px',width:'42px',borderRadius:'2px',overflow:'hidden'}}>
+            <div style={{flex:1,background:'#078754'}}/><div style={{flex:1,background:'#FCDD09'}}/><div style={{flex:1,background:'#EF2118'}}/>
           </div>
-          <span style={{color:'#aaa',fontSize:'10px'}}>ሃገር ሃብ</span>
         </div>
       </footer>
     </main>
