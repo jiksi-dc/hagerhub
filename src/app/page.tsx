@@ -232,7 +232,7 @@ export default function Home() {
                 )}
                 <div style={{background:'white',borderRadius:'18px',overflow:'hidden',boxShadow:'0 3px 14px rgba(0,0,0,0.08)',cursor:'pointer'}}>
                   <div style={{position:'relative',height:'210px',overflow:'hidden'}}>
-                    <img src={getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+                    <img src={l.image_urls && l.image_urls.length > 0 ? l.image_urls[0] : getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
                     <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0) 55%)'}}/>
                     <div style={{position:'absolute',top:'12px',left:'12px',background:CAT_COLORS[l.category]||'#078754',color:'white',fontSize:'10px',fontWeight:800,padding:'5px 14px',borderRadius:'20px',letterSpacing:'0.5px'}}>{l.category.toUpperCase()}</div>
                     <button style={{position:'absolute',top:'10px',right:'12px',background:'rgba(0,0,0,0.35)',color:'white',border:'none',fontSize:'18px',width:'36px',height:'36px',borderRadius:'10px',cursor:'pointer'}}>♡</button>
