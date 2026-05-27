@@ -42,6 +42,20 @@ export default function Post() {
         return
       }
       setStatus('✅ Approved! Saving your listing...')
+        let image_urls: string[] = []
+        if (photos.length > 0) {
+          setStatus('📸 Uploading photos...')
+          for (const photo of photos) {
+            const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}`
+            const { data: uploadData, error: uploadErr } = await supabase.storage
+              .from('listings')
+              .upload(fileName, photo)
+            if (!uploadErr && uploadData) {
+              const { data: urlData } = supabase.storage.from('listings').getPublicUrl(fileName)
+              image_urls.push(urlData.publicUrl)
+            }
+          }
+        }
       const { error: dbErr } = await supabase.from('listings').insert({
         title, description: desc,
         price: parseFloat(price),
