@@ -39,6 +39,7 @@ const CAT_COLORS: Record<string,string> = {
 }
 
 interface Listing {
+  image_urls?: string[]
   id: string; title: string; price_label: string; city: string
   neighbourhood: string; category: string; subcategory: string; created_at: string
 }
