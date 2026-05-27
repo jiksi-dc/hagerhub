@@ -46,7 +46,7 @@ export default function Post() {
         if (photos.length > 0) {
           setStatus('📸 Uploading photos...')
           for (const photo of photos) {
-            const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}`
+            const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${photo.name.split('.').pop() || 'jpg'}`
             const { data: uploadData, error: uploadErr } = await supabase.storage
               .from('listings')
               .upload(fileName, photo)
