@@ -50,6 +50,7 @@ export default function Post() {
             const { data: uploadData, error: uploadErr } = await supabase.storage
               .from('listings')
               .upload(fileName, photo)
+            if (uploadErr) { console.error('Upload error:', uploadErr) }
             if (!uploadErr && uploadData) {
               const { data: urlData } = supabase.storage.from('listings').getPublicUrl(fileName)
               image_urls.push(urlData.publicUrl)
