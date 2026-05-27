@@ -46,15 +46,12 @@ export default function Post() {
         if (photos.length > 0) {
           setStatus('📸 Uploading photos...')
           for (const photo of photos) {
-            const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${photo.name.split('.').pop() || 'jpg'}`
-            const { data: uploadData, error: uploadErr } = await supabase.storage
-              .from('listings')
-              .upload(fileName, photo)
-            if (uploadErr) { console.error('Upload error:', uploadErr) }
-            if (!uploadErr && uploadData) {
-              const { data: urlData } = supabase.storage.from('listings').getPublicUrl(fileName)
-              image_urls.push(urlData.publicUrl)
-            }
+            const fd = new FormData()
+            fd.append('file', photo)
+            const res = await fetch('/api/upload', { method: 'POST', body: fd })
+            const json = await res.json()
+            if (json.url) image_urls.push(json.url)
+            else console.error('Upload failed:', json.error)
           }
         }
       const { error: dbErr } = await supabase.from('listings').insert({
