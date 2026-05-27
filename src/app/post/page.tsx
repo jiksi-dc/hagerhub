@@ -47,7 +47,7 @@ export default function Post() {
         price: parseFloat(price),
         price_label: 'ETB ' + parseFloat(price).toLocaleString(),
         category: cat, city, neighbourhood: area,
-        contact_name: name, contact_phone: phone, status: 'active'
+        contact_name: name, contact_phone: phone, status: 'active', image_urls
       })
       if (dbErr) { setError('Failed to save. Please try again.'); setLoading(false); setStatus(''); return }
       setStatus('🎉 Your listing is live on HagerHub!')
