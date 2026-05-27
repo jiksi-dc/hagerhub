@@ -68,10 +68,31 @@ export default function Post() {
           <span style={{width:'28px',height:'28px',borderRadius:'50%',background:'#078754',color:'white',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'13px',fontWeight:600,flexShrink:0}}>3</span>
           Upload photos
         </h2>
-        <div style={{border:'2px dashed #ddd',borderRadius:'10px',padding:'40px',textAlign:'center',cursor:'pointer'}}>
-          <div style={{fontSize:'32px',color:'#ddd',marginBottom:'8px'}}>+</div>
-          <p style={{fontSize:'13px',color:'#aaa',margin:0}}>Drag and drop photos here, or click to browse</p>
-          <p style={{fontSize:'11px',color:'#ccc',marginTop:'4px'}}>Up to 20 photos · JPG, PNG · Max 5MB each</p>
+        <div>
+          <input type="file" id="photo-upload" accept="image/*" multiple
+            style={{display:'none'}}
+            onChange={e => {
+              const files = Array.from(e.target.files || [])
+              setPhotos(files)
+            }}/>
+          <label htmlFor="photo-upload"
+            style={{display:'block',border:'2px dashed #ddd',borderRadius:'12px',padding:'28px 16px',textAlign:'center',cursor:'pointer',background:'#fafafa'}}>
+            <div style={{fontSize:'36px',marginBottom:'8px'}}>📸</div>
+            <div style={{fontSize:'14px',fontWeight:700,color:'#333',marginBottom:'4px'}}>Tap to add photos</div>
+            <div style={{fontSize:'12px',color:'#aaa'}}>JPG, PNG · Up to 10 photos · Max 5MB each</div>
+          </label>
+          {photos.length > 0 && (
+            <div style={{marginTop:'12px',display:'flex',gap:'8px',flexWrap:'wrap'}}>
+              {photos.map((p,i) => (
+                <div key={i} style={{position:'relative'}}>
+                  <img src={URL.createObjectURL(p)} alt="preview"
+                    style={{width:'72px',height:'72px',borderRadius:'10px',objectFit:'cover',border:'2px solid #078754'}}/>
+                  <button onClick={() => setPhotos(photos.filter((_,j)=>j!==i))}
+                    style={{position:'absolute',top:'-6px',right:'-6px',background:'#EF2118',color:'white',border:'none',borderRadius:'50%',width:'20px',height:'20px',fontSize:'11px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>×</button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
