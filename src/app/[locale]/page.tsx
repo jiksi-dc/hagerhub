@@ -119,7 +119,7 @@ export default function Home() {
               style={{padding:'8px 18px',borderRadius:'20px',fontSize:'12px',fontWeight:700,cursor:'pointer',border:'none',flexShrink:0,
                 background:activeCat===c?'#FCDD09':'rgba(255,255,255,0.09)',
                 color:activeCat===c?'#111':'rgba(255,255,255,0.75)'}}>
-              {c}
+              {catLabel(c)}
             </button>
           ))}
         </div>
