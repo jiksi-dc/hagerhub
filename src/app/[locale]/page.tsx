@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useTranslations } from 'next-intl'
 
-const CATS = ['All', 'Properties', 'Vehicles', 'Machinery', 'Classifieds', 'Jobs']
+const CATS = ['all', 'properties', 'vehicles', 'machinery', 'classifieds', 'jobs']
 const POPULAR = [
   { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots'], color: '#078754', emoji: '🏠' },
   { name: 'Vehicles', items: ['Used Cars', 'New Cars', 'Trucks & LGVs', 'Bajaj / Tuk-tuks'], color: '#1B6BB5', emoji: '🚗' },
@@ -158,7 +158,7 @@ export default function Home() {
         <section style={{background:'white',padding:'22px 16px',borderBottom:'8px solid #F0F2F5'}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px'}}>
             <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:0}}>Browse Categories</h2>
-            <span style={{fontSize:'13px',color:'#078754',fontWeight:700,cursor:'pointer'}}>See all →</span>
+            <span style={{fontSize:'13px',color:'#078754',fontWeight:700,cursor:'pointer'}}>{t('home.seeAll')}</span>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'}}>
             {POPULAR.map(cat=>(
@@ -250,7 +250,7 @@ export default function Home() {
                       <span>📍</span>
                       <span style={{fontSize:'13px',color:'#555',fontWeight:600}}>{l.neighbourhood?l.neighbourhood+', ':''}{l.city}</span>
                     </div>
-                    <button style={{background:'#078754',color:'white',border:'none',borderRadius:'12px',padding:'9px 22px',fontSize:'13px',fontWeight:800,cursor:'pointer'}} onClick={()=>window.location.href=`/listing/${l.id}`}>View →</button>
+                    <button style={{background:'#078754',color:'white',border:'none',borderRadius:'12px',padding:'9px 22px',fontSize:'13px',fontWeight:800,cursor:'pointer'}} onClick={()=>window.location.href=`/listing/${l.id}`}>{t('nav.view')}</button>
                   </div>
                 </div>
               </>

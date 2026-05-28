@@ -1,1 +1,31 @@
-{"nav":{"search":"Rechercher des propriétés, voitures, emplois...","post":"+ Publier","login":"Connexion"},"home":{"latest":"Dernières annonces","browse":"Parcourir les catégories","available":"annonces disponibles","loading":"Chargement des annonces...","none":"Aucune annonce trouvée","viewAll":"Voir tout"},"footer":{"company":"Société","ethiopia":"Éthiopie","support":"Assistance","follow":"Suivez-nous"}}
+{
+  "nav": {
+    "search": "Rechercher des propriétés, voitures, emplois...",
+    "post": "+ Publier",
+    "login": "Connexion",
+    "view": "Voir →"
+  },
+  "home": {
+    "latest": "Dernières annonces",
+    "browse": "Parcourir les catégories",
+    "available": "annonces disponibles",
+    "loading": "Chargement des annonces...",
+    "none": "Aucune annonce trouvée",
+    "viewAll": "Voir tout",
+    "seeAll": "Voir tout →"
+  },
+  "cats": {
+    "all": "Tout",
+    "properties": "Propriétés",
+    "vehicles": "Véhicules",
+    "machinery": "Machines",
+    "classifieds": "Annonces",
+    "jobs": "Emplois"
+  },
+  "footer": {
+    "company": "Société",
+    "ethiopia": "Éthiopie",
+    "support": "Assistance",
+    "follow": "Suivez-nous"
+  }
+}

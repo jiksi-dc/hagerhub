@@ -1,1 +1,31 @@
-{"nav":{"search":"Search properties, cars, jobs...","post":"+ Post","login":"Log in"},"home":{"latest":"Latest Listings","browse":"Browse Categories","available":"listings available","loading":"Loading listings...","none":"No listings found","viewAll":"View all"},"footer":{"company":"Company","ethiopia":"Ethiopia","support":"Support","follow":"Follow Us"}}
+{
+  "nav": {
+    "search": "Search properties, cars, jobs...",
+    "post": "+ Post",
+    "login": "Log in",
+    "view": "View →"
+  },
+  "home": {
+    "latest": "Latest Listings",
+    "browse": "Browse Categories",
+    "available": "listings available",
+    "loading": "Loading listings...",
+    "none": "No listings found",
+    "viewAll": "View all",
+    "seeAll": "See all →"
+  },
+  "cats": {
+    "all": "All",
+    "properties": "Properties",
+    "vehicles": "Vehicles",
+    "machinery": "Machinery",
+    "classifieds": "Classifieds",
+    "jobs": "Jobs"
+  },
+  "footer": {
+    "company": "Company",
+    "ethiopia": "Ethiopia",
+    "support": "Support",
+    "follow": "Follow Us"
+  }
+}

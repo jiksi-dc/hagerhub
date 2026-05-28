@@ -1,1 +1,31 @@
-{"nav":{"search":"ቤቶች፣ መኪናዎች፣ ሥራዎች ይፈልጉ...","post":"+ አስተዋውቁ","login":"ግቡ"},"home":{"latest":"የቅርብ ጊዜ ዝርዝሮች","browse":"ምድቦችን ያስሱ","available":"ዝርዝሮች አሉ","loading":"ዝርዝሮች እየተጫኑ ነው...","none":"ምንም ዝርዝሮች አልተገኙም","viewAll":"ሁሉንም ይመልከቱ"},"footer":{"company":"ኩባንያ","ethiopia":"ኢትዮጵያ","support":"ድጋፍ","follow":"ይከተሉን"}}
+{
+  "nav": {
+    "search": "ቤቶች፣ መኪናዎች፣ ሥራዎች ይፈልጉ...",
+    "post": "+ አስተዋውቁ",
+    "login": "ግቡ",
+    "view": "ይመልከቱ →"
+  },
+  "home": {
+    "latest": "የቅርብ ጊዜ ዝርዝሮች",
+    "browse": "ምድቦችን ያስሱ",
+    "available": "ዝርዝሮች አሉ",
+    "loading": "ዝርዝሮች እየተጫኑ ነው...",
+    "none": "ምንም ዝርዝሮች አልተገኙም",
+    "viewAll": "ሁሉንም ይመልከቱ",
+    "seeAll": "ሁሉንም ይመልከቱ →"
+  },
+  "cats": {
+    "all": "ሁሉም",
+    "properties": "ቤቶች",
+    "vehicles": "መኪናዎች",
+    "machinery": "ማሽነሪ",
+    "classifieds": "ዕቃዎች",
+    "jobs": "ሥራዎች"
+  },
+  "footer": {
+    "company": "ኩባንያ",
+    "ethiopia": "ኢትዮጵያ",
+    "support": "ድጋፍ",
+    "follow": "ይከተሉን"
+  }
+}
