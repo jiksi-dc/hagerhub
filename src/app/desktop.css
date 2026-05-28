@@ -1,16 +1,14 @@
 @media (min-width: 768px) {
-  div.listings-grid {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 22px !important;
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-    padding: 0 24px !important;
-  }
-}
-
-@media (min-width: 768px) {
   .listings-container {
     grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .listings-container > div {
+    grid-column: auto !important;
+  }
+
+  .listings-container > div:has(> div[style*="ADVERTISEMENT"]:first-child),
+  .listings-container > div:has(> div[style*="advertisement"]:first-child) {
+    grid-column: 1 / -1 !important;
   }
 }
