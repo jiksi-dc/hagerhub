@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useTranslations } from 'next-intl'
 
 const CATS = ['All', 'Properties', 'Vehicles', 'Machinery', 'Classifieds', 'Jobs']
 const POPULAR = [
@@ -45,6 +46,7 @@ interface Listing {
 }
 
 export default function Home() {
+  const t = useTranslations()
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
   const [listings, setListings] = useState<Listing[]>([])
@@ -91,7 +93,7 @@ export default function Home() {
         </div>
         <div style={{display:'flex',background:'rgba(255,255,255,0.97)',borderRadius:'14px',overflow:'hidden',boxShadow:'0 8px 40px rgba(0,0,0,0.5)',marginBottom:'16px'}}>
           <input style={{flex:1,border:'none',padding:'15px 16px',fontSize:'15px',outline:'none',fontFamily:'inherit',minWidth:0,background:'transparent',color:'#111'}}
-            placeholder="Search properties, cars, jobs..."
+            placeholder={t("nav.search")}
             value={search} onChange={e=>setSearch(e.target.value)}/>
           <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
@@ -179,8 +181,8 @@ export default function Home() {
       <section style={{padding:'18px 16px'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px'}}>
           <div>
-            <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:'0 0 3px'}}>{activeCat==='All'?'Latest Listings':activeCat}</h2>
-            <div style={{fontSize:'12px',color:'#999'}}>{filtered.length} listings available</div>
+            <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:'0 0 3px'}}>{activeCat==='All'?t("home.latest"):activeCat}</h2>
+            <div style={{fontSize:'12px',color:'#999'}}>{filtered.length} {t("home.available")}</div>
           </div>
           {activeCat!=='All' && (
             <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#078754',background:'white',border:'1.5px solid #078754',borderRadius:'20px',padding:'8px 18px',cursor:'pointer',fontWeight:700}}>← All</button>
