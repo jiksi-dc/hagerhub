@@ -194,7 +194,7 @@ export default function Home() {
         ) : (
           <div style={{display:'grid',gridTemplateColumns:'repeat(1,1fr)',gap:'16px'}} className='listings-container'>
             {filtered.map((l,i)=>(
-              <div key={l.id} style={{gridColumn:'1/-1'}}>
+              <div key={l.id} style={{gridColumn:(i===2||i===5||i===8)?'1/-1':'auto'}}>
                 {i===2 && (
                   <div style={{background:'linear-gradient(135deg,#001A6E,#0041C4)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,26,110,0.4)',marginBottom:'16px'}}>
                     <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>🏦</div>
