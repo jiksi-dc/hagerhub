@@ -68,19 +68,19 @@ export default function Home() {
 
   return (
     <main style={{fontFamily:'inherit',background:'#F0F2F5',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
-      <section style={{background:'linear-gradient(170deg,#060606 0%,#141414 100%)',padding:'28px 16px 24px',textAlign:'center',position:'relative',overflow:'visible'}}>
+      <section style={{background:'white',padding:'28px 16px 24px',textAlign:'center',position:'relative',overflow:'visible'}}>
         <div style={{position:'absolute',top:'-80px',left:'50%',transform:'translateX(-50%)',width:'500px',height:'500px',background:'radial-gradient(circle,rgba(7,135,84,0.1) 0%,transparent 60%)',pointerEvents:'none'}}/>
         <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'14px',marginBottom:'10px',position:'relative'}}>
           <img src="/lion.jpg" alt="lion" style={{width:'54px',height:'54px',borderRadius:'50%',objectFit:'cover',objectPosition:'center 15%',border:'2.5px solid rgba(252,221,9,0.6)',boxShadow:'0 0 30px rgba(252,221,9,0.15)',flexShrink:0}}/>
           <div style={{textAlign:'left'}}>
-            <div style={{fontSize:'30px',fontWeight:900,color:'white',letterSpacing:'2px',lineHeight:1}}>HAGERHUB</div>
-            <div style={{fontSize:'9px',color:'rgba(255,255,255,0.3)',letterSpacing:'2px',textTransform:'uppercase',marginTop:'3px'}}>Ethiopia's #1 Marketplace · ሃገር ሃብ</div>
+            <div style={{fontSize:'30px',fontWeight:900,color:'#111',letterSpacing:'2px',lineHeight:1}}>HAGERHUB</div>
+            <div style={{fontSize:'9px',color:'rgba(0,0,0,0.4)',letterSpacing:'2px',textTransform:'uppercase',marginTop:'3px'}}>Ethiopia's #1 Marketplace · ሃገር ሃብ</div>
           </div>
         </div>
         <div style={{display:'flex',height:'2px',margin:'10px auto 16px',width:'100px',borderRadius:'2px',overflow:'hidden'}}>
           <div style={{flex:1,background:'#078754'}}/><div style={{flex:1,background:'#FCDD09'}}/><div style={{flex:1,background:'#EF2118'}}/>
         </div>
-        <div style={{display:'flex',background:'rgba(255,255,255,0.97)',borderRadius:'14px',overflow:'hidden',boxShadow:'0 8px 40px rgba(0,0,0,0.5)',marginBottom:'16px'}}>
+        <div style={{display:'flex',background:'white',borderRadius:'14px',overflow:'hidden',boxShadow:'0 2px 12px rgba(0,0,0,0.1)',border:'1.5px solid #eee',marginBottom:'16px'}}>
           <input style={{flex:1,border:'none',padding:'15px 16px',fontSize:'15px',outline:'none',fontFamily:'inherit',minWidth:0,background:'transparent',color:'#111'}} placeholder={tx.search} value={search} onChange={e=>setSearch(e.target.value)}/>
           <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
