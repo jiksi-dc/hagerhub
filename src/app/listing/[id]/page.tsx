@@ -35,7 +35,7 @@ export default function ListingDetail({ params }: { params: Promise<{ id: string
           <h1 style={{fontSize:'22px',fontWeight:'800',margin:0}}>{listing.title}</h1>
           <span style={{background:'#078754',color:'white',borderRadius:'20px',padding:'4px 12px',fontSize:'13px',fontWeight:'700'}}>{listing.category}</span>
         </div>
-        <div style={{fontSize:'28px',fontWeight:'900',color:'#EF2118',marginBottom:'4px'}}>ETB {parseFloat(listing.price).toLocaleString()}</div>
+        <div style={{fontSize:'28px',fontWeight:'900',color:'#1a1a1a',marginBottom:'4px'}}>ETB {parseFloat(listing.price).toLocaleString()}</div>
         <div style={{color:'#666',fontSize:'14px',marginBottom:'16px'}}>📍 {listing.neighbourhood}, {listing.city}</div>
         <div style={{background:'#f9f9f9',borderRadius:'12px',padding:'16px',marginBottom:'16px'}}>
           <div style={{fontWeight:'700',marginBottom:'8px'}}>Description</div>
@@ -46,10 +46,30 @@ export default function ListingDetail({ params }: { params: Promise<{ id: string
           <div style={{color:'#444'}}>{listing.contact_name}</div>
           <div style={{color:'#444'}}>{listing.contact_phone}</div>
         </div>
-        <a href={`https://wa.me/${listing.contact_phone?.replace(/\D/g,'')}`} target="_blank"
-          style={{display:'block',width:'100%',background:'#25D366',color:'white',border:'none',borderRadius:'14px',padding:'18px',fontSize:'16px',fontWeight:'900',cursor:'pointer',textAlign:'center',textDecoration:'none',boxSizing:'border-box'}}>
-          📱 WhatsApp {listing.contact_name}
-        </a>
+        <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+          <a href={`https://wa.me/${listing.contact_phone?.replace(/\D/g,'')}`} target="_blank"
+            style={{display:'block',width:'100%',background:'#25D366',color:'white',borderRadius:'14px',padding:'16px',fontSize:'15px',fontWeight:'900',textAlign:'center',textDecoration:'none',boxSizing:'border-box'}}>
+            📱 WhatsApp
+          </a>
+          <a href={`https://t.me/${listing.contact_phone?.replace(/\D/g,'')}`} target="_blank"
+            style={{display:'block',width:'100%',background:'#0088cc',color:'white',borderRadius:'14px',padding:'16px',fontSize:'15px',fontWeight:'900',textAlign:'center',textDecoration:'none',boxSizing:'border-box'}}>
+            ✈️ Telegram
+          </a>
+          <a href={`tel:${listing.contact_phone}`}
+            style={{display:'block',width:'100%',background:'#078754',color:'white',borderRadius:'14px',padding:'16px',fontSize:'15px',fontWeight:'900',textAlign:'center',textDecoration:'none',boxSizing:'border-box'}}>
+            📞 Call {listing.contact_phone}
+          </a>
+          <div style={{display:'flex',gap:'12px'}}>
+            <a href="https://facebook.com" target="_blank"
+              style={{flex:1,background:'#1877F2',color:'white',borderRadius:'14px',padding:'16px',fontSize:'15px',fontWeight:'900',textAlign:'center',textDecoration:'none'}}>
+              Facebook
+            </a>
+            <a href="https://instagram.com" target="_blank"
+              style={{flex:1,background:'linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)',color:'white',borderRadius:'14px',padding:'16px',fontSize:'15px',fontWeight:'900',textAlign:'center',textDecoration:'none'}}>
+              Instagram
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   )
