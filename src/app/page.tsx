@@ -95,16 +95,6 @@ export default function Home() {
             value={search} onChange={e=>setSearch(e.target.value)}/>
           <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
-        <div style={{display:'flex',gap:'8px',overflowX:'auto',paddingBottom:'4px',paddingLeft:'16px',paddingRight:'32px'}}>
-          {CATS.map(c=>(
-            <button key={c} onClick={()=>setActiveCat(c)}
-              style={{padding:'8px 18px',borderRadius:'20px',fontSize:'12px',fontWeight:700,cursor:'pointer',border:'none',flexShrink:0,
-                background:activeCat===c?'#078754':'#F0F2F5',
-                color:activeCat===c?'white':'#111'}}>
-              {c}
-            </button>
-          ))}
-        </div>
       </section>
 
       <div style={{background:'linear-gradient(90deg,#001489 0%,#0033cc 50%,#001489 100%)',cursor:'pointer',overflow:'hidden',position:'relative'}}>
