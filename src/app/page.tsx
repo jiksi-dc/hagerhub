@@ -324,6 +324,25 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      <div style={{position:'fixed',bottom:'24px',right:'24px',zIndex:9999}}>
+        <select
+          onChange={e=>{
+            const lang=e.target.value
+            if(lang) window.location.href=`https://translate.google.com/translate?sl=en&tl=${lang}&u=${encodeURIComponent(window.location.href)}`
+          }}
+          style={{appearance:'none',background:'#078754',color:'white',border:'none',borderRadius:'30px',padding:'12px 20px',fontSize:'14px',fontWeight:700,cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.3)'}}>
+          <option value="">🌐 Translate</option>
+          <option value="am">🇪🇹 Amharic</option>
+          <option value="ar">🇸🇦 Arabic</option>
+          <option value="fr">🇫🇷 French</option>
+          <option value="zh-CN">🇨🇳 Chinese</option>
+          <option value="de">🇩🇪 German</option>
+          <option value="ru">🇷🇺 Russian</option>
+          <option value="es">🇪🇸 Spanish</option>
+          <option value="so">🇸🇴 Somali</option>
+          <option value="tr">🇹🇷 Turkish</option>
+        </select>
+      </div>
     </main>
   )
 }
