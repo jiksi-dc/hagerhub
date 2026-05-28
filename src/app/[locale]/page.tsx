@@ -74,7 +74,7 @@ export default function Home() {
           <img src="/lion.jpg" alt="lion" style={{width:'54px',height:'54px',borderRadius:'50%',objectFit:'cover',objectPosition:'center 15%',border:'2.5px solid rgba(252,221,9,0.6)',boxShadow:'0 0 30px rgba(252,221,9,0.15)',flexShrink:0}}/>
           <div style={{textAlign:'left'}}>
             <div style={{fontSize:'30px',fontWeight:900,color:'#111',letterSpacing:'2px',lineHeight:1}}>HAGERHUB</div>
-            <div style={{fontSize:'9px',color:'rgba(0,0,0,0.4)',letterSpacing:'2px',textTransform:'uppercase',marginTop:'3px'}}>Ethiopia's #1 Marketplace · ሃገር ሃብ</div>
+            <div style={{fontSize:'9px',color:'rgba(0,0,0,0.5)',letterSpacing:'2px',textTransform:'uppercase',marginTop:'3px',fontWeight:700}}>Ethiopia's #1 Marketplace · ሃገር ሃብ</div>
           </div>
         </div>
         <div style={{display:'flex',height:'2px',margin:'10px auto 16px',width:'100px',borderRadius:'2px',overflow:'hidden'}}>
