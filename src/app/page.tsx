@@ -297,7 +297,7 @@ export default function Home() {
           ].map(col=>(
             <div key={col.title}>
               <h4 style={{fontSize:'10px',fontWeight:800,textTransform:'uppercase',color:'rgba(255,255,255,0.3)',marginBottom:'12px',letterSpacing:'1.5px'}}>{col.title}</h4>
-              {col.links.map(l=><div key={l} style={{fontSize:'13px',color:'rgba(255,255,255,0.22)',marginBottom:'8px',cursor:'pointer'}}>{l}</div>)}
+              {col.links.map(l=><div key={l} onClick={()=>window.location.href='#'} style={{fontSize:'13px',color:'rgba(255,255,255,0.45)',marginBottom:'8px',cursor:'pointer',transition:'color 0.2s'}} onMouseEnter={e=>(e.currentTarget.style.color='#FCDD09')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(255,255,255,0.45)')}>{l}</div>)}
             </div>
           ))}
         </div>
