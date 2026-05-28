@@ -76,6 +76,18 @@ export default function Home() {
 
   return (
     <main style={{fontFamily:'inherit',background:'#F0F2F5',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
+      <div id="google_translate_element" style={{display:'none'}}/>
+      <script dangerouslySetInnerHTML={{__html:`
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'am,ar,fr,zh-CN,de,it,ru,es,tr,so',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'google_translate_element');
+        }
+      `}}/>
+      <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"/>
+      <button
+        onClick={()=>{const el=document.querySelector('.goog-te-combo') as HTMLSelectElement;if(el){el.focus();el.click()}}}
+        style={{position:'fixed',bottom:'24px',right:'24px',zIndex:1000,width:'52px',height:'52px',borderRadius:'50%',background:'#078754',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'24px'}}>
+        🌐
+      </button>
 
       <section style={{background:'linear-gradient(170deg,#060606 0%,#141414 100%)',padding:'28px 16px 24px',textAlign:'center',position:'relative',overflow:'hidden'}}>
         <div style={{position:'absolute',top:'-80px',left:'50%',transform:'translateX(-50%)',width:'500px',height:'500px',background:'radial-gradient(circle,rgba(7,135,84,0.1) 0%,transparent 60%)',pointerEvents:'none'}}/>
