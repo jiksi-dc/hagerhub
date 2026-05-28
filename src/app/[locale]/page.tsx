@@ -3,6 +3,13 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useTranslations } from 'next-intl'
 
+
+const DICT: Record<string, Record<string, string>> = {
+  en: { search: 'Search properties, cars, jobs...', latest: 'Latest Listings', browse: 'Browse Categories', available: 'listings available', loading: 'Loading listings...', none: 'No listings found', viewAll: 'View all', view: 'View →', seeAll: 'See all →' },
+  am: { search: 'ቤቶች፣ መኪናዎች፣ ሥራዎች ይፈልጉ...', latest: 'የቅርብ ጊዜ ዝርዝሮች', browse: 'ምድቦችን ያስሱ', available: 'ዝርዝሮች አሉ', loading: 'ዝርዝሮች እየተጫኑ ነው...', none: 'ምንም ዝርዝሮች አልተገኙም', viewAll: 'ሁሉንም ይመልከቱ', view: 'ይመልከቱ →', seeAll: 'ሁሉንም ይመልከቱ →' },
+  ar: { search: 'ابحث عن عقارات، سيارات، وظائف...', latest: 'أحدث القوائم', browse: 'تصفح الفئات', available: 'قوائم متاحة', loading: 'جار تحميل القوائم...', none: 'لم يتم العثور على قوائم', viewAll: 'عرض الكل', view: 'عرض →', seeAll: 'عرض الكل →' },
+  fr: { search: 'Rechercher des propriétés, voitures, emplois...', latest: 'Dernières annonces', browse: 'Parcourir les catégories', available: 'annonces disponibles', loading: 'Chargement des annonces...', none: 'Aucune annonce trouvée', viewAll: 'Voir tout', view: 'Voir →', seeAll: 'Voir tout →' },
+}
 const CATS = ['All', 'Properties', 'Vehicles', 'Machinery', 'Classifieds', 'Jobs']
 const POPULAR = [
   { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots'], color: '#078754', emoji: '🏠' },
@@ -46,7 +53,8 @@ interface Listing {
 }
 
 export default function Home() {
-  const t = useTranslations()
+  const locale = typeof window !== 'undefined' ? (window.location.pathname.split('/')[1] || 'en') : 'en'
+  const tx = DICT[locale] || DICT.en
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
   const [listings, setListings] = useState<Listing[]>([])
@@ -158,7 +166,7 @@ export default function Home() {
         <section style={{background:'white',padding:'22px 16px',borderBottom:'8px solid #F0F2F5'}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px'}}>
             <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:0}}>Browse Categories</h2>
-            <span style={{fontSize:'13px',color:'#078754',fontWeight:700,cursor:'pointer'}}>{t('home.seeAll')}</span>
+            <span style={{fontSize:'13px',color:'#078754',fontWeight:700,cursor:'pointer'}}>{tx.seeAll}</span>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'}}>
             {POPULAR.map(cat=>(
@@ -250,7 +258,7 @@ export default function Home() {
                       <span>📍</span>
                       <span style={{fontSize:'13px',color:'#555',fontWeight:600}}>{l.neighbourhood?l.neighbourhood+', ':''}{l.city}</span>
                     </div>
-                    <button style={{background:'#078754',color:'white',border:'none',borderRadius:'12px',padding:'9px 22px',fontSize:'13px',fontWeight:800,cursor:'pointer'}} onClick={()=>window.location.href=`/listing/${l.id}`}>{t('nav.view')}</button>
+                    <button style={{background:'#078754',color:'white',border:'none',borderRadius:'12px',padding:'9px 22px',fontSize:'13px',fontWeight:800,cursor:'pointer'}} onClick={()=>window.location.href=`/listing/${l.id}`}>{tx.view}</button>
                   </div>
                 </div>
               </>
