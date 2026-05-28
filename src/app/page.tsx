@@ -49,6 +49,13 @@ export default function Home() {
   const [search, setSearch] = useState('')
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   useEffect(() => { fetchListings() }, [activeCat])
 
@@ -192,7 +199,7 @@ export default function Home() {
             <button onClick={()=>{setActiveCat('All');setSearch('')}} style={{background:'#078754',color:'white',border:'none',borderRadius:'14px',padding:'14px 32px',cursor:'pointer',fontSize:'15px',fontWeight:800}}>View all</button>
           </div>
         ) : (
-          <div style={{display:'grid',gridTemplateColumns:'repeat(1,1fr)',gap:'16px'}} className='listings-container'>
+          <div style={{display:'grid',gridTemplateColumns:isDesktop?'repeat(3,1fr)':'repeat(1,1fr)',gap:'16px'}}>
             {filtered.map((l,i)=>(
               <div key={l.id} style={{gridColumn:(i===2||i===5||i===8)?'1/-1':'auto'}}>
                 {i===2 && (
