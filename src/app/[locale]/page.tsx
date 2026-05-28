@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 
@@ -52,7 +53,8 @@ interface Listing {
 }
 
 export default function Home() {
-  const locale = typeof window !== 'undefined' ? (window.location.pathname.split('/')[1] || 'en') : 'en'
+  const params = useParams()
+  const locale = (params?.locale as string) || 'en'
   const tx = DICT[locale] || DICT.en
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
