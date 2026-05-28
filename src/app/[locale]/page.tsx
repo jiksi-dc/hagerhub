@@ -100,7 +100,7 @@ export default function Home() {
         <div style={{fontSize:'8px',color:'rgba(255,255,255,0.2)',textAlign:'center',padding:'2px 0 5px',letterSpacing:'2px'}}>{tx.ad}</div>
       </div>
 
-      <div style={{display:'flex',overflowX:'auto',background:'white',boxShadow:'0 2px 10px rgba(0,0,0,0.07)'}}>
+      <div style={{display:'flex',overflowX:'auto',background:'white',boxShadow:'0 2px 10px rgba(0,0,0,0.07)',justifyContent:'center'}}>
         {CATS.map(c=>(<button key={c} onClick={()=>setActiveCat(c)} style={{padding:'15px 20px',fontSize:'13px',border:'none',flexShrink:0,borderBottom:activeCat===c?'3px solid #078754':'3px solid transparent',background:'none',color:activeCat===c?'#078754':'#777',fontWeight:activeCat===c?800:500,cursor:'pointer',whiteSpace:'nowrap'}}>{tl(c)}</button>))}
       </div>
 
