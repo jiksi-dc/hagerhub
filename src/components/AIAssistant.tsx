@@ -44,15 +44,15 @@ export default function AIAssistant() {
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        style={{position:'fixed',bottom:'24px',left:'24px',zIndex:9999,width:'56px',height:'56px',borderRadius:'50%',background:'linear-gradient(135deg,#078754,#05613d)',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(7,135,84,0.4)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'26px',transition:'transform 0.2s'}}
+        style={{position:'fixed',bottom:'90px',right:'24px',zIndex:9999,width:'56px',height:'56px',borderRadius:'50%',background:'linear-gradient(135deg,#078754,#05613d)',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(7,135,84,0.4)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'26px',transition:'transform 0.2s'}}
         onMouseEnter={e=>(e.currentTarget.style.transform='scale(1.1)')}
         onMouseLeave={e=>(e.currentTarget.style.transform='scale(1)')}>
-        {open ? '✕' : '🤖'}
+        {open ? '✕' : 'AI'}
       </button>
 
       {/* Chat window */}
       {open && (
-        <div style={{position:'fixed',bottom:'90px',left:'24px',zIndex:9999,width:'320px',height:'480px',background:'white',borderRadius:'20px',boxShadow:'0 8px 40px rgba(0,0,0,0.2)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
+        <div style={{position:'fixed',bottom:'160px',right:'24px',zIndex:9999,width:'320px',height:'480px',background:'white',borderRadius:'20px',boxShadow:'0 8px 40px rgba(0,0,0,0.2)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
           {/* Header */}
           <div style={{background:'linear-gradient(135deg,#078754,#05613d)',padding:'16px',display:'flex',alignItems:'center',gap:'10px'}}>
             <div style={{width:'36px',height:'36px',borderRadius:'50%',background:'rgba(255,255,255,0.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px'}}>🤖</div>
