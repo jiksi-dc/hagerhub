@@ -4,7 +4,8 @@ import LanguageSwitcher from '@/components/LanguageSwitcher'
 import '../globals.css'
 import '../desktop.css'
 
-export default async function LocaleLayout({children, params: {locale}}: {children: React.ReactNode, params: {locale: string}}) {
+export default async function LocaleLayout({children, params}: {children: React.ReactNode, params: Promise<{locale: string}>}) {
+  const {locale} = await params
   const messages = await getMessages()
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
