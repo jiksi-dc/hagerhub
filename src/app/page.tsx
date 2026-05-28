@@ -192,7 +192,7 @@ export default function Home() {
             <button onClick={()=>{setActiveCat('All');setSearch('')}} style={{background:'#078754',color:'white',border:'none',borderRadius:'14px',padding:'14px 32px',cursor:'pointer',fontSize:'15px',fontWeight:800}}>View all</button>
           </div>
         ) : (
-          <div style={{display:'flex',flexDirection:'column',gap:'16px',maxWidth:'680px',margin:'0 auto',width:'100%'}}>
+          <div style={{display:'flex',flexDirection:'column',gap:'16px',maxWidth:'900px',margin:'0 auto',width:'100%'}}>
             {filtered.map((l,i)=>(
               <div key={l.id}>
                 {i===2 && (
