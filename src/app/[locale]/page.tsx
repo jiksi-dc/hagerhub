@@ -76,22 +76,6 @@ export default function Home() {
 
   return (
     <main style={{fontFamily:'inherit',background:'#F0F2F5',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
-      <div id="google_translate_element" style={{display:'none'}}/>
-      <script dangerouslySetInnerHTML={{__html:`
-        function googleTranslateElementInit() {
-          new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'am,ar,fr,zh-CN,de,it,ru,es,tr,so',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'google_translate_element');
-        }
-      `}}/>
-      <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"/>
-      <div style={{position:'fixed',bottom:'24px',right:'24px',zIndex:1000}}>
-        <div id="google_translate_element2" style={{background:'#078754',borderRadius:'50%',width:'52px',height:'52px',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 4px 20px rgba(0,0,0,0.3)',cursor:'pointer',fontSize:'24px',overflow:'hidden'}}>🌐</div>
-      </div>
-      <script dangerouslySetInnerHTML={{__html:`
-        function googleTranslateElementInit2() {
-          new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'am,ar,fr,zh-CN,de,it,ru,es,tr,so'},'google_translate_element2');
-        }
-      `}}/>
-      <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"/>
 
       <section style={{background:'linear-gradient(170deg,#060606 0%,#141414 100%)',padding:'28px 16px 24px',textAlign:'center',position:'relative',overflow:'hidden'}}>
         <div style={{position:'absolute',top:'-80px',left:'50%',transform:'translateX(-50%)',width:'500px',height:'500px',background:'radial-gradient(circle,rgba(7,135,84,0.1) 0%,transparent 60%)',pointerEvents:'none'}}/>
@@ -324,25 +308,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      <div style={{position:'fixed',bottom:'24px',right:'24px',zIndex:9999}}>
-        <select
-          onChange={e=>{
-            const lang=e.target.value
-            if(lang) window.location.href=`https://translate.google.com/translate?sl=en&tl=${lang}&u=${encodeURIComponent(window.location.href)}`
-          }}
-          style={{appearance:'none',background:'#078754',color:'white',border:'none',borderRadius:'30px',padding:'12px 20px',fontSize:'14px',fontWeight:700,cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.3)'}}>
-          <option value="">🌐 Translate</option>
-          <option value="am">🇪🇹 Amharic</option>
-          <option value="ar">🇸🇦 Arabic</option>
-          <option value="fr">🇫🇷 French</option>
-          <option value="zh-CN">🇨🇳 Chinese</option>
-          <option value="de">🇩🇪 German</option>
-          <option value="ru">🇷🇺 Russian</option>
-          <option value="es">🇪🇸 Spanish</option>
-          <option value="so">🇸🇴 Somali</option>
-          <option value="tr">🇹🇷 Turkish</option>
-        </select>
-      </div>
     </main>
   )
 }
