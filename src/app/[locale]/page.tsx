@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useTranslations } from 'next-intl'
@@ -46,6 +47,7 @@ interface Listing {
 }
 
 export default function Home() {
+  const t = useTranslations()
   const t = useTranslations()
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
