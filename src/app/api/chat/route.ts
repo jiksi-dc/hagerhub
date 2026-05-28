@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     ).join('\n') || 'No listings available'
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-opus-4-5',
       max_tokens: 1000,
       system: `You are HagerHub AI Assistant — Ethiopia's #1 marketplace assistant.
 Help users find listings, answer questions about the platform, assist buyers and sellers.
