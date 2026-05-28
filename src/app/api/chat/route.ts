@@ -33,4 +33,8 @@ Be concise, friendly, and use Ethiopian context.`,
 
   const text = response.content[0].type === 'text' ? response.content[0].text : ''
   return Response.json({ reply: text })
+} catch (error) {
+  console.error('Chat API error:', error)
+  return Response.json({ reply: 'Sorry, I am having trouble connecting. Please try again.' }, { status: 500 })
+}
 }

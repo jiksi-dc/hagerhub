@@ -47,7 +47,7 @@ export default function AIAssistant() {
         style={{position:'fixed',top:'12px',right:'12px',zIndex:9999,width:'56px',height:'56px',borderRadius:'50%',background:'linear-gradient(135deg,#078754,#05613d)',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(7,135,84,0.4)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'26px',transition:'transform 0.2s'}}
         onMouseEnter={e=>(e.currentTarget.style.transform='scale(1.1)')}
         onMouseLeave={e=>(e.currentTarget.style.transform='scale(1)')}>
-        {open ? '✕' : 'AI'}
+        {open ? '✕' : '✦'}
       </button>
 
       {/* Chat window */}
