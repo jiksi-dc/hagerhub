@@ -1,25 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
+import createMiddleware from 'next-intl/middleware'
 
-export function middleware(request: NextRequest) {
-  const basicAuth = request.headers.get('authorization')
-  const url = request.nextUrl
-
-  if (basicAuth) {
-    const authValue = basicAuth.split(' ')[1]
-    const [user, pwd] = atob(authValue).split(':')
-    if (user === 'hagerhub' && pwd === 'jtech2025') {
-      return NextResponse.next()
-    }
-  }
-
-  return new NextResponse('Authentication required', {
-    status: 401,
-    headers: {
-      'WWW-Authenticate': 'Basic realm="HagerHub Dev - Restricted Access"',
-    },
-  })
-}
+export default createMiddleware({
+  locales: ['en', 'am', 'ar', 'fr'],
+  defaultLocale: 'en',
+  localePrefix: 'as-needed'
+})
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|lion.jpg).*)'],
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
 }
