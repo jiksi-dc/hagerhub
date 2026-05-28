@@ -233,7 +233,7 @@ export default function Home() {
                   <div style={{background:'white',color:'#5C0000',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Learn More</div>
                 </div>}
                 <div key={l.id} style={{background:'white',borderRadius:'18px',overflow:'hidden',boxShadow:'0 3px 14px rgba(0,0,0,0.08)',cursor:'pointer'}}>
-                  <div style={{position:'relative',height:'280px',overflow:'hidden'}}>
+                  <div style={{position:'relative',height:isDesktop?'420px':'280px',overflow:'hidden'}}>
                     <img src={l.image_urls && l.image_urls.length > 0 ? l.image_urls[0] : getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%'}}/>
                     <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0) 55%)'}}/>
                     <div style={{position:'absolute',top:'12px',left:'12px',background:CAT_COLORS[l.category]||'#078754',color:'white',fontSize:'10px',fontWeight:800,padding:'5px 14px',borderRadius:'20px',letterSpacing:'0.5px'}}>{l.category.toUpperCase()}</div>
