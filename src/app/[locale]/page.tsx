@@ -137,7 +137,7 @@ export default function Home() {
             <div style={{background:'linear-gradient(135deg,#EF2118,#ff5544)',color:'white',fontSize:'12px',fontWeight:900,padding:'10px 18px',borderRadius:'20px',whiteSpace:'nowrap'}}>Win Prizes!</div>
           </div>
         </div>
-        <div style={{fontSize:'8px',color:'rgba(255,255,255,0.2)',textAlign:'center',padding:'2px 0 5px',letterSpacing:'2px'}}>SPONSORED ADVERTISEMENT</div>
+        <div style={{fontSize:'8px',color:'rgba(255,255,255,0.2)',textAlign:'center',padding:'2px 0 5px',letterSpacing:'2px'}}>{tx.ad}</div>
       </div>
 
       <div style={{display:'flex',overflowX:'auto',background:'white',boxShadow:'0 2px 10px rgba(0,0,0,0.07)'}}>
@@ -216,7 +216,7 @@ export default function Home() {
                 {i===2 && <div key="ad1" style={{gridColumn:'1/-1',background:'linear-gradient(135deg,#001A6E,#0041C4)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,26,110,0.4)'}}>
                   <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>🏦</div>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>ADVERTISEMENT</div>
+                    <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>{tx.ad}</div>
                     <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Commercial Bank of Ethiopia</div>
                     <div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>🏠 Home loans up to ETB 5,000,000 · Low interest</div>
                   </div>
@@ -226,7 +226,7 @@ export default function Home() {
                   <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&q=85" alt="Toyota" style={{width:'100%',height:'170px',objectFit:'cover',display:'block'}}/>
                   <div style={{position:'absolute',inset:0,background:'linear-gradient(to right,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.15) 100%)',display:'flex',alignItems:'center',padding:'22px',gap:'14px'}}>
                     <div style={{flex:1}}>
-                      <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'8px'}}>ADVERTISEMENT · TOYOTA ETHIOPIA</div>
+                      <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'8px'}}>{tx.ad} · TOYOTA ETHIOPIA</div>
                       <div style={{fontSize:'26px',fontWeight:900,color:'white',marginBottom:'4px',lineHeight:1}}>Land Cruiser</div>
                       <div style={{fontSize:'14px',fontWeight:700,color:'#FCDD09',marginBottom:'6px'}}>2025 Edition</div>
                       <div style={{fontSize:'11px',color:'rgba(255,255,255,0.65)'}}>The ultimate off-roader</div>
@@ -237,7 +237,7 @@ export default function Home() {
                 {i===8 && <div key="ad3" style={{gridColumn:'1/-1',background:'linear-gradient(135deg,#5C0000,#8B0000)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(92,0,0,0.4)'}}>
                   <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>💳</div>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>ADVERTISEMENT</div>
+                    <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>{tx.ad}</div>
                     <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Dashen Bank</div>
                     <div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>💰 Business loans · Digital banking · Instant transfers</div>
                   </div>
@@ -273,7 +273,7 @@ export default function Home() {
         <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg,rgba(0,100,0,0.93) 0%,rgba(0,60,0,0.55) 100%)',display:'flex',alignItems:'center',padding:'20px',gap:'16px'}}>
           <div style={{fontSize:'44px'}}>✈️</div>
           <div style={{flex:1}}>
-            <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'5px'}}>ADVERTISEMENT</div>
+            <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'5px'}}>{tx.ad}</div>
             <div style={{fontSize:'20px',fontWeight:900,color:'white',marginBottom:'4px'}}>Ethiopian Airlines</div>
             <div style={{fontSize:'12px',color:'rgba(255,255,255,0.8)'}}>Fly to 130+ destinations worldwide</div>
           </div>
