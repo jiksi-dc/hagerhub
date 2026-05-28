@@ -287,7 +287,7 @@ export default function Home() {
             <div style={{fontSize:'10px',color:'rgba(255,255,255,0.25)',letterSpacing:'1px'}}>The Hub of the Homeland · ሃገር ሃብ</div>
           </div>
         </div>
-        <div className='listings-grid'>
+        <div className='listings-grid grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto px-6'>
           {[
             {title:'Company',links:['About Us','Careers','Advertise with Us','Legal Hub']},
             {title:'Ethiopia',links:['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa']},
