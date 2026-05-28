@@ -84,7 +84,7 @@ export default function Home() {
           <input style={{flex:1,border:'none',padding:'15px 16px',fontSize:'15px',outline:'none',fontFamily:'inherit',minWidth:0,background:'transparent',color:'#111'}} placeholder={tx.search} value={search} onChange={e=>setSearch(e.target.value)}/>
           <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
-        <div style={{display:'flex',gap:'8px',overflowX:'auto',paddingBottom:'2px',justifyContent:'center'}}>
+        <div style={{display:'flex',gap:'8px',overflowX:'auto',paddingBottom:'4px',paddingLeft:'16px',paddingRight:'16px'}}>
           {CATS.map(c=>(<button key={c} onClick={()=>setActiveCat(c)} style={{padding:'8px 18px',borderRadius:'20px',fontSize:'12px',fontWeight:700,cursor:'pointer',border:'none',flexShrink:0,background:activeCat===c?'#FCDD09':'rgba(255,255,255,0.09)',color:activeCat===c?'#111':'rgba(255,255,255,0.75)'}}>{tl(c)}</button>))}
         </div>
       </section>
