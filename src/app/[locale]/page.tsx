@@ -5,10 +5,10 @@ import { supabase } from '@/lib/supabase'
 
 
 const DICT: Record<string, Record<string, string>> = {
-  en: { search: 'Search properties, cars, jobs...', latest: 'Latest Listings', browse: 'Browse Categories', available: 'listings available', loading: 'Loading listings...', none: 'No listings found', viewAll: 'View all', view: 'View →', seeAll: 'See all →' },
-  am: { search: 'ቤቶች፣ መኪናዎች፣ ሥራዎች ይፈልጉ...', latest: 'የቅርብ ጊዜ ዝርዝሮች', browse: 'ምድቦችን ያስሱ', available: 'ዝርዝሮች አሉ', loading: 'ዝርዝሮች እየተጫኑ ነው...', none: 'ምንም ዝርዝሮች አልተገኙም', viewAll: 'ሁሉንም ይመልከቱ', view: 'ይመልከቱ →', seeAll: 'ሁሉንም ይመልከቱ →' },
-  ar: { search: 'ابحث عن عقارات، سيارات، وظائف...', latest: 'أحدث القوائم', browse: 'تصفح الفئات', available: 'قوائم متاحة', loading: 'جار تحميل القوائم...', none: 'لم يتم العثور على قوائم', viewAll: 'عرض الكل', view: 'عرض →', seeAll: 'عرض الكل →' },
-  fr: { search: 'Rechercher des propriétés, voitures, emplois...', latest: 'Dernières annonces', browse: 'Parcourir les catégories', available: 'annonces disponibles', loading: 'Chargement des annonces...', none: 'Aucune annonce trouvée', viewAll: 'Voir tout', view: 'Voir →', seeAll: 'Voir tout →' },
+  en: { search: 'Search properties, cars, jobs...', properties: 'Properties', vehicles: 'Vehicles', machinery: 'Machinery', classifieds: 'Classifieds', jobs: 'Jobs', latest: 'Latest Listings', browse: 'Browse Categories', available: 'listings available', loading: 'Loading listings...', none: 'No listings found', viewAll: 'View all', view: 'View →', seeAll: 'See all →' },
+  am: { search: 'ቤቶች፣ መኪናዎች፣ ሥራዎች ይፈልጉ...', properties: 'ቤቶች', vehicles: 'መኪናዎች', machinery: 'ማሽነሪ', classifieds: 'ዕቃዎች', jobs: 'ሥራዎች', latest: 'የቅርብ ጊዜ ዝርዝሮች', browse: 'ምድቦችን ያስሱ', available: 'ዝርዝሮች አሉ', loading: 'ዝርዝሮች እየተጫኑ ነው...', none: 'ምንም ዝርዝሮች አልተገኙም', viewAll: 'ሁሉንም ይመልከቱ', view: 'ይመልከቱ →', seeAll: 'ሁሉንም ይመልከቱ →' },
+  ar: { search: 'ابحث عن عقارات، سيارات، وظائف...', properties: 'عقارات', vehicles: 'سيارات', machinery: 'معدات', classifieds: 'إعلانات', jobs: 'وظائف', latest: 'أحدث القوائم', browse: 'تصفح الفئات', available: 'قوائم متاحة', loading: 'جار تحميل القوائم...', none: 'لم يتم العثور على قوائم', viewAll: 'عرض الكل', view: 'عرض →', seeAll: 'عرض الكل →' },
+  fr: { search: 'Rechercher des propriétés, voitures, emplois...', properties: 'Propriétés', vehicles: 'Véhicules', machinery: 'Machines', classifieds: 'Annonces', jobs: 'Emplois', latest: 'Dernières annonces', browse: 'Parcourir les catégories', available: 'annonces disponibles', loading: 'Chargement des annonces...', none: 'Aucune annonce trouvée', viewAll: 'Voir tout', view: 'Voir →', seeAll: 'Voir tout →' },
 }
 const CATS = ['All', 'Properties', 'Vehicles', 'Machinery', 'Classifieds', 'Jobs']
 const POPULAR = [
@@ -166,7 +166,7 @@ export default function Home() {
       {activeCat==='All' && (
         <section style={{background:'white',padding:'22px 16px',borderBottom:'8px solid #F0F2F5'}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px'}}>
-            <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:0}}>Browse Categories</h2>
+            <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:0}}>{tx.browse}</h2>
             <span style={{fontSize:'13px',color:'#078754',fontWeight:700,cursor:'pointer'}}>{tx.seeAll}</span>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'}}>
@@ -175,7 +175,7 @@ export default function Home() {
                 style={{background:`linear-gradient(135deg,${cat.color}15,${cat.color}05)`,border:`1.5px solid ${cat.color}20`,borderRadius:'16px',padding:'16px 14px',cursor:'pointer'}}>
                 <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}}>
                   <span style={{fontSize:'24px'}}>{cat.emoji}</span>
-                  <span style={{fontSize:'15px',fontWeight:800,color:cat.color}}>{cat.name}</span>
+                  <span style={{fontSize:'15px',fontWeight:800,color:cat.color}}>{tx[cat.name.toLowerCase()] || cat.name}</span>
                 </div>
                 {cat.items.slice(0,3).map(item=>(
                   <div key={item} style={{fontSize:'11px',color:'#777',padding:'1.5px 0'}}>{item}</div>
