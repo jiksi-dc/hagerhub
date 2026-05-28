@@ -48,7 +48,6 @@ interface Listing {
 
 export default function Home() {
   const t = useTranslations()
-  const t = useTranslations()
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
   const [listings, setListings] = useState<Listing[]>([])
