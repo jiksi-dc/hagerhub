@@ -3,10 +3,10 @@ import {useLocale} from 'next-intl'
 import {useRouter, usePathname} from 'next/navigation'
 
 const LANGS = [
-  {code:'en', label:'🇺🇸'},
-  {code:'am', label:'🇪🇹'},
-  {code:'ar', label:'🇸🇦'},
-  {code:'fr', label:'🇫🇷'},
+  {code:'en', label:'🇺🇸 English'},
+  {code:'am', label:'🇪🇹 አማርኛ'},
+  {code:'ar', label:'🇸🇦 العربية'},
+  {code:'fr', label:'🇫🇷 Français'},
 ]
 
 export default function LanguageSwitcher() {
@@ -25,13 +25,13 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div style={{position:'fixed',top:'12px',right:'12px',zIndex:9999,display:'flex',gap:'4px',background:'rgba(0,0,0,0.6)',borderRadius:'30px',padding:'4px 8px',backdropFilter:'blur(8px)'}}>
-      {LANGS.map(l=>(
-        <button key={l.code} onClick={()=>switchLocale(l.code)}
-          style={{background:locale===l.code?'#078754':'transparent',border:'none',borderRadius:'20px',padding:'3px 6px',cursor:'pointer',fontSize:'16px'}}>
-          {l.label}
-        </button>
-      ))}
+    <div style={{position:'fixed',bottom:'24px',right:'24px',zIndex:9999}}>
+      <select
+        value={locale}
+        onChange={e=>switchLocale(e.target.value)}
+        style={{background:'#078754',color:'white',border:'none',borderRadius:'30px',padding:'12px 20px',fontSize:'14px',fontWeight:700,cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.3)'}}>
+        {LANGS.map(l=><option key={l.code} value={l.code}>{l.label}</option>)}
+      </select>
     </div>
   )
 }
