@@ -2,13 +2,4 @@
   .listings-container {
     grid-template-columns: repeat(3, 1fr) !important;
   }
-
-  .listings-container > div {
-    grid-column: auto !important;
-  }
-
-  .listings-container > div:has(> div[style*="ADVERTISEMENT"]:first-child),
-  .listings-container > div:has(> div[style*="advertisement"]:first-child) {
-    grid-column: 1 / -1 !important;
-  }
 }
