@@ -201,44 +201,38 @@ export default function Home() {
         ) : (
           <div style={{display:'grid',gridTemplateColumns:isDesktop?'repeat(3,1fr)':'repeat(1,1fr)',gap:'16px'}}>
             {filtered.map((l,i)=>(
-              <div key={l.id} style={{gridColumn:'auto'}}>
-                {i===2 && (
-                  <div style={{background:'linear-gradient(135deg,#001A6E,#0041C4)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,26,110,0.4)',marginBottom:'16px'}}>
-                    <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>🏦</div>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>ADVERTISEMENT</div>
-                      <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Commercial Bank of Ethiopia</div>
-                      <div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>🏠 Home loans up to ETB 5,000,000 · Low interest</div>
-                    </div>
-                    <div style={{background:'#FCDD09',color:'#001A6E',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Apply Now</div>
+              <>
+                {i===2 && <div key="ad1" style={{gridColumn:'1/-1',background:'linear-gradient(135deg,#001A6E,#0041C4)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,26,110,0.4)'}}>
+                  <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>🏦</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>ADVERTISEMENT</div>
+                    <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Commercial Bank of Ethiopia</div>
+                    <div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>🏠 Home loans up to ETB 5,000,000 · Low interest</div>
                   </div>
-                )}
-                {i===5 && (
-                  <div style={{borderRadius:'18px',overflow:'hidden',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,0,0,0.2)',marginBottom:'16px',position:'relative'}}>
-                    <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&q=85" alt="Toyota" style={{width:'100%',height:'170px',objectFit:'cover',display:'block'}}/>
-                    <div style={{position:'absolute',inset:0,background:'linear-gradient(to right,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.15) 100%)',display:'flex',alignItems:'center',padding:'22px',gap:'14px'}}>
-                      <div style={{flex:1}}>
-                        <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'8px'}}>ADVERTISEMENT · TOYOTA ETHIOPIA</div>
-                        <div style={{fontSize:'26px',fontWeight:900,color:'white',marginBottom:'4px',lineHeight:1}}>Land Cruiser</div>
-                        <div style={{fontSize:'14px',fontWeight:700,color:'#FCDD09',marginBottom:'6px'}}>2025 Edition</div>
-                        <div style={{fontSize:'11px',color:'rgba(255,255,255,0.65)'}}>The ultimate off-roader</div>
-                      </div>
-                      <div style={{background:'#EF2118',color:'white',fontSize:'13px',fontWeight:900,padding:'14px 20px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Book Now</div>
+                  <div style={{background:'#FCDD09',color:'#001A6E',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Apply Now</div>
+                </div>}
+                {i===5 && <div key="ad2" style={{gridColumn:'1/-1',borderRadius:'18px',overflow:'hidden',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,0,0,0.2)',position:'relative'}}>
+                  <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&q=85" alt="Toyota" style={{width:'100%',height:'170px',objectFit:'cover',display:'block'}}/>
+                  <div style={{position:'absolute',inset:0,background:'linear-gradient(to right,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.15) 100%)',display:'flex',alignItems:'center',padding:'22px',gap:'14px'}}>
+                    <div style={{flex:1}}>
+                      <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'8px'}}>ADVERTISEMENT · TOYOTA ETHIOPIA</div>
+                      <div style={{fontSize:'26px',fontWeight:900,color:'white',marginBottom:'4px',lineHeight:1}}>Land Cruiser</div>
+                      <div style={{fontSize:'14px',fontWeight:700,color:'#FCDD09',marginBottom:'6px'}}>2025 Edition</div>
+                      <div style={{fontSize:'11px',color:'rgba(255,255,255,0.65)'}}>The ultimate off-roader</div>
                     </div>
+                    <div style={{background:'#EF2118',color:'white',fontSize:'13px',fontWeight:900,padding:'14px 20px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Book Now</div>
                   </div>
-                )}
-                {i===8 && (
-                  <div style={{background:'linear-gradient(135deg,#5C0000,#8B0000)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(92,0,0,0.4)',marginBottom:'16px'}}>
-                    <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>💳</div>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>ADVERTISEMENT</div>
-                      <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Dashen Bank</div>
-                      <div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>💰 Business loans · Digital banking · Instant transfers</div>
-                    </div>
-                    <div style={{background:'white',color:'#5C0000',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Learn More</div>
+                </div>}
+                {i===8 && <div key="ad3" style={{gridColumn:'1/-1',background:'linear-gradient(135deg,#5C0000,#8B0000)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(92,0,0,0.4)'}}>
+                  <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>💳</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>ADVERTISEMENT</div>
+                    <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Dashen Bank</div>
+                    <div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>💰 Business loans · Digital banking · Instant transfers</div>
                   </div>
-                )}
-                <div style={{background:'white',borderRadius:'18px',overflow:'hidden',boxShadow:'0 3px 14px rgba(0,0,0,0.08)',cursor:'pointer'}}>
+                  <div style={{background:'white',color:'#5C0000',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Learn More</div>
+                </div>}
+                <div key={l.id} style={{background:'white',borderRadius:'18px',overflow:'hidden',boxShadow:'0 3px 14px rgba(0,0,0,0.08)',cursor:'pointer'}}>
                   <div style={{position:'relative',height:'210px',overflow:'hidden'}}>
                     <img src={l.image_urls && l.image_urls.length > 0 ? l.image_urls[0] : getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
                     <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0) 55%)'}}/>
@@ -257,7 +251,7 @@ export default function Home() {
                     <button style={{background:'#078754',color:'white',border:'none',borderRadius:'12px',padding:'9px 22px',fontSize:'13px',fontWeight:800,cursor:'pointer'}} onClick={()=>window.location.href=`/listing/${l.id}`}>View →</button>
                   </div>
                 </div>
-              </div>
+              </>
             ))}
           </div>
         )}
