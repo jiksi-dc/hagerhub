@@ -11,6 +11,13 @@ const DICT: Record<string, Record<string, string>> = {
   fr: { search: 'Rechercher des propriétés, voitures, emplois...', properties: 'Propriétés', vehicles: 'Véhicules', machinery: 'Machines', classifieds: 'Annonces', jobs: 'Emplois', latest: 'Dernières annonces', browse: 'Parcourir les catégories', available: 'annonces disponibles', loading: 'Chargement des annonces...', none: 'Aucune annonce trouvée', viewAll: 'Voir tout', view: 'Voir →', ad: 'PUBLICITÉ', seeAll: 'Voir tout →' },
 }
 const CATS = ['All', 'Properties', 'Vehicles', 'Machinery', 'Classifieds', 'Jobs']
+
+const CAT_LABELS: Record<string, Record<string, string>> = {
+  en: {All:'All',Properties:'Properties',Vehicles:'Vehicles',Machinery:'Machinery',Classifieds:'Classifieds',Jobs:'Jobs'},
+  am: {All:'ሁሉም',Properties:'ቤቶች',Vehicles:'መኪናዎች',Machinery:'ማሽነሪ',Classifieds:'ዕቃዎች',Jobs:'ሥራዎች'},
+  ar: {All:'الكل',Properties:'عقارات',Vehicles:'سيارات',Machinery:'معدات',Classifieds:'إعلانات',Jobs:'وظائف'},
+  fr: {All:'Tout',Properties:'Propriétés',Vehicles:'Véhicules',Machinery:'Machines',Classifieds:'Annonces',Jobs:'Emplois'},
+}
 const POPULAR = [
   { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots'], color: '#078754', emoji: '🏠' },
   { name: 'Vehicles', items: ['Used Cars', 'New Cars', 'Trucks & LGVs', 'Bajaj / Tuk-tuks'], color: '#1B6BB5', emoji: '🚗' },
