@@ -1,25 +1,10 @@
 @media (min-width: 768px) {
-  /* Center and constrain page width */
-  body > div, main {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  /* 3 column listings grid */
-  .listings-grid {
+  div.listings-grid {
+    display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  /* Constrain listing cards height */
-  .listing-card-image {
-    height: 200px !important;
-  }
-
-  /* Category browse 4 columns */
-  .categories-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 22px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 24px !important;
   }
 }
