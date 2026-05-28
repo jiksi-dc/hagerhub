@@ -25,7 +25,7 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div style={{position:'fixed',bottom:'24px',right:'24px',zIndex:9999}}>
+    <div style={{position:'fixed',bottom:'80px',right:'12px',zIndex:9999}}>
       <select
         value={locale}
         onChange={e=>switchLocale(e.target.value)}
