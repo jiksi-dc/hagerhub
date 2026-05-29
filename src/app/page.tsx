@@ -62,7 +62,6 @@ export default function Home() {
   async function fetchListings() {
     setLoading(true)
     const supabase = createClient()
-    const supabase = createClient()
     let q = supabase.from('listings').select('*').eq('status','active').order('created_at',{ascending:false})
     if (activeCat !== 'All') q = q.eq('category', activeCat)
     const { data } = await q.limit(20)
