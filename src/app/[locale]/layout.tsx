@@ -16,8 +16,8 @@ export default async function LocaleLayout({children, params}: {children: React.
           {children}
           <LanguageSwitcher/>
           <AIAssistant/>
-          <AuthButton />
-        </NextIntlClientProvider>
+          </NextIntlClientProvider>
+        <AuthButton />
       </body>
     </html>
   )
