@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase'
 
 export default function ListingDetail({ params }: { params: Promise<{ id: string }> }) {
   const [listing, setListing] = useState<any>(null)
