@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 
 const intlMiddleware = createMiddleware({
@@ -7,9 +8,8 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'as-needed'
 })
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const basicAuth = req.headers.get('authorization')
-  const url = req.nextUrl
 
   if (!basicAuth) {
     return new NextResponse('Authentication required', {
@@ -27,6 +27,26 @@ export function middleware(req: NextRequest) {
       headers: { 'WWW-Authenticate': 'Basic realm="HagerHub"' }
     })
   }
+
+  let supabaseResponse = NextResponse.next({ request: req })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return req.cookies.getAll() },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({ request: req })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options))
+        },
+      },
+    }
+  )
+
+  await supabase.auth.getUser()
 
   return intlMiddleware(req)
 }

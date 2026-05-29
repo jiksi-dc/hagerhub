@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase'
 import { useParams } from 'next/navigation'
 
 const DICT: Record<string, Record<string, string>> = {
@@ -56,6 +56,7 @@ export default function Home() {
 
   async function fetchListings() {
     setLoading(true)
+    const supabase = createClient()
     let q = supabase.from('listings').select('*').eq('status','active').order('created_at',{ascending:false})
     if (activeCat !== 'All') q = q.eq('category', activeCat)
     const { data } = await q.limit(20)
