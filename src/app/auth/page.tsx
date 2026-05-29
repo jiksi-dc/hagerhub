@@ -20,7 +20,7 @@ export default function Auth() {
   async function handleLogin() {
     setLoading(true)
     setError('')
-    const { error } = await supabase.auth.signInWithPassword({ email: loginEmail, password: loginPassword })
+    const { error } = await createClient().auth.signInWithPassword({ email: loginEmail, password: loginPassword })
     if (error) setError(error.message)
     else router.push('/dashboard')
     setLoading(false)
@@ -31,13 +31,13 @@ export default function Auth() {
     setError('')
     if (!regName || !regEmail || !regPassword) { setError('Please fill in all required fields.'); setLoading(false); return }
     if (regPassword.length < 6) { setError('Password must be at least 6 characters.'); setLoading(false); return }
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await createClient().auth.signUp({
       email: regEmail, password: regPassword,
       options: { data: { full_name: regName, phone: regPhone } }
     })
     if (error) { setError(error.message) }
     else if (data.user) {
-      await supabase.from('profiles').upsert({ id: data.user.id, full_name: regName, phone: regPhone })
+      await createClient().from('profiles').upsert({ id: data.user.id, full_name: regName, phone: regPhone })
       setSuccess('Account created! Please check your email to confirm.')
       setTab('login')
       setLoginEmail(regEmail)
