@@ -39,7 +39,7 @@ export default function AuthButton() {
         {initials}
       </button>
       {menuOpen && (
-        <div style={{position:'absolute',right:0,top:'44px',background:'white',border:'1px solid #e5e7eb',borderRadius:'12px',boxShadow:'0 4px 20px rgba(0,0,0,0.12)',width:'180px',padding:'8px',zIndex:999}}>
+        <div style={{position:'absolute',left:0,top:'44px',background:'white',border:'1px solid #e5e7eb',borderRadius:'12px',boxShadow:'0 4px 20px rgba(0,0,0,0.12)',width:'180px',padding:'8px',zIndex:999}}>
           <p style={{fontSize:'11px',color:'#9ca3af',padding:'4px 8px',margin:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.email}</p>
           <hr style={{margin:'6px 0',border:'none',borderTop:'1px solid #f3f4f6'}}/>
           <button onClick={signOut}
