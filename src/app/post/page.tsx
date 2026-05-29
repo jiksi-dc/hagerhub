@@ -54,7 +54,7 @@ export default function Post() {
             else console.error('Upload failed:', json.error)
           }
         }
-      const { error: dbErr } = await supabase.from('listings').insert({
+      const { error: dbErr } = await createClient().from('listings').insert({
         title, description: desc,
         price: parseFloat(price),
         price_label: 'ETB ' + parseFloat(price).toLocaleString(),

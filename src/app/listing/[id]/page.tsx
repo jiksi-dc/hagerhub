@@ -11,7 +11,7 @@ export default function ListingDetail({ params }: { params: Promise<{ id: string
   useEffect(() => {
     async function fetch() {
       const { id } = await params
-      const { data, error } = await supabase.from('listings').select('*').eq('id', id).single()
+      const { data, error } = await createClient().from('listings').select('*').eq('id', id).single()
       console.log('id:', id, 'data:', data, 'error:', error)
       setListing(data)
       setLoading(false)
