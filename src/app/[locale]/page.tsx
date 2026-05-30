@@ -14,7 +14,7 @@ const DICT: Record<string, Record<string, string>> = {
 
 const CATS = ['All', 'Properties', 'Vehicles', 'Machinery', 'Classifieds', 'Jobs']
 const POPULAR = [
-  { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots'], color: '#0057D9', emoji: '🏠' },
+  { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots'], color: '#60A5FA', emoji: '🏠' },
   { name: 'Vehicles', items: ['Used Cars', 'New Cars', 'Trucks & LGVs', 'Bajaj / Tuk-tuks'], color: '#1B6BB5', emoji: '🚗' },
   { name: 'Machinery', items: ['Farm Equipment', 'Construction', 'Generators', 'Industrial Tools'], color: '#C9A84C', emoji: '⚙️' },
   { name: 'Classifieds', items: ['Mobile Phones', 'Electronics', 'Furniture & Home', 'Clothing'], color: '#8B5E3C', emoji: '📱' },
@@ -27,7 +27,7 @@ const IMGS: Record<string, string[]> = {
   Classifieds: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=85','https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&q=85'],
   Jobs: ['https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=85','https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=85'],
 }
-const CAT_COLORS: Record<string,string> = { Properties:'#0057D9', Vehicles:'#1B6BB5', Machinery:'#C9A84C', Classifieds:'#8B5E3C', Jobs:'#EF2118' }
+const CAT_COLORS: Record<string,string> = { Properties:'#60A5FA', Vehicles:'#1B6BB5', Machinery:'#C9A84C', Classifieds:'#8B5E3C', Jobs:'#EF2118' }
 
 interface Listing {
   image_urls?: string[]
@@ -103,7 +103,7 @@ export default function Home() {
       </div>
 
       <div style={{display:'flex',overflowX:'auto',background:'#EEF2FF',boxShadow:'0 2px 10px rgba(0,0,0,0.07)',justifyContent:'center'}}>
-        {CATS.map(c=>(<button key={c} onClick={()=>setActiveCat(c)} style={{padding:'15px 20px',fontSize:'13px',border:'none',flexShrink:0,borderBottom:activeCat===c?'3px solid #0057D9':'3px solid transparent',background:'none',color:activeCat===c?'#0057D9':'#777',fontWeight:activeCat===c?800:500,cursor:'pointer',whiteSpace:'nowrap'}}>{tl(c)}</button>))}
+        {CATS.map(c=>(<button key={c} onClick={()=>setActiveCat(c)} style={{padding:'15px 20px',fontSize:'13px',border:'none',flexShrink:0,borderBottom:activeCat===c?'3px solid #0057D9':'3px solid transparent',background:'none',color:activeCat===c?'#60A5FA':'#777',fontWeight:activeCat===c?800:500,cursor:'pointer',whiteSpace:'nowrap'}}>{tl(c)}</button>))}
       </div>
 
       <div style={{background:'linear-gradient(90deg,#CC4A00,#FF7A00)',padding:'13px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',cursor:'pointer',gap:'12px'}}>
@@ -173,7 +173,7 @@ export default function Home() {
                   <div style={{position:'relative',height:isDesktop?'420px':'280px',overflow:'hidden'}}>
                     <img src={l.image_urls && l.image_urls.length > 0 ? l.image_urls[0] : getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%'}}/>
                     <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0) 55%)'}}/>
-                    <div style={{position:'absolute',top:'12px',left:'12px',background:CAT_COLORS[l.category]||'#0057D9',color:'white',fontSize:'10px',fontWeight:800,padding:'5px 14px',borderRadius:'20px',letterSpacing:'0.5px'}}>{tl(l.category)}</div>
+                    <div style={{position:'absolute',top:'12px',left:'12px',background:CAT_COLORS[l.category]||'#60A5FA',color:'white',fontSize:'10px',fontWeight:800,padding:'5px 14px',borderRadius:'20px',letterSpacing:'0.5px'}}>{tl(l.category)}</div>
                     <button style={{position:'absolute',top:'10px',right:'12px',background:'rgba(0,0,0,0.35)',color:'white',border:'none',fontSize:'18px',width:'36px',height:'36px',borderRadius:'10px',cursor:'pointer'}}>♡</button>
                     <div style={{position:'absolute',bottom:'14px',left:'14px',right:'14px'}}>
                       <div style={{fontSize:'24px',fontWeight:900,color:'white',marginBottom:'4px',textShadow:'0 2px 8px rgba(0,0,0,0.5)'}}>{l.price_label}</div>
