@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
 import AIAssistant from '@/components/AIAssistant'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
