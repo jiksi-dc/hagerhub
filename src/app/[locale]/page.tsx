@@ -101,6 +101,7 @@ export default function Home() {
             <button onClick={fetchListings} style={{background:'#111',border:'none',color:'white',padding:'10px 22px',fontSize:'13px',fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',fontFamily:'inherit'}}>Search</button>
           </div>
           <div style={{display:'flex',alignItems:'center',gap:'8px',flexShrink:0}}>
+            <a href='/login' style={{fontSize:'13px',fontWeight:600,padding:'9px 18px',background:'#fff',color:'#111',borderRadius:'8px',textDecoration:'none',border:'1.5px solid #E5E7EB',whiteSpace:'nowrap'}}>Sign in</a>
             <AuthButton />
             <a href="/post" style={{background:'#111',color:'white',padding:'9px 18px',borderRadius:'8px',fontSize:'13px',fontWeight:700,textDecoration:'none',whiteSpace:'nowrap'}}>+ Post Ad</a>
             <LanguageSwitcher />
