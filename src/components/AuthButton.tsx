@@ -24,16 +24,12 @@ export default function AuthButton() {
     router.refresh()
   }
 
-  if (!user) return (
-    <a href="/login" style={{fontSize:'13px',fontWeight:600,padding:'8px 18px',background:'#9CA3AF',color:'white',borderRadius:'20px',textDecoration:'none'}}>
-      Sign in
-    </a>
-  )
+  if (!user) return null
 
   const meta = user.user_metadata; const initials = meta?.first_name && meta?.last_name ? (meta.first_name[0] + meta.last_name[0]).toUpperCase() : user.email?.slice(0,2).toUpperCase() ?? 'U'
 
   return (
-    <div style={{position:'fixed',top:'12px',left:'12px',zIndex:1000}}>
+    <div style={{position:'relative'}}>
       <button onClick={()=>setMenuOpen(o=>!o)}
         style={{width:'36px',height:'36px',borderRadius:'50%',background:'#9CA3AF',color:'white',fontSize:'13px',fontWeight:700,border:'none',cursor:'pointer'}}>
         {initials}
