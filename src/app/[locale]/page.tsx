@@ -129,12 +129,6 @@ export default function Home() {
             </a>
           </div>
         </div>
-              <div style={{fontWeight:800,color:'white',fontSize:'13px'}}>{ad.brand}</div>
-              <div style={{color:'rgba(255,255,255,0.75)',fontSize:'11px',lineHeight:1.4}}>{ad.headline}</div>
-              <div style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'11px',fontWeight:700,padding:'5px 12px',borderRadius:'7px',alignSelf:'flex-start',marginTop:'4px'}}>{ad.cta} →</div>
-            </a>
-          ))}
-        </div>
 
         {/* POPULAR CATEGORIES — dubizzle text style */}
         <div style={{marginBottom:'32px'}}>
