@@ -44,7 +44,7 @@ export default function AIAssistant() {
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        style={{position:'fixed',top:'12px',right:'12px',zIndex:9999,width:'48px',height:'48px',borderRadius:'50%',background:'#0057D9',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(7,135,84,0.4)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'19px',color:'#0057D9',fontWeight:900,transition:'transform 0.2s'}}
+        style={{position:'fixed',top:'12px',right:'12px',zIndex:9999,width:'48px',height:'48px',borderRadius:'50%',background:'#0057D9',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(0,87,217,0.3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'19px',color:'#0057D9',fontWeight:900,transition:'transform 0.2s'}}
         onMouseEnter={e=>(e.currentTarget.style.transform='scale(1.1)')}
         onMouseLeave={e=>(e.currentTarget.style.transform='scale(1)')}>
         {open ? '✕' : '✦'}
@@ -54,7 +54,7 @@ export default function AIAssistant() {
       {open && (
         <div style={{position:'fixed',top:'80px',right:'12px',zIndex:9999,width:'320px',height:'480px',background:'white',borderRadius:'20px',boxShadow:'0 8px 40px rgba(0,0,0,0.2)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
           {/* Header */}
-          <div style={{background:'linear-gradient(135deg,#0057D9,#05613d)',padding:'16px',display:'flex',alignItems:'center',gap:'10px'}}>
+          <div style={{background:'#0057D9',padding:'16px',display:'flex',alignItems:'center',gap:'10px'}}>
             <div style={{width:'36px',height:'36px',borderRadius:'50%',background:'rgba(255,255,255,0.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px'}}>🤖</div>
             <div>
               <div style={{color:'white',fontWeight:800,fontSize:'14px'}}>HagerHub AI</div>
