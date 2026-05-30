@@ -227,7 +227,13 @@ export default function PostAd() {
               )}
             </div>
 
-            <Field label="Title *" value={title} onChange={setTitle} placeholder="e.g. 2020 Toyota Land Cruiser VX"/>
+            <Field label="Title *" value={title} onChange={setTitle} placeholder={
+              cat === 'Properties' ? 'e.g. 3BR Apartment for Rent in Bole' :
+              cat === 'Vehicles' ? 'e.g. 2020 Toyota Land Cruiser VX' :
+              cat === 'Jobs' ? 'e.g. Senior Software Engineer' :
+              cat === 'Machinery' ? 'e.g. Caterpillar 320D Excavator' :
+              'e.g. iPhone 15 Pro Max 256GB'
+            }/>
             <Field label="Price *" value={price} onChange={setPrice} placeholder="0" type="number" suffix="ETB"/>
             <Field label="Phone number *" value={phone} onChange={setPhone} placeholder="+251 9XX XXX XXX"/>
 
