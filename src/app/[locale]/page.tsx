@@ -100,14 +100,35 @@ export default function Home() {
 
       <div style={{maxWidth:'1200px',margin:'0 auto',padding:'24px 20px'}}>
 
-        {/* PROMO CARDS */}
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:'12px',marginBottom:'32px'}}>
-          {ADS.map(ad=>(
-            <a key={ad.id} href={ad.url} target="_blank" rel="noopener noreferrer" style={{background:ad.bg,borderRadius:'14px',padding:'16px 18px',display:'flex',flexDirection:'column',gap:'6px',textDecoration:'none',cursor:'pointer'}}>
-              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-                <span style={{fontSize:'22px'}}>{ad.logo}</span>
-                <span style={{fontSize:'9px',color:'rgba(255,255,255,0.6)',background:'rgba(255,255,255,0.12)',padding:'2px 8px',borderRadius:'20px',letterSpacing:'1px'}}>{ad.tag}</span>
+                {/* PARTNER BANNERS */}
+        <div style={{display:'flex',flexDirection:'column',gap:'12px',marginBottom:'32px'}}>
+          <a href="https://www.ethiopianairlines.com" target="_blank" rel="noopener noreferrer" style={{background:'#F0FDF4',border:'1px solid #BBF7D0',borderRadius:'14px',padding:'20px 24px',display:'flex',alignItems:'center',gap:'20px',textDecoration:'none'}}>
+            <div style={{fontSize:'40px',flexShrink:0}}>✈️</div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:'16px',fontWeight:800,color:'#14532D',marginBottom:'4px'}}>Fly with Ethiopian Airlines</div>
+              <div style={{fontSize:'13px',color:'#166534'}}>Africa largest airline · 130+ destinations worldwide · Book your next flight today</div>
+            </div>
+            <div style={{background:'#16A34A',color:'white',fontSize:'13px',fontWeight:700,padding:'10px 22px',borderRadius:'9px',flexShrink:0,whiteSpace:'nowrap'}}>Book Now →</div>
+          </a>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+            <a href="#" style={{background:'#EFF6FF',border:'1px solid #BFDBFE',borderRadius:'14px',padding:'18px 20px',display:'flex',alignItems:'center',gap:'16px',textDecoration:'none'}}>
+              <div style={{fontSize:'32px',flexShrink:0}}>🏦</div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:'14px',fontWeight:800,color:'#1E3A8A',marginBottom:'3px'}}>CBE Home Loans</div>
+                <div style={{fontSize:'12px',color:'#1D4ED8'}}>Up to ETB 5,000,000 · Low interest rates</div>
               </div>
+              <div style={{background:'#2563EB',color:'white',fontSize:'12px',fontWeight:700,padding:'8px 16px',borderRadius:'8px',flexShrink:0,whiteSpace:'nowrap'}}>Apply →</div>
+            </a>
+            <a href="#" style={{background:'#FFF7ED',border:'1px solid #FED7AA',borderRadius:'14px',padding:'18px 20px',display:'flex',alignItems:'center',gap:'16px',textDecoration:'none'}}>
+              <div style={{fontSize:'32px',flexShrink:0}}>📱</div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:'14px',fontWeight:800,color:'#7C2D12',marginBottom:'3px'}}>Pay with Telebirr</div>
+                <div style={{fontSize:'12px',color:'#9A3412'}}>Send · Receive · Pay bills across Ethiopia</div>
+              </div>
+              <div style={{background:'#EA580C',color:'white',fontSize:'12px',fontWeight:700,padding:'8px 16px',borderRadius:'8px',flexShrink:0,whiteSpace:'nowrap'}}>Get App →</div>
+            </a>
+          </div>
+        </div>
               <div style={{fontWeight:800,color:'white',fontSize:'13px'}}>{ad.brand}</div>
               <div style={{color:'rgba(255,255,255,0.75)',fontSize:'11px',lineHeight:1.4}}>{ad.headline}</div>
               <div style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'11px',fontWeight:700,padding:'5px 12px',borderRadius:'7px',alignSelf:'flex-start',marginTop:'4px'}}>{ad.cta} →</div>
