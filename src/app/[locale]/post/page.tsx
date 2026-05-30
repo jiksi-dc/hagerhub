@@ -1,207 +1,301 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 
-const CATS = ['Properties','Vehicles','Machinery','Classifieds','Jobs','Agriculture']
+const CITIES = ['Addis Ababa','Dire Dawa','Hawassa','Bahir Dar','Mekelle','Adama','Gondar','Jimma','Dessie','Jijiga']
 
-export default function Post() {
-  const [cat, setCat] = useState('Properties')
-  const [title, setTitle] = useState('')
-  const [desc, setDesc] = useState('')
-  const [price, setPrice] = useState('')
-  const [city, setCity] = useState('Addis Ababa')
-  const [area, setArea] = useState('')
-  const [phone, setPhone] = useState('')
-  const [name, setName] = useState('')
-  const [photos, setPhotos] = useState<File[]>([])
+const VEHICLE_MAKES = ['Toyota','Hyundai','Nissan','Honda','Mercedes','BMW','Mitsubishi','Isuzu','Ford','Volkswagen','Kia','Suzuki','Land Rover','Jeep','Other']
+
+const SUBCATEGORIES: Record<string, string[]> = {
+  Properties: ['Residential for Rent','Residential for Sale','Commercial for Rent','Commercial for Sale','Land & Plots'],
+  Vehicles: ['Cars','Trucks & LGVs','Motorcycles','Auto Parts & Accessories','Heavy Vehicles'],
+  Machinery: ['Farm Equipment','Construction Machinery','Generators','Industrial Equipment','Other Machinery'],
+  Classifieds: ['Mobile Phones','Electronics','Furniture & Home','Clothing & Accessories','Sports Equipment','Other'],
+  Jobs: ['Accounting & Finance','Engineering','IT & Technology','Healthcare','Education','Sales & Marketing','Other'],
+}
+
+const inp = {border:'1px solid #E5E7EB',borderRadius:'10px',padding:'12px 16px',fontSize:'14px',width:'100%',outline:'none',fontFamily:'inherit',color:'#111',background:'#fff'}
+const lbl = {fontSize:'13px',fontWeight:700,color:'#374151',marginBottom:'6px',display:'block'}
+const sel = {...inp,cursor:'pointer'}
+
+export default function PostAd() {
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const [step, setStep] = useState(1)
+  const [cat, setCat] = useState('')
+  const [subcat, setSubcat] = useState('')
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
-  const router = useRouter()
+  const [photos, setPhotos] = useState<File[]>([])
+
+  // Common fields
+  const [title, setTitle] = useState('')
+  const [price, setPrice] = useState('')
+  const [phone, setPhone] = useState('')
+  const [desc, setDesc] = useState('')
+  const [city, setCity] = useState('Addis Ababa')
+  const [neighbourhood, setNeighbourhood] = useState('')
+
+  // Vehicle fields
+  const [make, setMake] = useState('')
+  const [model, setModel] = useState('')
+  const [year, setYear] = useState('')
+  const [km, setKm] = useState('')
+  const [fuel, setFuel] = useState('')
+  const [bodyType, setBodyType] = useState('')
+  const [bodyCondition, setBodyCondition] = useState('')
+  const [mechCondition, setMechCondition] = useState('')
+  const [sellerType, setSellerType] = useState('')
+  const [transmission, setTransmission] = useState('')
+
+  // Property fields
+  const [purpose, setPurpose] = useState('')
+  const [bedrooms, setBedrooms] = useState('')
+  const [bathrooms, setBathrooms] = useState('')
+  const [area, setArea] = useState('')
+
+  // Job fields
+  const [company, setCompany] = useState('')
+  const [empType, setEmpType] = useState('')
+  const [salary, setSalary] = useState('')
+
+  // Machinery fields
+  const [condition, setCondition] = useState('')
+  const [capacity, setCapacity] = useState('')
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) router.push('/login')
+      else setUser(data.user)
+    })
+  }, [])
+
+  const years = Array.from({length: 35}, (_, i) => (2025 - i).toString())
+
+  const ToggleGroup = ({label, options, value, onChange}: {label:string, options:string[], value:string, onChange:(v:string)=>void}) => (
+    <div style={{marginBottom:'20px'}}>
+      <label style={lbl as any}>{label}</label>
+      <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
+        {options.map(o => (
+          <button key={o} onClick={()=>onChange(o)} style={{padding:'8px 16px',borderRadius:'8px',border:`1.5px solid ${value===o?'#111':'#E5E7EB'}`,background:value===o?'#111':'#fff',color:value===o?'#fff':'#374151',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
+            {o}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+
+  const Field = ({label, value, onChange, placeholder, type='text', suffix=''}: any) => (
+    <div style={{marginBottom:'20px'}}>
+      <label style={lbl as any}>{label}</label>
+      <div style={{position:'relative'}}>
+        <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} style={{...inp, paddingRight: suffix ? '60px' : '16px'}}/>
+        {suffix && <span style={{position:'absolute',right:'14px',top:'50%',transform:'translateY(-50%)',fontSize:'13px',color:'#9CA3AF',fontWeight:600}}>{suffix}</span>}
+      </div>
+    </div>
+  )
+
+  const Select = ({label, value, onChange, options}: any) => (
+    <div style={{marginBottom:'20px'}}>
+      <label style={lbl as any}>{label}</label>
+      <select value={value} onChange={e=>onChange(e.target.value)} style={sel as any}>
+        <option value="">Select...</option>
+        {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </div>
+  )
 
   async function handleSubmit() {
-    if (!title || !price || !phone || !name) {
-      setError('Please fill in all required fields.')
-      return
-    }
-    setLoading(true)
-    setError('')
-    setStatus('🤖 AI is reviewing your listing...')
+    if (!title || !price || !phone || !desc) { setError('Please fill in all required fields.'); return }
+    setLoading(true); setError(''); setStatus('🤖 AI is reviewing your listing...')
     try {
-      const modRes = await fetch('/api/moderate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description: desc, category: cat, price })
-      })
+      const modRes = await fetch('/api/moderate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title, description: desc, category: cat, price}) })
       const mod = await modRes.json()
-      if (!mod.approved) {
-        setError('Listing rejected: ' + mod.reason)
-        setLoading(false)
-        setStatus('')
-        return
+      if (!mod.approved) { setError('Listing rejected: ' + mod.reason); setLoading(false); setStatus(''); return }
+
+      setStatus('✅ Approved! Uploading photos...')
+      let image_urls: string[] = []
+      for (const photo of photos) {
+        const fd = new FormData(); fd.append('file', photo)
+        const res = await fetch('/api/upload', { method:'POST', body: fd })
+        const json = await res.json()
+        if (json.url) image_urls.push(json.url)
+        else console.error('Upload failed:', json.error)
       }
-      setStatus('✅ Approved! Saving your listing...')
-        let image_urls: string[] = []
-        if (photos.length > 0) {
-          setStatus('📸 Uploading photos...')
-          for (const photo of photos) {
-            const fd = new FormData()
-            fd.append('file', photo)
-            const res = await fetch('/api/upload', { method: 'POST', body: fd })
-            const json = await res.json()
-            if (json.url) image_urls.push(json.url)
-            else console.error('Upload failed:', json.error)
-          }
-        }
-      const { error: dbErr } = await createClient().from('listings').insert({
-        title, description: desc,
-        price: parseFloat(price),
-        price_label: 'ETB ' + parseFloat(price).toLocaleString(),
-        category: cat, city, neighbourhood: area,
-        contact_name: name, contact_phone: phone, status: 'active', image_urls
+
+      setStatus('💾 Saving your listing...')
+      const supabase = createClient()
+      const { error: dbErr } = await supabase.from('listings').insert({
+        title, description: desc, price_label: `ETB ${Number(price).toLocaleString()}`,
+        category: cat, subcategory: subcat, city, neighbourhood,
+        status: 'active', image_urls,
+        make, model, year, mileage: km, fuel_type: fuel, body_type: bodyType,
+        body_condition: bodyCondition, mechanical_condition: mechCondition,
+        seller_type: sellerType, transmission,
+        purpose, bedrooms, bathrooms, area_sqm: area,
+        company, employment_type: empType, salary,
+        condition, capacity,
+        contact_phone: phone,
+        user_id: user?.id,
       })
-      if (dbErr) { setError('Failed to save. Please try again.'); setLoading(false); setStatus(''); return }
-      setStatus('🎉 Your listing is live on HagerHub!')
+      if (dbErr) { setError('Failed to save: ' + dbErr.message); setLoading(false); setStatus(''); return }
+      setStatus('🎉 Your listing is live!')
       setTimeout(() => router.push('/'), 2000)
-    } catch {
-      setError('Something went wrong. Please try again.')
-      setLoading(false)
-      setStatus('')
-    }
+    } catch (e: any) { setError(e.message || 'Something went wrong'); setLoading(false); setStatus('') }
   }
 
-  const inp: React.CSSProperties = {
-    width:'100%', border:'1px solid #ddd', borderRadius:'10px',
-    padding:'12px 14px', fontSize:'14px', outline:'none',
-    fontFamily:'inherit', boxSizing:'border-box'
-  }
-  const lbl: React.CSSProperties = {
-    fontSize:'13px', fontWeight:600, color:'#333', display:'block', marginBottom:'6px'
-  }
+  if (!user) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',fontSize:'16px',color:'#9CA3AF'}}>Loading...</div>
+
+  const CATS = ['Properties','Vehicles','Machinery','Classifieds','Jobs']
 
   return (
-    <div style={{padding:'24px 16px',maxWidth:'680px',margin:'0 auto'}}>
-      <div style={{marginBottom:'24px'}}>
-        <h1 style={{fontSize:'24px',fontWeight:900,color:'#111',margin:'0 0 6px'}}>Post an ad</h1>
-        <p style={{fontSize:'14px',color:'#888',margin:0}}>Free to post · AI moderated · Live instantly</p>
-      </div>
+    <main style={{fontFamily:'system-ui,-apple-system,sans-serif',background:'#F7F7F7',minHeight:'100vh'}}>
+      <header style={{background:'#fff',borderBottom:'1px solid #EBEBEB',padding:'14px 20px',display:'flex',alignItems:'center',gap:'16px'}}>
+        <a href="/" style={{fontSize:'18px',fontWeight:900,color:'#111',letterSpacing:'2px',textDecoration:'none'}}>HAGERHUB</a>
+        <div style={{width:'1px',height:'20px',background:'#E5E7EB'}}></div>
+        <span style={{fontSize:'15px',fontWeight:700,color:'#374151'}}>Post your ad — FREE</span>
+      </header>
 
-      {error && (
-        <div style={{background:'#fff0f0',border:'1px solid #ffcccc',borderRadius:'12px',padding:'14px',marginBottom:'16px',fontSize:'14px',color:'#cc0000',display:'flex',gap:'10px'}}>
-          <span>🚫</span><span>{error}</span>
-        </div>
-      )}
-      {status && (
-        <div style={{background:'#f0fff4',border:'1px solid #b7f0c8',borderRadius:'12px',padding:'14px',marginBottom:'16px',fontSize:'14px',color:'#078754'}}>
-          {status}
-        </div>
-      )}
+      <div style={{maxWidth:'640px',margin:'32px auto',padding:'0 20px'}}>
 
-      <div style={{background:'white',border:'1px solid #eee',borderRadius:'16px',padding:'20px',marginBottom:'14px'}}>
-        <h2 style={{fontSize:'16px',fontWeight:800,margin:'0 0 16px',display:'flex',alignItems:'center',gap:'10px'}}>
-          <span style={{width:'28px',height:'28px',borderRadius:'50%',background:'#078754',color:'white',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'13px',flexShrink:0}}>1</span>
-          Choose a category
-        </h2>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'10px'}}>
-          {CATS.map(c=>(
-            <div key={c} onClick={()=>setCat(c)}
-              style={{border:cat===c?'2px solid #078754':'1.5px solid #eee',borderRadius:'10px',padding:'14px',textAlign:'center',cursor:'pointer',background:cat===c?'#f0faf5':'white'}}>
-              <span style={{fontSize:'13px',fontWeight:700,color:cat===c?'#078754':'#333'}}>{c}</span>
+        {/* STEP 1 — Choose Category */}
+        {step === 1 && (
+          <div style={{background:'#fff',borderRadius:'16px',padding:'32px',border:'1px solid #EBEBEB'}}>
+            <div style={{textAlign:'center',marginBottom:'28px'}}>
+              <div style={{fontSize:'22px',fontWeight:900,color:'#111',marginBottom:'6px'}}>Choose a category</div>
+              <div style={{fontSize:'14px',color:'#9CA3AF'}}>Select the category that best describes what you are selling</div>
             </div>
-          ))}
-        </div>
-      </div>
+            <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+              {CATS.map(c => (
+                <button key={c} onClick={()=>{setCat(c);setStep(2)}} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 20px',border:'1px solid #EBEBEB',borderRadius:'12px',background:'#fff',cursor:'pointer',fontSize:'15px',fontWeight:600,color:'#111',fontFamily:'inherit',textAlign:'left'}}>
+                  <span>{c === 'Properties' ? '🏠' : c === 'Vehicles' ? '🚗' : c === 'Machinery' ? '⚙️' : c === 'Classifieds' ? '📱' : '💼'} {c}</span>
+                  <span style={{color:'#9CA3AF',fontSize:'18px'}}>›</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
-      <div style={{background:'white',border:'1px solid #eee',borderRadius:'16px',padding:'20px',marginBottom:'14px'}}>
-        <h2 style={{fontSize:'16px',fontWeight:800,margin:'0 0 20px',display:'flex',alignItems:'center',gap:'10px'}}>
-          <span style={{width:'28px',height:'28px',borderRadius:'50%',background:'#078754',color:'white',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'13px',flexShrink:0}}>2</span>
-          Ad details
-        </h2>
-        <div style={{marginBottom:'16px'}}>
-          <label style={lbl}>Title *</label>
-          <input style={inp} placeholder="e.g. Modern 3-bedroom apartment for rent in Bole" value={title} onChange={e=>setTitle(e.target.value)}/>
-        </div>
-        <div style={{marginBottom:'16px'}}>
-          <label style={lbl}>Description</label>
-          <textarea style={{...inp,minHeight:'90px',resize:'vertical'}} placeholder="Describe your listing..." value={desc} onChange={e=>setDesc(e.target.value)}/>
-        </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px',marginBottom:'16px'}}>
-          <div>
-            <label style={lbl}>City *</label>
-            <select style={inp} value={city} onChange={e=>setCity(e.target.value)}>
-              {['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa','Mekelle','Gondar','Jimma','Adama'].map(c=><option key={c}>{c}</option>)}
-            </select>
+        {/* STEP 2 — Choose Subcategory */}
+        {step === 2 && (
+          <div style={{background:'#fff',borderRadius:'16px',padding:'32px',border:'1px solid #EBEBEB'}}>
+            <button onClick={()=>setStep(1)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'14px',color:'#6B7280',marginBottom:'20px',fontFamily:'inherit',padding:0}}>← Back</button>
+            <div style={{textAlign:'center',marginBottom:'28px'}}>
+              <div style={{fontSize:'22px',fontWeight:900,color:'#111',marginBottom:'6px'}}>Choose a subcategory</div>
+              <div style={{fontSize:'13px',color:'#9CA3AF',letterSpacing:'0.5px'}}>{cat} › Select type</div>
+            </div>
+            <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+              {(SUBCATEGORIES[cat] || []).map(s => (
+                <button key={s} onClick={()=>{setSubcat(s);setStep(3)}} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 20px',border:'1px solid #EBEBEB',borderRadius:'12px',background:'#fff',cursor:'pointer',fontSize:'14px',fontWeight:600,color:'#111',fontFamily:'inherit',textAlign:'left'}}>
+                  {s}<span style={{color:'#9CA3AF',fontSize:'18px'}}>›</span>
+                </button>
+              ))}
+            </div>
           </div>
-          <div>
-            <label style={lbl}>Neighbourhood</label>
-            <input style={inp} placeholder="e.g. Bole, CMC..." value={area} onChange={e=>setArea(e.target.value)}/>
-          </div>
-        </div>
-        <div>
-          <label style={lbl}>Price (ETB) *</label>
-          <div style={{display:'flex',gap:'10px',alignItems:'center'}}>
-            <span style={{background:'#f5f5f5',border:'1px solid #ddd',borderRadius:'10px',padding:'12px 14px',fontSize:'13px',color:'#555',fontWeight:600}}>ETB</span>
-            <input type="number" style={inp} placeholder="Enter amount" value={price} onChange={e=>setPrice(e.target.value)}/>
-          </div>
-        </div>
-      </div>
+        )}
 
-      <div style={{background:'white',border:'1px solid #eee',borderRadius:'16px',padding:'20px',marginBottom:'14px'}}>
-        <h2 style={{fontSize:'16px',fontWeight:800,margin:'0 0 16px',display:'flex',alignItems:'center',gap:'10px'}}>
-          <span style={{width:'28px',height:'28px',borderRadius:'50%',background:'#078754',color:'white',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'13px',flexShrink:0}}>3</span>
-          Upload photos
-        </h2>
-        <input type="file" id="photos" accept="image/*" multiple style={{display:'none'}}
-          onChange={e => setPhotos(Array.from(e.target.files || []))}/>
-        <label htmlFor="photos" style={{display:'block',border:'2px dashed #ddd',borderRadius:'12px',padding:'28px 16px',textAlign:'center',cursor:'pointer',background:'#fafafa'}}>
-          <div style={{fontSize:'36px',marginBottom:'8px'}}>📸</div>
-          <div style={{fontSize:'14px',fontWeight:700,color:'#333',marginBottom:'4px'}}>Tap to add photos</div>
-          <div style={{fontSize:'12px',color:'#aaa'}}>JPG, PNG · Up to 10 photos</div>
-        </label>
-        {photos.length > 0 && (
-          <div style={{marginTop:'12px',display:'flex',gap:'8px',flexWrap:'wrap'}}>
-            {photos.map((p,i)=>(
-              <div key={i} style={{position:'relative'}}>
-                <img src={URL.createObjectURL(p)} alt="preview"
-                  style={{width:'72px',height:'72px',borderRadius:'10px',objectFit:'cover',border:'2px solid #078754'}}/>
-                <button onClick={()=>setPhotos(photos.filter((_,j)=>j!==i))}
-                  style={{position:'absolute',top:'-6px',right:'-6px',background:'#EF2118',color:'white',border:'none',borderRadius:'50%',width:'20px',height:'20px',fontSize:'12px',cursor:'pointer'}}>×</button>
-              </div>
-            ))}
+        {/* STEP 3 — Fill Form */}
+        {step === 3 && (
+          <div style={{background:'#fff',borderRadius:'16px',padding:'32px',border:'1px solid #EBEBEB'}}>
+            <button onClick={()=>setStep(2)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'14px',color:'#6B7280',marginBottom:'20px',fontFamily:'inherit',padding:0}}>← Back</button>
+            <div style={{marginBottom:'28px'}}>
+              <div style={{fontSize:'22px',fontWeight:900,color:'#111',marginBottom:'4px'}}>You're almost there!</div>
+              <div style={{fontSize:'13px',color:'#9CA3AF'}}>{cat} › {subcat} · Include as many details and photos as possible</div>
+            </div>
+
+            {/* PHOTOS */}
+            <div style={{marginBottom:'24px'}}>
+              <label style={lbl as any}>Photos <span style={{color:'#9CA3AF',fontWeight:400}}>(up to 10)</span></label>
+              <label style={{display:'block',border:'2px dashed #E5E7EB',borderRadius:'12px',padding:'24px',textAlign:'center',cursor:'pointer',background:'#FAFAFA'}}>
+                <input type="file" accept="image/*,.heic,.heif" multiple style={{display:'none'}} onChange={e=>setPhotos(Array.from(e.target.files||[]))}/>
+                <div style={{fontSize:'32px',marginBottom:'8px'}}>📸</div>
+                <div style={{fontSize:'14px',fontWeight:700,color:'#374151',marginBottom:'4px'}}>Tap to add photos</div>
+                <div style={{fontSize:'12px',color:'#9CA3AF'}}>JPG, PNG, HEIC (iPhone) · Up to 10 photos</div>
+              </label>
+              {photos.length > 0 && (
+                <div style={{display:'flex',flexWrap:'wrap',gap:'8px',marginTop:'12px'}}>
+                  {photos.map((p,i) => (
+                    <div key={i} style={{position:'relative'}}>
+                      <img src={URL.createObjectURL(p)} alt="preview" style={{width:'72px',height:'72px',borderRadius:'8px',objectFit:'cover',border:'2px solid #EBEBEB'}}/>
+                      <button onClick={()=>setPhotos(photos.filter((_,j)=>j!==i))} style={{position:'absolute',top:'-6px',right:'-6px',background:'#EF4444',color:'white',border:'none',borderRadius:'50%',width:'20px',height:'20px',fontSize:'12px',cursor:'pointer'}}>×</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Field label="Title *" value={title} onChange={setTitle} placeholder="e.g. 2020 Toyota Land Cruiser VX"/>
+            <Field label="Price *" value={price} onChange={setPrice} placeholder="0" type="number" suffix="ETB"/>
+            <Field label="Phone number *" value={phone} onChange={setPhone} placeholder="+251 9XX XXX XXX"/>
+
+            {/* VEHICLE FIELDS */}
+            {cat === 'Vehicles' && (<>
+              <Select label="Make *" value={make} onChange={setMake} options={VEHICLE_MAKES}/>
+              <Field label="Model *" value={model} onChange={setModel} placeholder="e.g. Land Cruiser"/>
+              <Select label="Year *" value={year} onChange={setYear} options={years}/>
+              <Field label="Kilometers *" value={km} onChange={setKm} placeholder="0" type="number" suffix="km"/>
+              <ToggleGroup label="Fuel Type *" options={['Petrol','Diesel','Hybrid','Electric']} value={fuel} onChange={setFuel}/>
+              <ToggleGroup label="Transmission *" options={['Automatic','Manual']} value={transmission} onChange={setTransmission}/>
+              <Select label="Body Type *" value={bodyType} onChange={setBodyType} options={['Sedan','SUV','Pickup','Van','Minibus','Coupe','Hatchback','Other']}/>
+              <Select label="Body Condition *" value={bodyCondition} onChange={setBodyCondition} options={['Excellent','Good','Fair','Needs Repair']}/>
+              <Select label="Mechanical Condition *" value={mechCondition} onChange={setMechCondition} options={['Excellent','Good','Fair','Needs Repair']}/>
+              <ToggleGroup label="Seller Type *" options={['Private','Dealer','Broker']} value={sellerType} onChange={setSellerType}/>
+            </>)}
+
+            {/* PROPERTY FIELDS */}
+            {cat === 'Properties' && (<>
+              <ToggleGroup label="Purpose *" options={['For Rent','For Sale']} value={purpose} onChange={setPurpose}/>
+              <Select label="Bedrooms" value={bedrooms} onChange={setBedrooms} options={['Studio','1','2','3','4','5','6+']}/>
+              <Select label="Bathrooms" value={bathrooms} onChange={setBathrooms} options={['1','2','3','4','5+']}/>
+              <Field label="Area" value={area} onChange={setArea} placeholder="0" type="number" suffix="m²"/>
+              <Field label="Neighbourhood" value={neighbourhood} onChange={setNeighbourhood} placeholder="e.g. Bole, CMC, Kazanchis"/>
+            </>)}
+
+            {/* JOBS FIELDS */}
+            {cat === 'Jobs' && (<>
+              <Field label="Company Name" value={company} onChange={setCompany} placeholder="Company or Organization"/>
+              <ToggleGroup label="Employment Type *" options={['Full-time','Part-time','Contract','Remote']} value={empType} onChange={setEmpType}/>
+              <Field label="Salary (ETB/month)" value={salary} onChange={setSalary} placeholder="0" type="number" suffix="ETB"/>
+            </>)}
+
+            {/* MACHINERY FIELDS */}
+            {cat === 'Machinery' && (<>
+              <Field label="Brand / Make" value={make} onChange={setMake} placeholder="e.g. Caterpillar, John Deere"/>
+              <Field label="Model" value={model} onChange={setModel} placeholder="e.g. 320D"/>
+              <Select label="Year" value={year} onChange={setYear} options={years}/>
+              <ToggleGroup label="Condition *" options={['New','Used','Refurbished']} value={condition} onChange={setCondition}/>
+              <Field label="Capacity / Weight" value={capacity} onChange={setCapacity} placeholder="e.g. 5 tons, 50KVA"/>
+            </>)}
+
+            {/* CLASSIFIEDS FIELDS */}
+            {cat === 'Classifieds' && (
+              <ToggleGroup label="Condition *" options={['New','Like New','Used','For Parts']} value={condition} onChange={setCondition}/>
+            )}
+
+            <div style={{marginBottom:'20px'}}>
+              <label style={lbl as any}>Description *</label>
+              <textarea value={desc} onChange={e=>setDesc(e.target.value)} placeholder="Describe your item in detail..." rows={5} style={{...inp, resize:'vertical'} as any}/>
+              <div style={{fontSize:'11px',color:'#9CA3AF',textAlign:'right',marginTop:'4px'}}>{desc.length}/16000</div>
+            </div>
+
+            <Select label="City *" value={city} onChange={setCity} options={CITIES}/>
+
+            {error && <div style={{background:'#FFF0F0',border:'1px solid #FECACA',borderRadius:'10px',padding:'12px',marginBottom:'16px',color:'#CC0000',fontSize:'13px'}}>❌ {error}</div>}
+            {status && <div style={{background:'#F0FFF4',border:'1px solid #BBF7D0',borderRadius:'10px',padding:'12px',marginBottom:'16px',color:'#166534',fontSize:'13px'}}>{status}</div>}
+
+            <div style={{fontSize:'12px',color:'#9CA3AF',marginBottom:'16px',lineHeight:1.5}}>
+              By posting, I confirm the information is complete and accurate. <a href="/terms" style={{color:'#2563EB'}}>Terms & conditions</a>.
+            </div>
+
+            <button onClick={handleSubmit} disabled={loading} style={{width:'100%',background:loading?'#9CA3AF':'#111',color:'white',border:'none',borderRadius:'12px',padding:'16px',fontSize:'16px',fontWeight:900,cursor:loading?'not-allowed':'pointer',fontFamily:'inherit'}}>
+              {loading ? status || 'Processing...' : 'Post your ad — FREE'}
+            </button>
           </div>
         )}
       </div>
-
-      <div style={{background:'white',border:'1px solid #eee',borderRadius:'16px',padding:'20px',marginBottom:'20px'}}>
-        <h2 style={{fontSize:'16px',fontWeight:800,margin:'0 0 20px',display:'flex',alignItems:'center',gap:'10px'}}>
-          <span style={{width:'28px',height:'28px',borderRadius:'50%',background:'#078754',color:'white',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'13px',flexShrink:0}}>4</span>
-          Your contact details
-        </h2>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
-          <div>
-            <label style={lbl}>Full name *</label>
-            <input style={inp} placeholder="Your name" value={name} onChange={e=>setName(e.target.value)}/>
-          </div>
-          <div>
-            <label style={lbl}>Phone number *</label>
-            <input style={inp} placeholder="+251 9XX XXX XXX" value={phone} onChange={e=>setPhone(e.target.value)}/>
-          </div>
-        </div>
-      </div>
-
-      <div style={{background:'linear-gradient(135deg,#f0faf5,#e8f5e9)',border:'1px solid #b7f0c8',borderRadius:'12px',padding:'14px 16px',marginBottom:'20px',display:'flex',gap:'12px',alignItems:'flex-start'}}>
-        <span style={{fontSize:'24px'}}>🤖</span>
-        <div>
-          <div style={{fontSize:'13px',fontWeight:700,color:'#078754',marginBottom:'3px'}}>AI-powered content moderation</div>
-          <div style={{fontSize:'12px',color:'#555',lineHeight:1.5}}>Every listing is reviewed by Claude AI before going live. This keeps HagerHub safe for all Ethiopian users.</div>
-        </div>
-      </div>
-
-      <button onClick={handleSubmit} disabled={loading}
-        style={{width:'100%',background:loading?'#aaa':'#EF2118',color:'white',border:'none',borderRadius:'14px',padding:'18px',fontSize:'16px',fontWeight:900,cursor:loading?'not-allowed':'pointer',boxShadow:loading?'none':'0 6px 20px rgba(239,33,24,0.35)'}}>
-        {loading ? (status || 'Processing...') : 'Post your ad — FREE'}
-      </button>
-    </div>
+    </main>
   )
 }
