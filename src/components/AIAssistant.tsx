@@ -44,7 +44,7 @@ export default function AIAssistant() {
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        style={{position:'fixed',top:'12px',right:'12px',zIndex:9999,width:'48px',height:'48px',borderRadius:'50%',background:'linear-gradient(135deg,#0057D9,#05613d)',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(7,135,84,0.4)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'19px',color:'#0057D9',fontWeight:900,transition:'transform 0.2s'}}
+        style={{position:'fixed',top:'12px',right:'12px',zIndex:9999,width:'48px',height:'48px',borderRadius:'50%',background:'#0057D9',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(7,135,84,0.4)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'19px',color:'#0057D9',fontWeight:900,transition:'transform 0.2s'}}
         onMouseEnter={e=>(e.currentTarget.style.transform='scale(1.1)')}
         onMouseLeave={e=>(e.currentTarget.style.transform='scale(1)')}>
         {open ? '✕' : '✦'}
