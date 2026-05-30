@@ -70,8 +70,8 @@ export default function Home() {
   const getImg = (cat: string, id: string) => { const a = IMGS[cat] || IMGS.Properties; return a[id.charCodeAt(0) % a.length] }
 
   return (
-    <main style={{fontFamily:'inherit',background:'#F3F4F6',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
-      <section style={{background:'#F3F4F6',padding:'28px 16px 24px',textAlign:'center',position:'relative',overflow:'visible'}}>
+    <main style={{fontFamily:'inherit',background:'#FFFFFF',minHeight:'100vh',width:'100%',overflowX:'hidden'}}>
+      <section style={{background:'#FFFFFF',padding:'28px 16px 24px',textAlign:'center',position:'relative',overflow:'visible'}}>
         <div style={{position:'absolute',top:'-80px',left:'50%',transform:'translateX(-50%)',width:'500px',height:'500px',background:'radial-gradient(circle,rgba(7,135,84,0.1) 0%,transparent 60%)',pointerEvents:'none'}}/>
         <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'14px',marginBottom:'10px',position:'relative'}}>
           <img src="/lion.jpg" alt="lion" style={{width:'54px',height:'54px',borderRadius:'50%',objectFit:'cover',objectPosition:'center 15%',border:'2.5px solid rgba(252,221,9,0.6)',boxShadow:'0 0 30px rgba(252,221,9,0.15)',flexShrink:0}}/>
@@ -81,7 +81,7 @@ export default function Home() {
           </div>
         </div>
         
-        <div style={{display:'flex',background:'#F3F4F6',borderRadius:'14px',overflow:'hidden',boxShadow:'0 2px 12px rgba(0,0,0,0.1)',border:'1.5px solid #eee',marginBottom:'16px'}}>
+        <div style={{display:'flex',background:'#FFFFFF',borderRadius:'14px',overflow:'hidden',boxShadow:'0 2px 12px rgba(0,0,0,0.1)',border:'1.5px solid #eee',marginBottom:'16px'}}>
           <input style={{flex:1,border:'none',padding:'15px 16px',fontSize:'15px',outline:'none',fontFamily:'inherit',minWidth:0,background:'transparent',color:'#111'}} placeholder={tx.search} value={search} onChange={e=>setSearch(e.target.value)}/>
           <button onClick={fetchListings} style={{background:'#6B7280',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
@@ -93,7 +93,7 @@ export default function Home() {
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',gap:'12px'}}>
           <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
             <div style={{width:'48px',height:'48px',borderRadius:'50%',flexShrink:0,position:'relative',overflow:'hidden',border:'3px solid rgba(255,255,255,0.3)'}}>
-              <div style={{position:'absolute',top:0,left:0,right:0,height:'50%',background:'#c00'}}/><div style={{position:'absolute',bottom:0,left:0,right:0,height:'50%',background:'#001489'}}/><div style={{position:'absolute',top:'46%',left:0,right:0,height:'8%',background:'#F3F4F6'}}/>
+              <div style={{position:'absolute',top:0,left:0,right:0,height:'50%',background:'#c00'}}/><div style={{position:'absolute',bottom:0,left:0,right:0,height:'50%',background:'#001489'}}/><div style={{position:'absolute',top:'46%',left:0,right:0,height:'8%',background:'#FFFFFF'}}/>
             </div>
             <div><div style={{fontSize:'20px',fontWeight:900,color:'white',letterSpacing:'2px'}}>PEPSI</div><div style={{fontSize:'10px',color:'rgba(255,255,255,0.6)'}}>Taste the Extraordinary</div></div>
           </div>
@@ -102,27 +102,27 @@ export default function Home() {
         <div style={{fontSize:'8px',color:'rgba(255,255,255,0.2)',textAlign:'center',padding:'2px 0 5px',letterSpacing:'2px'}}>{tx.ad}</div>
       </div>
 
-      <div style={{display:'flex',overflowX:'auto',background:'#F3F4F6',boxShadow:'0 2px 10px rgba(0,0,0,0.07)',justifyContent:'center'}}>
+      <div style={{display:'flex',overflowX:'auto',background:'#FFFFFF',boxShadow:'0 2px 10px rgba(0,0,0,0.07)',justifyContent:'center'}}>
         {CATS.map(c=>(<button key={c} onClick={()=>setActiveCat(c)} style={{padding:'15px 20px',fontSize:'13px',border:'none',flexShrink:0,borderBottom:activeCat===c?'3px solid #0057D9':'3px solid transparent',background:'none',color:activeCat===c?'#6B7280':'#777',fontWeight:activeCat===c?800:500,cursor:'pointer',whiteSpace:'nowrap'}}>{tl(c)}</button>))}
       </div>
 
       <div style={{background:'linear-gradient(90deg,#CC4A00,#FF7A00)',padding:'13px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',cursor:'pointer',gap:'12px'}}>
         <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
-          <div style={{width:'42px',height:'42px',borderRadius:'12px',background:'#F3F4F6',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>📱</div>
+          <div style={{width:'42px',height:'42px',borderRadius:'12px',background:'#FFFFFF',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'22px'}}>📱</div>
           <div><div style={{fontSize:'14px',fontWeight:900,color:'white'}}>telebirr — Pay Smarter</div><div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)'}}>Send · Receive · Pay bills across Ethiopia</div></div>
         </div>
-        <div style={{background:'#F3F4F6',color:'#CC4A00',fontSize:'12px',fontWeight:900,padding:'10px 18px',borderRadius:'20px',whiteSpace:'nowrap',flexShrink:0}}>Get App</div>
+        <div style={{background:'#FFFFFF',color:'#CC4A00',fontSize:'12px',fontWeight:900,padding:'10px 18px',borderRadius:'20px',whiteSpace:'nowrap',flexShrink:0}}>Get App</div>
       </div>
 
       {activeCat==='All' && (
-        <section style={{background:'#F3F4F6',padding:'22px 16px',borderBottom:'8px solid #F0F2F5'}}>
+        <section style={{background:'#FFFFFF',padding:'22px 16px',borderBottom:'8px solid #F0F2F5'}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px'}}>
             <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:0}}>{tx.browse}</h2>
             <span style={{fontSize:'13px',color:'#6B7280',fontWeight:700,cursor:'pointer'}}>{tx.seeAll}</span>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'}}>
             {POPULAR.map(cat=>(
-              <div key={cat.name} onClick={()=>setActiveCat(cat.name)} style={{background:'#F3F4F6',border:'1px solid #c7d2fe',borderRadius:'16px',padding:'16px 14px',cursor:'pointer'}}>
+              <div key={cat.name} onClick={()=>setActiveCat(cat.name)} style={{background:'#FFFFFF',border:'1px solid #c7d2fe',borderRadius:'16px',padding:'16px 14px',cursor:'pointer'}}>
                 <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}}>
                   
                   <span style={{fontSize:'15px',fontWeight:800,color:'#111'}}>{tl(cat.name)}</span>
@@ -141,7 +141,7 @@ export default function Home() {
             <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:'0 0 3px'}}>{activeCat==='All'?tx.latest:tl(activeCat)}</h2>
             <div style={{fontSize:'12px',color:'#999'}}>{filtered.length} {tx.available}</div>
           </div>
-          {activeCat!=='All' && (<button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'#F3F4F6',border:'1.5px solid #0057D9',borderRadius:'20px',padding:'8px 18px',cursor:'pointer',fontWeight:700}}>{tx.back}</button>)}
+          {activeCat!=='All' && (<button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'#FFFFFF',border:'1.5px solid #0057D9',borderRadius:'20px',padding:'8px 18px',cursor:'pointer',fontWeight:700}}>{tx.back}</button>)}
         </div>
 
         {loading ? (
@@ -153,7 +153,7 @@ export default function Home() {
             {filtered.map((l,i)=>(
               <>
                 {i===2 && <div key="ad1" style={{gridColumn:'1/-1',background:'linear-gradient(135deg,#001A6E,#0041C4)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,26,110,0.4)'}}>
-                  <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'#F3F4F6',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>🏦</div>
+                  <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'#FFFFFF',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>🏦</div>
                   <div style={{flex:1,minWidth:0}}><div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>{tx.ad}</div><div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Commercial Bank of Ethiopia</div><div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>🏠 Home loans up to ETB 5,000,000 · Low interest</div></div>
                   <div style={{background:'#6B7280',color:'#001A6E',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Apply Now</div>
                 </div>}
@@ -165,11 +165,11 @@ export default function Home() {
                   </div>
                 </div>}
                 {i===8 && <div key="ad3" style={{gridColumn:'1/-1',background:'linear-gradient(135deg,#5C0000,#8B0000)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(92,0,0,0.4)'}}>
-                  <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'#F3F4F6',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>💳</div>
+                  <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'#FFFFFF',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>💳</div>
                   <div style={{flex:1,minWidth:0}}><div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>{tx.ad}</div><div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Dashen Bank</div><div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>💰 Business loans · Digital banking · Instant transfers</div></div>
-                  <div style={{background:'#F3F4F6',color:'#5C0000',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Learn More</div>
+                  <div style={{background:'#FFFFFF',color:'#5C0000',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Learn More</div>
                 </div>}
-                <div key={l.id} style={{background:'#F3F4F6',borderRadius:'18px',overflow:'hidden',boxShadow:'0 3px 14px rgba(0,0,0,0.08)',cursor:'pointer'}}>
+                <div key={l.id} style={{background:'#FFFFFF',borderRadius:'18px',overflow:'hidden',boxShadow:'0 3px 14px rgba(0,0,0,0.08)',cursor:'pointer'}}>
                   <div style={{position:'relative',height:isDesktop?'420px':'280px',overflow:'hidden'}}>
                     <img src={l.image_urls && l.image_urls.length > 0 ? l.image_urls[0] : getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%'}}/>
                     <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0) 55%)'}}/>
@@ -205,7 +205,7 @@ export default function Home() {
         <h3 style={{fontSize:'24px',fontWeight:900,color:'white',marginBottom:'8px'}}>HagerHub on your phone</h3>
         <p style={{color:'rgba(255,255,255,0.45)',fontSize:'14px',margin:'0 0 24px',lineHeight:1.6}}>Buy, sell and connect from anywhere in Ethiopia</p>
         <div style={{display:'flex',gap:'12px',justifyContent:'center'}}>
-          <button style={{background:'#F3F4F6',color:'#111',border:'none',borderRadius:'14px',padding:'14px 24px',fontSize:'14px',fontWeight:800,cursor:'pointer'}}>🍎 App Store</button>
+          <button style={{background:'#FFFFFF',color:'#111',border:'none',borderRadius:'14px',padding:'14px 24px',fontSize:'14px',fontWeight:800,cursor:'pointer'}}>🍎 App Store</button>
           <button style={{background:'#6B7280',color:'white',border:'none',borderRadius:'14px',padding:'14px 24px',fontSize:'14px',fontWeight:800,cursor:'pointer'}}>▶ Google Play</button>
         </div>
       </section>
