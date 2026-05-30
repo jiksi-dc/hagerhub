@@ -124,7 +124,7 @@ export default function Home() {
             {POPULAR.map(cat=>(
               <div key={cat.name} onClick={()=>setActiveCat(cat.name)} style={{background:`linear-gradient(135deg,${cat.color}15,${cat.color}05)`,border:`1.5px solid ${cat.color}20`,borderRadius:'16px',padding:'16px 14px',cursor:'pointer'}}>
                 <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}}>
-                  <span style={{fontSize:'24px'}}>{cat.emoji}</span>
+                  
                   <span style={{fontSize:'15px',fontWeight:800,color:'#111'}}>{tl(cat.name)}</span>
                 </div>
                 {cat.items.slice(0,3).map(item=>(<div key={item} style={{fontSize:'11px',color:'#777',padding:'1.5px 0'}}>{item}</div>))}
