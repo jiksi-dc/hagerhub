@@ -84,8 +84,7 @@ export default function Home() {
         </div>
         <div style={{display:'flex',background:'white',borderRadius:'14px',overflow:'hidden',boxShadow:'0 2px 12px rgba(0,0,0,0.1)',border:'1.5px solid #eee',marginBottom:'16px'}}>
           <input style={{flex:1,border:'none',padding:'15px 16px',fontSize:'15px',outline:'none',fontFamily:'inherit',minWidth:0,background:'transparent',color:'#111'}} placeholder={tx.search} value={search} onChange={e=>setSearch(e.target.value)}/>
-          <div style={{display:"flex",gap:"10px",marginTop:"12px",justifyContent:"center",alignItems:"center",background:"#f5f5f5",borderRadius:"14px",padding:"10px 16px"}}><AuthButton /><a href="/post" style={{background:"#078754",color:"white",padding:"8px 18px",borderRadius:"20px",fontSize:"13px",fontWeight:700,textDecoration:"none"}}>+ Post Ad</a><span style={{fontSize:"13px",color:"#999"}}>|</span><span style={{fontSize:"22px",cursor:"pointer"}}>✦</span></div>
-        <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
+          <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
       </section>
 
