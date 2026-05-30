@@ -80,9 +80,7 @@ export default function Home() {
             <div style={{fontSize:'9px',color:'rgba(0,0,0,0.5)',letterSpacing:'2px',textTransform:'uppercase',marginTop:'3px',fontWeight:700}}>Ethiopia's #1 Marketplace · ሃገር ሃብ</div>
           </div>
         </div>
-        <div style={{display:'flex',height:'2px',margin:'10px auto 16px',width:'100px',borderRadius:'2px',overflow:'hidden'}}>
-          <div style={{flex:1,background:'#078754'}}/><div style={{flex:1,background:'#FCDD09'}}/><div style={{flex:1,background:'#EF2118'}}/>
-        </div>
+        
         <div style={{display:'flex',background:'white',borderRadius:'14px',overflow:'hidden',boxShadow:'0 2px 12px rgba(0,0,0,0.1)',border:'1.5px solid #eee',marginBottom:'16px'}}>
           <input style={{flex:1,border:'none',padding:'15px 16px',fontSize:'15px',outline:'none',fontFamily:'inherit',minWidth:0,background:'transparent',color:'#111'}} placeholder={tx.search} value={search} onChange={e=>setSearch(e.target.value)}/>
           <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
