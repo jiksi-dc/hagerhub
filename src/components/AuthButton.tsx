@@ -25,7 +25,7 @@ export default function AuthButton() {
   }
 
   if (!user) return (
-    <a href="/login" style={{fontSize:'13px',fontWeight:600,padding:'8px 18px',background:'#6B7280',color:'white',borderRadius:'20px',textDecoration:'none'}}>
+    <a href="/login" style={{fontSize:'13px',fontWeight:600,padding:'8px 18px',background:'#9CA3AF',color:'white',borderRadius:'20px',textDecoration:'none'}}>
       Sign in
     </a>
   )
@@ -35,7 +35,7 @@ export default function AuthButton() {
   return (
     <div style={{position:'fixed',top:'12px',left:'12px',zIndex:1000}}>
       <button onClick={()=>setMenuOpen(o=>!o)}
-        style={{width:'36px',height:'36px',borderRadius:'50%',background:'#6B7280',color:'white',fontSize:'13px',fontWeight:700,border:'none',cursor:'pointer'}}>
+        style={{width:'36px',height:'36px',borderRadius:'50%',background:'#9CA3AF',color:'white',fontSize:'13px',fontWeight:700,border:'none',cursor:'pointer'}}>
         {initials}
       </button>
       {menuOpen && (
