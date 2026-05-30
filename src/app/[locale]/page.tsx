@@ -122,7 +122,7 @@ export default function Home() {
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'}}>
             {POPULAR.map(cat=>(
-              <div key={cat.name} onClick={()=>setActiveCat(cat.name)} style={{background:'#EEF2FF'`,border:'1px solid #c7d2fe'`,borderRadius:'16px',padding:'16px 14px',cursor:'pointer'}}>
+              <div key={cat.name} onClick={()=>setActiveCat(cat.name)} style={{background:'#EEF2FF',border:'1px solid #c7d2fe',borderRadius:'16px',padding:'16px 14px',cursor:'pointer'}}>
                 <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}}>
                   
                   <span style={{fontSize:'15px',fontWeight:800,color:'#111'}}>{tl(cat.name)}</span>
