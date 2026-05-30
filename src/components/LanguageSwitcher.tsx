@@ -29,7 +29,7 @@ export default function LanguageSwitcher() {
       <select
         value={locale}
         onChange={e=>switchLocale(e.target.value)}
-        style={{background:'#078754',color:'white',border:'none',borderRadius:'30px',padding:'12px 20px',fontSize:'14px',fontWeight:700,cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.3)'}}>
+        style={{background:'#0057D9',color:'white',border:'none',borderRadius:'30px',padding:'12px 20px',fontSize:'14px',fontWeight:700,cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.3)'}}>
         {LANGS.map(l=><option key={l.code} value={l.code}>{l.label}</option>)}
       </select>
     </div>
