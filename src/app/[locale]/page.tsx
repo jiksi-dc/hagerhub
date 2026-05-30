@@ -14,7 +14,7 @@ const DICT: Record<string, Record<string, string>> = {
 
 const CATS = ['All', 'Properties', 'Vehicles', 'Machinery', 'Classifieds', 'Jobs']
 const POPULAR = [
-  { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots'], color: '#078754', emoji: '🏠' },
+  { name: 'Properties', items: ['Residential for Rent', 'Residential for Sale', 'Commercial', 'Land & Plots'], color: '#0057D9', emoji: '🏠' },
   { name: 'Vehicles', items: ['Used Cars', 'New Cars', 'Trucks & LGVs', 'Bajaj / Tuk-tuks'], color: '#1B6BB5', emoji: '🚗' },
   { name: 'Machinery', items: ['Farm Equipment', 'Construction', 'Generators', 'Industrial Tools'], color: '#C9A84C', emoji: '⚙️' },
   { name: 'Classifieds', items: ['Mobile Phones', 'Electronics', 'Furniture & Home', 'Clothing'], color: '#8B5E3C', emoji: '📱' },
@@ -27,7 +27,7 @@ const IMGS: Record<string, string[]> = {
   Classifieds: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=85','https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&q=85'],
   Jobs: ['https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=85','https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=85'],
 }
-const CAT_COLORS: Record<string,string> = { Properties:'#078754', Vehicles:'#1B6BB5', Machinery:'#C9A84C', Classifieds:'#8B5E3C', Jobs:'#EF2118' }
+const CAT_COLORS: Record<string,string> = { Properties:'#0057D9', Vehicles:'#1B6BB5', Machinery:'#C9A84C', Classifieds:'#8B5E3C', Jobs:'#EF2118' }
 
 interface Listing {
   image_urls?: string[]
@@ -83,10 +83,10 @@ export default function Home() {
         
         <div style={{display:'flex',background:'white',borderRadius:'14px',overflow:'hidden',boxShadow:'0 2px 12px rgba(0,0,0,0.1)',border:'1.5px solid #eee',marginBottom:'16px'}}>
           <input style={{flex:1,border:'none',padding:'15px 16px',fontSize:'15px',outline:'none',fontFamily:'inherit',minWidth:0,background:'transparent',color:'#111'}} placeholder={tx.search} value={search} onChange={e=>setSearch(e.target.value)}/>
-          <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
+          <button onClick={fetchListings} style={{background:'#0057D9',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
       </section>
-      <div style={{background:"white",padding:"10px 16px",display:"flex",gap:"10px",alignItems:"center",borderBottom:"1px solid #eee"}}><AuthButton /><a href="/post" style={{background:"#078754",color:"white",padding:"8px 18px",borderRadius:"20px",fontSize:"13px",fontWeight:700,textDecoration:"none"}}>+ Post Ad</a></div>
+      <div style={{background:"white",padding:"10px 16px",display:"flex",gap:"10px",alignItems:"center",borderBottom:"1px solid #eee"}}><AuthButton /><a href="/post" style={{background:"#0057D9",color:"white",padding:"8px 18px",borderRadius:"20px",fontSize:"13px",fontWeight:700,textDecoration:"none"}}>+ Post Ad</a></div>
 
       <div style={{background:'linear-gradient(90deg,#001489 0%,#0033cc 50%,#001489 100%)',cursor:'pointer',overflow:'hidden',position:'relative'}}>
         <div style={{position:'absolute',right:0,top:0,bottom:0,width:'120px',background:'radial-gradient(circle at right,rgba(200,0,0,0.4),transparent)'}}/>
@@ -103,7 +103,7 @@ export default function Home() {
       </div>
 
       <div style={{display:'flex',overflowX:'auto',background:'white',boxShadow:'0 2px 10px rgba(0,0,0,0.07)',justifyContent:'center'}}>
-        {CATS.map(c=>(<button key={c} onClick={()=>setActiveCat(c)} style={{padding:'15px 20px',fontSize:'13px',border:'none',flexShrink:0,borderBottom:activeCat===c?'3px solid #078754':'3px solid transparent',background:'none',color:activeCat===c?'#078754':'#777',fontWeight:activeCat===c?800:500,cursor:'pointer',whiteSpace:'nowrap'}}>{tl(c)}</button>))}
+        {CATS.map(c=>(<button key={c} onClick={()=>setActiveCat(c)} style={{padding:'15px 20px',fontSize:'13px',border:'none',flexShrink:0,borderBottom:activeCat===c?'3px solid #0057D9':'3px solid transparent',background:'none',color:activeCat===c?'#0057D9':'#777',fontWeight:activeCat===c?800:500,cursor:'pointer',whiteSpace:'nowrap'}}>{tl(c)}</button>))}
       </div>
 
       <div style={{background:'linear-gradient(90deg,#CC4A00,#FF7A00)',padding:'13px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',cursor:'pointer',gap:'12px'}}>
@@ -118,7 +118,7 @@ export default function Home() {
         <section style={{background:'white',padding:'22px 16px',borderBottom:'8px solid #F0F2F5'}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'18px'}}>
             <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:0}}>{tx.browse}</h2>
-            <span style={{fontSize:'13px',color:'#078754',fontWeight:700,cursor:'pointer'}}>{tx.seeAll}</span>
+            <span style={{fontSize:'13px',color:'#0057D9',fontWeight:700,cursor:'pointer'}}>{tx.seeAll}</span>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'12px'}}>
             {POPULAR.map(cat=>(
@@ -141,13 +141,13 @@ export default function Home() {
             <h2 style={{fontSize:'20px',fontWeight:900,color:'#111',margin:'0 0 3px'}}>{activeCat==='All'?tx.latest:tl(activeCat)}</h2>
             <div style={{fontSize:'12px',color:'#999'}}>{filtered.length} {tx.available}</div>
           </div>
-          {activeCat!=='All' && (<button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#078754',background:'white',border:'1.5px solid #078754',borderRadius:'20px',padding:'8px 18px',cursor:'pointer',fontWeight:700}}>{tx.back}</button>)}
+          {activeCat!=='All' && (<button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#0057D9',background:'white',border:'1.5px solid #0057D9',borderRadius:'20px',padding:'8px 18px',cursor:'pointer',fontWeight:700}}>{tx.back}</button>)}
         </div>
 
         {loading ? (
           <div style={{textAlign:'center',padding:'60px 0'}}><div style={{fontSize:'40px',marginBottom:'12px'}}>⏳</div><div style={{color:'#aaa',fontSize:'15px'}}>{tx.loading}</div></div>
         ) : filtered.length===0 ? (
-          <div style={{textAlign:'center',padding:'60px 0'}}><div style={{fontSize:'48px',marginBottom:'14px'}}>🔍</div><p style={{color:'#aaa',marginBottom:'18px',fontSize:'15px'}}>{tx.none}</p><button onClick={()=>{setActiveCat('All');setSearch('')}} style={{background:'#078754',color:'white',border:'none',borderRadius:'14px',padding:'14px 32px',cursor:'pointer',fontSize:'15px',fontWeight:800}}>{tx.viewAll}</button></div>
+          <div style={{textAlign:'center',padding:'60px 0'}}><div style={{fontSize:'48px',marginBottom:'14px'}}>🔍</div><p style={{color:'#aaa',marginBottom:'18px',fontSize:'15px'}}>{tx.none}</p><button onClick={()=>{setActiveCat('All');setSearch('')}} style={{background:'#0057D9',color:'white',border:'none',borderRadius:'14px',padding:'14px 32px',cursor:'pointer',fontSize:'15px',fontWeight:800}}>{tx.viewAll}</button></div>
         ) : (
           <div style={{display:'grid',gridTemplateColumns:isDesktop?'repeat(3,1fr)':'repeat(1,1fr)',gap:'16px'}}>
             {filtered.map((l,i)=>(
@@ -155,12 +155,12 @@ export default function Home() {
                 {i===2 && <div key="ad1" style={{gridColumn:'1/-1',background:'linear-gradient(135deg,#001A6E,#0041C4)',borderRadius:'18px',padding:'18px',display:'flex',alignItems:'center',gap:'14px',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,26,110,0.4)'}}>
                   <div style={{width:'56px',height:'56px',borderRadius:'16px',background:'white',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'28px'}}>🏦</div>
                   <div style={{flex:1,minWidth:0}}><div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'4px'}}>{tx.ad}</div><div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:'4px'}}>Commercial Bank of Ethiopia</div><div style={{fontSize:'12px',color:'rgba(255,255,255,0.75)'}}>🏠 Home loans up to ETB 5,000,000 · Low interest</div></div>
-                  <div style={{background:'#FCDD09',color:'#001A6E',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Apply Now</div>
+                  <div style={{background:'#0057D9',color:'#001A6E',fontSize:'12px',fontWeight:900,padding:'12px 16px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Apply Now</div>
                 </div>}
                 {i===5 && <div key="ad2" style={{gridColumn:'1/-1',borderRadius:'18px',overflow:'hidden',cursor:'pointer',boxShadow:'0 8px 28px rgba(0,0,0,0.2)',position:'relative'}}>
                   <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&q=85" alt="Toyota" style={{width:'100%',height:'170px',objectFit:'cover',display:'block'}}/>
                   <div style={{position:'absolute',inset:0,background:'linear-gradient(to right,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.15) 100%)',display:'flex',alignItems:'center',padding:'22px',gap:'14px'}}>
-                    <div style={{flex:1}}><div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'8px'}}>{tx.ad} · TOYOTA ETHIOPIA</div><div style={{fontSize:'26px',fontWeight:900,color:'white',marginBottom:'4px',lineHeight:1}}>Land Cruiser</div><div style={{fontSize:'14px',fontWeight:700,color:'#FCDD09',marginBottom:'6px'}}>2025 Edition</div><div style={{fontSize:'11px',color:'rgba(255,255,255,0.65)'}}>The ultimate off-roader</div></div>
+                    <div style={{flex:1}}><div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'8px'}}>{tx.ad} · TOYOTA ETHIOPIA</div><div style={{fontSize:'26px',fontWeight:900,color:'white',marginBottom:'4px',lineHeight:1}}>Land Cruiser</div><div style={{fontSize:'14px',fontWeight:700,color:'#0057D9',marginBottom:'6px'}}>2025 Edition</div><div style={{fontSize:'11px',color:'rgba(255,255,255,0.65)'}}>The ultimate off-roader</div></div>
                     <div style={{background:'#EF2118',color:'white',fontSize:'13px',fontWeight:900,padding:'14px 20px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Book Now</div>
                   </div>
                 </div>}
@@ -173,7 +173,7 @@ export default function Home() {
                   <div style={{position:'relative',height:isDesktop?'420px':'280px',overflow:'hidden'}}>
                     <img src={l.image_urls && l.image_urls.length > 0 ? l.image_urls[0] : getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%'}}/>
                     <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0) 55%)'}}/>
-                    <div style={{position:'absolute',top:'12px',left:'12px',background:CAT_COLORS[l.category]||'#078754',color:'white',fontSize:'10px',fontWeight:800,padding:'5px 14px',borderRadius:'20px',letterSpacing:'0.5px'}}>{tl(l.category)}</div>
+                    <div style={{position:'absolute',top:'12px',left:'12px',background:CAT_COLORS[l.category]||'#0057D9',color:'white',fontSize:'10px',fontWeight:800,padding:'5px 14px',borderRadius:'20px',letterSpacing:'0.5px'}}>{tl(l.category)}</div>
                     <button style={{position:'absolute',top:'10px',right:'12px',background:'rgba(0,0,0,0.35)',color:'white',border:'none',fontSize:'18px',width:'36px',height:'36px',borderRadius:'10px',cursor:'pointer'}}>♡</button>
                     <div style={{position:'absolute',bottom:'14px',left:'14px',right:'14px'}}>
                       <div style={{fontSize:'24px',fontWeight:900,color:'white',marginBottom:'4px',textShadow:'0 2px 8px rgba(0,0,0,0.5)'}}>{l.price_label}</div>
@@ -182,7 +182,7 @@ export default function Home() {
                   </div>
                   <div style={{padding:'14px 16px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
                     <div style={{display:'flex',alignItems:'center',gap:'6px'}}><span>📍</span><span style={{fontSize:'13px',color:'#555',fontWeight:600}}>{l.neighbourhood?l.neighbourhood+', ':''}{l.city}</span></div>
-                    <button style={{background:'#078754',color:'white',border:'none',borderRadius:'12px',padding:'9px 22px',fontSize:'13px',fontWeight:800,cursor:'pointer'}} onClick={()=>window.location.href=`/listing/${l.id}`}>{tx.view}</button>
+                    <button style={{background:'#0057D9',color:'white',border:'none',borderRadius:'12px',padding:'9px 22px',fontSize:'13px',fontWeight:800,cursor:'pointer'}} onClick={()=>window.location.href=`/listing/${l.id}`}>{tx.view}</button>
                   </div>
                 </div>
               </>
@@ -196,7 +196,7 @@ export default function Home() {
         <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg,rgba(0,100,0,0.93) 0%,rgba(0,60,0,0.55) 100%)',display:'flex',alignItems:'center',padding:'20px',gap:'16px'}}>
           <div style={{fontSize:'44px'}}>✈️</div>
           <div style={{flex:1}}><div style={{fontSize:'8px',color:'rgba(255,255,255,0.35)',letterSpacing:'2px',marginBottom:'5px'}}>{tx.ad}</div><div style={{fontSize:'20px',fontWeight:900,color:'white',marginBottom:'4px'}}>Ethiopian Airlines</div><div style={{fontSize:'12px',color:'rgba(255,255,255,0.8)'}}>Fly to 130+ destinations worldwide</div></div>
-          <div style={{background:'#FCDD09',color:'#111',fontSize:'12px',fontWeight:900,padding:'12px 18px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Book Now</div>
+          <div style={{background:'#0057D9',color:'#111',fontSize:'12px',fontWeight:900,padding:'12px 18px',borderRadius:'14px',whiteSpace:'nowrap',flexShrink:0}}>Book Now</div>
         </div>
       </div>
 
@@ -206,7 +206,7 @@ export default function Home() {
         <p style={{color:'rgba(255,255,255,0.45)',fontSize:'14px',margin:'0 0 24px',lineHeight:1.6}}>Buy, sell and connect from anywhere in Ethiopia</p>
         <div style={{display:'flex',gap:'12px',justifyContent:'center'}}>
           <button style={{background:'white',color:'#111',border:'none',borderRadius:'14px',padding:'14px 24px',fontSize:'14px',fontWeight:800,cursor:'pointer'}}>🍎 App Store</button>
-          <button style={{background:'#078754',color:'white',border:'none',borderRadius:'14px',padding:'14px 24px',fontSize:'14px',fontWeight:800,cursor:'pointer'}}>▶ Google Play</button>
+          <button style={{background:'#0057D9',color:'white',border:'none',borderRadius:'14px',padding:'14px 24px',fontSize:'14px',fontWeight:800,cursor:'pointer'}}>▶ Google Play</button>
         </div>
       </section>
 
@@ -225,7 +225,7 @@ export default function Home() {
         </div>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'1px solid rgba(255,255,255,0.05)',paddingTop:'18px'}}>
           <span style={{color:'rgba(255,255,255,0.12)',fontSize:'11px'}}>© 2025 HagerHub · Jiksi Michael</span>
-          <div style={{display:'flex',height:'3px',width:'42px',borderRadius:'2px',overflow:'hidden'}}><div style={{flex:1,background:'#078754'}}/><div style={{flex:1,background:'#FCDD09'}}/><div style={{flex:1,background:'#EF2118'}}/></div>
+          <div style={{display:'flex',height:'3px',width:'42px',borderRadius:'2px',overflow:'hidden'}}><div style={{flex:1,background:'#0057D9'}}/><div style={{flex:1,background:'#0057D9'}}/><div style={{flex:1,background:'#EF2118'}}/></div>
         </div>
       </footer>
     </main>
