@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
+import AIAssistant from '@/components/AIAssistant'
 import { useParams } from 'next/navigation'
 
 const DICT: Record<string, Record<string, string>> = {
@@ -87,6 +88,7 @@ export default function Home() {
           <button onClick={fetchListings} style={{background:'#078754',border:'none',color:'white',padding:'15px 22px',fontSize:'14px',fontWeight:800,cursor:'pointer',whiteSpace:'nowrap'}}>SEARCH</button>
         </div>
       </section>
+      <div style={{background:"white",padding:"10px 16px",display:"flex",gap:"10px",alignItems:"center",borderBottom:"1px solid #eee"}}><AuthButton /><a href="/post" style={{background:"#078754",color:"white",padding:"8px 18px",borderRadius:"20px",fontSize:"13px",fontWeight:700,textDecoration:"none"}}>+ Post Ad</a><AIAssistant /></div>
 
       <div style={{background:'linear-gradient(90deg,#001489 0%,#0033cc 50%,#001489 100%)',cursor:'pointer',overflow:'hidden',position:'relative'}}>
         <div style={{position:'absolute',right:0,top:0,bottom:0,width:'120px',background:'radial-gradient(circle at right,rgba(200,0,0,0.4),transparent)'}}/>
