@@ -105,10 +105,10 @@ export default function ListingPage() {
         <div>
           {/* IMAGE GALLERY */}
           <div style={{background:'#fff',borderRadius:'14px',overflow:'hidden',border:'1px solid #F3F4F6',marginBottom:'16px'}}>
-            <div style={{position:'relative',paddingTop:'56%',background:'#F3F4F6'}}>
+            <div style={{position:'relative',height:'480px',background:'#F9FAFB'}}>
               {imgs[activeImg] && (
                 <img src={imgs[activeImg]} alt={listing.title}
-                  style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/>
+                  style={{width:'100%',height:'100%',objectFit:'contain'}}/>
               )}
               <div style={{position:'absolute',top:'12px',left:'12px',background:'#2563EB',color:'white',fontSize:'11px',fontWeight:600,padding:'3px 10px',borderRadius:'6px'}}>
                 {listing.subcategory || listing.category}
