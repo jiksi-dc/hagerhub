@@ -97,8 +97,22 @@ export default function Home() {
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState<Set<string>>(new Set())
+  const [user, setUser] = useState<any>(null)
 
-  useEffect(()=>{ fetchListings() },[activeCat])
+  useEffect(()=>{
+    fetchListings()
+    const supabase = createClient()
+    supabase.auth.getUser().then(({data})=>{
+      setUser(data.user)
+      if(data.user) loadSaved(data.user.id)
+    })
+  },[activeCat])
+
+  async function loadSaved(userId: string) {
+    const supabase = createClient()
+    const {data} = await supabase.from('saved_listings').select('listing_id').eq('user_id',userId)
+    if(data) setSaved(new Set(data.map((r:any)=>r.listing_id)))
+  }
 
   async function fetchListings() {
     setLoading(true)
@@ -110,9 +124,17 @@ export default function Home() {
     setLoading(false)
   }
 
-  const toggleSave = (id:string,e:React.MouseEvent) => {
+  const toggleSave = async (id:string,e:React.MouseEvent) => {
     e.stopPropagation()
-    setSaved(prev=>{ const n=new Set(prev); n.has(id)?n.delete(id):n.add(id); return n })
+    if(!user) { window.location.href='/login'; return }
+    const supabase = createClient()
+    const isSaved = saved.has(id)
+    setSaved(prev=>{ const n=new Set(prev); isSaved?n.delete(id):n.add(id); return n })
+    if(isSaved) {
+      await supabase.from('saved_listings').delete().eq('user_id',user.id).eq('listing_id',id)
+    } else {
+      await supabase.from('saved_listings').insert({user_id:user.id,listing_id:id})
+    }
   }
 
   const filtered = listings.filter(l=>search===''||l.title.toLowerCase().includes(search.toLowerCase()))
