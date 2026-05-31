@@ -26,6 +26,71 @@ interface Listing {
   neighbourhood:string; category:string; subcategory:string; created_at:string
 }
 
+const adBase:React.CSSProperties = {borderRadius:'12px',overflow:'hidden',border:'1px solid #E5E7EB'}
+
+const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=150}:{bg:string,name:string,sub:string,cta:string,tag:string,delay?:string,height?:number}) => (
+  <div style={{marginBottom:'4px'}}>
+    <div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginBottom:'3px'}}>{tag}</div>
+    <div style={{...adBase,animation:`adpulse 4s ease-in-out infinite ${delay}`}}>
+      <div style={{height:`${height}px`,background:bg,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'7px',padding:'14px'}}>
+        <div style={{fontSize:'13px',fontWeight:600,color:'white',textAlign:'center'}}>{name}</div>
+        <div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',textAlign:'center',lineHeight:1.5}}>{sub}</div>
+        <button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'10px',padding:'5px 14px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.3)',cursor:'pointer',marginTop:'3px'}}>{cta}</button>
+      </div>
+      <div style={{background:'#fff',padding:'9px 11px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <div><div style={{fontSize:'11px',fontWeight:500,color:'#111'}}>{name}</div></div>
+        <div style={{fontSize:'10px',color:'#2563EB',cursor:'pointer'}}>Visit →</div>
+      </div>
+    </div>
+  </div>
+)
+
+const SIDEBARS: Record<string, React.ReactNode> = {
+  All: (
+    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
+      <AdCard bg="#006400" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide" cta="Book Now" tag="Premium partner" delay="0s" height={150}/>
+      <AdCard bg="#003087" name="CBE Home Loans" sub="Up to ETB 5,000,000 · Low interest" cta="Apply Now" tag="Partner" delay="1s" height={100}/>
+      <div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginBottom:'3px',marginTop:'4px'}}>Ad</div>
+      <div style={{...adBase,animation:'adpulse 6s ease-in-out infinite 2s'}}>
+        <div style={{height:'80px',background:'#FF6B00',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px'}}>
+          <div><div style={{fontSize:'12px',fontWeight:600,color:'white'}}>Telebirr</div><div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',marginTop:'2px'}}>Pay smarter across Ethiopia</div></div>
+          <button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'9px',padding:'4px 10px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.25)',cursor:'pointer',flexShrink:0}}>Get App</button>
+        </div>
+      </div>
+    </div>
+  ),
+  Properties: (
+    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
+      <AdCard bg="#1a3a5c" name="Midroc Real Estate" sub="Premium residential & commercial properties across Ethiopia" cta="View Properties" tag="Property partner" delay="0s" height={160}/>
+      <AdCard bg="#0C4A6E" name="CBE Home Loans" sub="Finance your dream home · Up to ETB 5,000,000 at low interest" cta="Apply for a Loan" tag="Property partner" delay="1s" height={160}/>
+    </div>
+  ),
+  Vehicles: (
+    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
+      <AdCard bg="#1a1a2e" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance · Best rates in Ethiopia" cta="Get a Quote" tag="Vehicle partner" delay="0s" height={160}/>
+      <AdCard bg="#006400" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide" cta="Book Now" tag="Partner" delay="1s" height={100}/>
+    </div>
+  ),
+  Machinery: (
+    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
+      <AdCard bg="#78350F" name="Midroc Construction" sub="Leading construction company in Ethiopia · Equipment & Services" cta="Learn More" tag="Machinery partner" delay="0s" height={160}/>
+      <AdCard bg="#166534" name="Ethiopian Agri-Business" sub="Farm equipment financing & leasing across Ethiopia" cta="Apply Now" tag="Partner" delay="1s" height={100}/>
+    </div>
+  ),
+  Classifieds: (
+    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
+      <AdCard bg="#FF6B00" name="Telebirr" sub="Pay for anything across Ethiopia · Send & Receive money instantly" cta="Get App" tag="Payment partner" delay="0s" height={160}/>
+      <AdCard bg="#003087" name="CBE" sub="Digital banking · Instant transfers · Mobile banking" cta="Learn More" tag="Partner" delay="1s" height={100}/>
+    </div>
+  ),
+  Jobs: (
+    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
+      <AdCard bg="#006400" name="Ethiopian Airlines" sub="We are hiring · Join Africa's largest airline today" cta="View Jobs" tag="Employer partner" delay="0s" height={160}/>
+      <AdCard bg="#1a3a5c" name="Midroc Group" sub="Career opportunities across Ethiopia · Apply now" cta="Apply Now" tag="Employer partner" delay="1s" height={100}/>
+    </div>
+  ),
+}
+
 export default function Home() {
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
@@ -45,7 +110,7 @@ export default function Home() {
     setLoading(false)
   }
 
-  const toggleSave = (id:string, e:React.MouseEvent) => {
+  const toggleSave = (id:string,e:React.MouseEvent) => {
     e.stopPropagation()
     setSaved(prev=>{ const n=new Set(prev); n.has(id)?n.delete(id):n.add(id); return n })
   }
@@ -53,7 +118,6 @@ export default function Home() {
   const filtered = listings.filter(l=>search===''||l.title.toLowerCase().includes(search.toLowerCase()))
   const getImg = (cat:string,id:string) => { const a=IMGS[cat]||IMGS.Properties; return a[id.charCodeAt(0)%a.length] }
   const cats = ['All',...POPULAR.map(p=>p.name)]
-
   const badgeColor = (cat:string) => cat==='Properties'?'#2563EB':cat==='Vehicles'?'#DC2626':cat==='Jobs'?'#059669':'#7C3AED'
 
   const Card = ({l}:{l:Listing}) => (
@@ -69,49 +133,6 @@ export default function Home() {
       <div style={{padding:'10px 12px'}}>
         <div style={{fontSize:'12px',fontWeight:500,color:'#111',marginBottom:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
         <div style={{fontSize:'11px',color:'#9CA3AF'}}>{l.neighbourhood?l.neighbourhood+', ':''}{l.city}</div>
-      </div>
-    </div>
-  )
-
-  const adBase:React.CSSProperties = {borderRadius:'12px',overflow:'hidden',border:'1px solid #E5E7EB'}
-
-  const Sidebar = () => (
-    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
-      <div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase'}}>Premium partner</div>
-      <div style={{...adBase,animation:'adpulse 4s ease-in-out infinite'}}>
-        <div style={{height:'150px',background:'#006400',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'7px',padding:'14px'}}>
-          <div style={{fontSize:'13px',fontWeight:600,color:'white',textAlign:'center'}}>Ethiopian Airlines</div>
-          <div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',textAlign:'center',lineHeight:1.5}}>Fly to 130+ destinations worldwide</div>
-          <button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'10px',padding:'5px 14px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.3)',cursor:'pointer',marginTop:'3px'}}>Book Now</button>
-        </div>
-        <div style={{background:'#fff',padding:'9px 11px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-          <div><div style={{fontSize:'11px',fontWeight:500,color:'#111'}}>Ethiopian Airlines</div><div style={{fontSize:'9px',color:'#9CA3AF'}}>Official partner</div></div>
-          <div style={{fontSize:'10px',color:'#2563EB',cursor:'pointer'}}>Visit →</div>
-        </div>
-      </div>
-
-      <div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginTop:'4px'}}>Partner</div>
-      <div style={{...adBase,animation:'adpulse 5s ease-in-out infinite 1s'}}>
-        <div style={{height:'100px',background:'#003087',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'5px',padding:'12px'}}>
-          <div style={{fontSize:'12px',fontWeight:600,color:'white',textAlign:'center'}}>CBE Home Loans</div>
-          <div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',textAlign:'center'}}>Up to ETB 5,000,000 · Low interest</div>
-          <button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'9px',padding:'4px 10px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.25)',cursor:'pointer'}}>Apply Now</button>
-        </div>
-        <div style={{background:'#fff',padding:'8px 11px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-          <div><div style={{fontSize:'11px',fontWeight:500,color:'#111'}}>CBE</div><div style={{fontSize:'9px',color:'#9CA3AF'}}>Financial partner</div></div>
-          <div style={{fontSize:'10px',color:'#2563EB',cursor:'pointer'}}>Apply →</div>
-        </div>
-      </div>
-
-      <div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginTop:'4px'}}>Ad</div>
-      <div style={{...adBase,animation:'adpulse 6s ease-in-out infinite 2s'}}>
-        <div style={{height:'80px',background:'#FF6B00',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px'}}>
-          <div>
-            <div style={{fontSize:'12px',fontWeight:600,color:'white'}}>Telebirr</div>
-            <div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',marginTop:'2px'}}>Pay smarter across Ethiopia</div>
-          </div>
-          <button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'9px',padding:'4px 10px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.25)',cursor:'pointer',flexShrink:0}}>Get App</button>
-        </div>
       </div>
     </div>
   )
@@ -200,7 +221,8 @@ export default function Home() {
             </div>
           )}
         </div>
-        <Sidebar/>
+
+        {SIDEBARS[activeCat] || SIDEBARS['All']}
       </div>
 
       <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
