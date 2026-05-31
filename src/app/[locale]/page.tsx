@@ -14,6 +14,16 @@ const POPULAR = [
   { key:'jobs',       name:'Jobs',       items:['Accounting & Finance','Engineering','IT & Technology','Healthcare'] },
 ]
 
+const SUBCATS: Record<string,string[]> = {
+  Properties: ['Residential for Rent','Residential for Sale','Commercial','Land & Plots'],
+  Vehicles:   ['Used Cars','New Cars','Trucks & LGVs','Motorcycles'],
+  Machinery:  ['Farm Equipment','Construction','Generators','Industrial'],
+  Classifieds:['Mobile Phones','Electronics','Furniture & Home','Clothing','IT & Technology'],
+  Jobs:       ['Accounting & Finance','Engineering','IT & Technology','Healthcare','Education'],
+}
+
+const CITIES = ['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa','Mekelle','Adama','Jimma','Gondar']
+
 const IMGS: Record<string,string[]> = {
   Properties:['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=85','https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=85'],
   Vehicles:  ['https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600&q=85','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=85'],
@@ -92,6 +102,10 @@ const SIDEBARS: Record<string, React.ReactNode> = {
   ),
 }
 
+const filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#6B7280',marginBottom:'8px',display:'block'}
+const filterSelect:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',background:'#fff',fontFamily:'inherit',outline:'none',cursor:'pointer'}
+const filterInput:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',fontFamily:'inherit',outline:'none'}
+
 export default function Home() {
   const t = useTranslations()
   const locale = useLocale()
@@ -101,6 +115,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState<Set<string>>(new Set())
   const [user, setUser] = useState<any>(null)
+
+  // Filter state
+  const [filterCity, setFilterCity] = useState('')
+  const [filterSubcat, setFilterSubcat] = useState('')
+  const [filterMinPrice, setFilterMinPrice] = useState('')
+  const [filterMaxPrice, setFilterMaxPrice] = useState('')
+  const [filterSort, setFilterSort] = useState('newest')
 
   const TABS = [
     { key:'all',        name:'All' },
@@ -120,6 +141,15 @@ export default function Home() {
     })
   },[activeCat])
 
+  // Reset filters when category changes
+  useEffect(()=>{
+    setFilterCity('')
+    setFilterSubcat('')
+    setFilterMinPrice('')
+    setFilterMaxPrice('')
+    setFilterSort('newest')
+  },[activeCat])
+
   async function loadSaved(userId: string) {
     const supabase = createClient()
     const {data} = await supabase.from('saved_listings').select('listing_id').eq('user_id',userId)
@@ -131,7 +161,7 @@ export default function Home() {
     const supabase = createClient()
     let q = supabase.from('listings').select('*').eq('status','active').order('created_at',{ascending:false})
     if (activeCat!=='All') q = q.eq('category',activeCat)
-    const {data} = await q.limit(40)
+    const {data} = await q.limit(100)
     setListings(data||[])
     setLoading(false)
   }
@@ -149,9 +179,29 @@ export default function Home() {
     }
   }
 
-  const filtered = listings.filter(l=>
-    !search || l.title?.toLowerCase().includes(search.toLowerCase())
-  )
+  const clearFilters = () => {
+    setFilterCity('')
+    setFilterSubcat('')
+    setFilterMinPrice('')
+    setFilterMaxPrice('')
+    setFilterSort('newest')
+    setSearch('')
+  }
+
+  const hasActiveFilters = filterCity || filterSubcat || filterMinPrice || filterMaxPrice || search
+
+  // Apply all filters client-side
+  let filtered = listings.filter(l => {
+    if (search && !l.title?.toLowerCase().includes(search.toLowerCase())) return false
+    if (filterCity && l.city !== filterCity) return false
+    if (filterSubcat && l.subcategory !== filterSubcat) return false
+    if (filterMinPrice && Number(l.price_label?.replace(/[^0-9]/g,'')) < Number(filterMinPrice)) return false
+    if (filterMaxPrice && Number(l.price_label?.replace(/[^0-9]/g,'')) > Number(filterMaxPrice)) return false
+    return true
+  })
+
+  if (filterSort === 'price_asc') filtered = [...filtered].sort((a,b) => Number(a.price_label?.replace(/[^0-9]/g,'')) - Number(b.price_label?.replace(/[^0-9]/g,'')))
+  if (filterSort === 'price_desc') filtered = [...filtered].sort((a,b) => Number(b.price_label?.replace(/[^0-9]/g,'')) - Number(a.price_label?.replace(/[^0-9]/g,'')))
 
   const Card = ({l}:{l:Listing}) => {
     const imgs = l.image_urls?.length ? l.image_urls : IMGS[l.category]||[]
@@ -180,11 +230,84 @@ export default function Home() {
     )
   }
 
+  const FilterPanel = () => (
+    <div style={{position:'sticky',top:'120px',alignSelf:'start',background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'18px',display:'flex',flexDirection:'column',gap:'18px',minWidth:'200px'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}>Filters</span>
+        {hasActiveFilters && (
+          <button onClick={clearFilters} style={{fontSize:'11px',color:'#2563EB',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontWeight:600}}>Clear all</button>
+        )}
+      </div>
+
+      {/* Sort */}
+      <div>
+        <label style={filterLabel}>Sort by</label>
+        <select value={filterSort} onChange={e=>setFilterSort(e.target.value)} style={filterSelect}>
+          <option value="newest">Newest first</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+        </select>
+      </div>
+
+      {/* Location */}
+      <div>
+        <label style={filterLabel}>City</label>
+        <select value={filterCity} onChange={e=>setFilterCity(e.target.value)} style={filterSelect}>
+          <option value="">All cities</option>
+          {CITIES.map(c=><option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+
+      {/* Subcategory */}
+      {SUBCATS[activeCat] && (
+        <div>
+          <label style={filterLabel}>Type</label>
+          <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={filterSelect}>
+            <option value="">All types</option>
+            {SUBCATS[activeCat].map(s=><option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+      )}
+
+      {/* Price range */}
+      <div>
+        <label style={filterLabel}>Price (ETB)</label>
+        <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
+          <input
+            type="number"
+            placeholder="Min"
+            value={filterMinPrice}
+            onChange={e=>setFilterMinPrice(e.target.value)}
+            style={{...filterInput,width:'50%'}}
+          />
+          <span style={{color:'#9CA3AF',fontSize:'12px'}}>—</span>
+          <input
+            type="number"
+            placeholder="Max"
+            value={filterMaxPrice}
+            onChange={e=>setFilterMaxPrice(e.target.value)}
+            style={{...filterInput,width:'50%'}}
+          />
+        </div>
+      </div>
+
+      {/* Active filter chips */}
+      {hasActiveFilters && (
+        <div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>
+          {filterCity && <span style={{fontSize:'11px',background:'#EFF6FF',color:'#2563EB',padding:'3px 8px',borderRadius:'20px',fontWeight:500}}>{filterCity} ×</span>}
+          {filterSubcat && <span style={{fontSize:'11px',background:'#EFF6FF',color:'#2563EB',padding:'3px 8px',borderRadius:'20px',fontWeight:500}}>{filterSubcat} ×</span>}
+          {(filterMinPrice||filterMaxPrice) && <span style={{fontSize:'11px',background:'#EFF6FF',color:'#2563EB',padding:'3px 8px',borderRadius:'20px',fontWeight:500}}>ETB {filterMinPrice||'0'} – {filterMaxPrice||'∞'} ×</span>}
+        </div>
+      )}
+    </div>
+  )
+
   return (
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{`
         @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.92} }
         *{box-sizing:border-box;margin:0;padding:0}
+        select:focus,input:focus{border-color:#2563EB!important}
       `}</style>
 
       {/* NAV */}
@@ -228,9 +351,13 @@ export default function Home() {
       </nav>
 
       {/* MAIN */}
-      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns:'1fr 240px',gap:'24px',alignItems:'start'}}>
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 240px' : '220px 1fr 240px',gap:'24px',alignItems:'start'}}>
+
+        {/* FILTER PANEL — only when category is active */}
+        {activeCat !== 'All' && <FilterPanel/>}
+
         <div>
-          {/* POPULAR CATEGORIES GRID */}
+          {/* POPULAR CATEGORIES GRID — only on All */}
           {activeCat==='All' && (
             <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px 24px',marginBottom:'24px'}}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>
@@ -252,6 +379,17 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Results count when filtering */}
+          {activeCat !== 'All' && (
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
+              <div>
+                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0,display:'inline'}}>{t('cats.' + TABS.find(tab=>tab.name===activeCat)?.key || 'all')}</h2>
+                <span style={{fontSize:'12px',color:'#9CA3AF',marginLeft:'8px'}}>{filtered.length} {t('home.available')}</span>
+              </div>
+              <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit'}}>← Back</button>
             </div>
           )}
 
@@ -278,14 +416,8 @@ export default function Home() {
               )
             })
           ) : (
-            <div>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
-                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0}}>{t('cats.' + TABS.find(t=>t.name===activeCat)?.key || 'all')}</h2>
-                <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit'}}>← Back</button>
-              </div>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
-                {filtered.map(l=><Card key={l.id} l={l}/>)}
-              </div>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+              {filtered.map(l=><Card key={l.id} l={l}/>)}
             </div>
           )}
         </div>
