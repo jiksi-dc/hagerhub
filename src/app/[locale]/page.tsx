@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
 import AIAssistant from '@/components/AIAssistant'
@@ -139,7 +140,9 @@ export default function Home() {
 
   const filtered = listings.filter(l=>search===''||l.title.toLowerCase().includes(search.toLowerCase()))
   const getImg = (cat:string,id:string) => { const a=IMGS[cat]||IMGS.Properties; return a[id.charCodeAt(0)%a.length] }
-  const cats = ['All',...POPULAR.map(p=>p.name)]
+  const locale = useLocale()
+  const t = useTranslations()
+  const cats = [t('cats.all'),...POPULAR.map(p=>p.name)]
   const badgeColor = (cat:string) => cat==='Properties'?'#2563EB':cat==='Vehicles'?'#DC2626':cat==='Jobs'?'#059669':'#7C3AED'
 
   const Card = ({l}:{l:Listing}) => (
