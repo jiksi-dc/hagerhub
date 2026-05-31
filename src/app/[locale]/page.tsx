@@ -7,19 +7,19 @@ import AIAssistant from '@/components/AIAssistant'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 const POPULAR = [
-  { name:'Properties', items:['Residential for Rent','Residential for Sale','Commercial','Land & Plots'] },
-  { name:'Vehicles', items:['Used Cars','New Cars','Trucks & LGVs','Motorcycles'] },
-  { name:'Machinery', items:['Farm Equipment','Construction','Generators','Industrial'] },
-  { name:'Classifieds', items:['Mobile Phones','Electronics','Furniture & Home','Clothing'] },
-  { name:'Jobs', items:['Accounting & Finance','Engineering','IT & Technology','Healthcare'] },
+  { key:'properties', name:'Properties', items:['Residential for Rent','Residential for Sale','Commercial','Land & Plots'] },
+  { key:'vehicles',   name:'Vehicles',   items:['Used Cars','New Cars','Trucks & LGVs','Motorcycles'] },
+  { key:'machinery',  name:'Machinery',  items:['Farm Equipment','Construction','Generators','Industrial'] },
+  { key:'classifieds',name:'Classifieds',items:['Mobile Phones','Electronics','Furniture & Home','Clothing'] },
+  { key:'jobs',       name:'Jobs',       items:['Accounting & Finance','Engineering','IT & Technology','Healthcare'] },
 ]
 
 const IMGS: Record<string,string[]> = {
   Properties:['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=85','https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=85'],
-  Vehicles:['https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600&q=85','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=85'],
-  Machinery:['https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=600&q=85','https://images.unsplash.com/photo-1530685932526-48ec92998eaa?w=600&q=85'],
+  Vehicles:  ['https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600&q=85','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=85'],
+  Machinery: ['https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=600&q=85','https://images.unsplash.com/photo-1530685932526-48ec92998eaa?w=600&q=85'],
   Classifieds:['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=85','https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&q=85'],
-  Jobs:['https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=85','https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=85'],
+  Jobs:      ['https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=85','https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=85'],
 }
 
 interface Listing {
@@ -39,7 +39,7 @@ const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=150}:{bg:string,name:stri
         <button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'10px',padding:'5px 14px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.3)',cursor:'pointer',marginTop:'3px'}}>{cta}</button>
       </div>
       <div style={{background:'#fff',padding:'9px 11px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <div><div style={{fontSize:'11px',fontWeight:500,color:'#111'}}>{name}</div></div>
+        <div style={{fontSize:'11px',fontWeight:500,color:'#111'}}>{name}</div>
         <div style={{fontSize:'10px',color:'#2563EB',cursor:'pointer'}}>Visit →</div>
       </div>
     </div>
@@ -93,12 +93,23 @@ const SIDEBARS: Record<string, React.ReactNode> = {
 }
 
 export default function Home() {
+  const t = useTranslations()
+  const locale = useLocale()
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState<Set<string>>(new Set())
   const [user, setUser] = useState<any>(null)
+
+  const TABS = [
+    { key:'all',        name:'All' },
+    { key:'properties', name:'Properties' },
+    { key:'vehicles',   name:'Vehicles' },
+    { key:'machinery',  name:'Machinery' },
+    { key:'classifieds',name:'Classifieds' },
+    { key:'jobs',       name:'Jobs' },
+  ]
 
   useEffect(()=>{
     fetchListings()
@@ -138,76 +149,106 @@ export default function Home() {
     }
   }
 
-  const filtered = listings.filter(l=>search===''||l.title.toLowerCase().includes(search.toLowerCase()))
-  const getImg = (cat:string,id:string) => { const a=IMGS[cat]||IMGS.Properties; return a[id.charCodeAt(0)%a.length] }
-  const locale = useLocale()
-  const t = useTranslations()
-  const cats = [t('cats.all'),...POPULAR.map(p=>p.name)]
-  const badgeColor = (cat:string) => cat==='Properties'?'#2563EB':cat==='Vehicles'?'#DC2626':cat==='Jobs'?'#059669':'#7C3AED'
-
-  const Card = ({l}:{l:Listing}) => (
-    <div onClick={()=>window.location.href=`/listing/${l.id}`} style={{background:'#fff',borderRadius:'12px',overflow:'hidden',border:'1px solid #EBEBEB',cursor:'pointer'}}>
-      <div style={{position:'relative',height:'160px',overflow:'hidden',background:'#F5F5F5'}}>
-        <img src={l.image_urls&&l.image_urls.length>0?l.image_urls[0]:getImg(l.category,l.id)} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
-        <div style={{position:'absolute',top:'8px',left:'8px',background:badgeColor(l.category),color:'white',fontSize:'10px',fontWeight:600,padding:'2px 8px',borderRadius:'3px'}}>{l.subcategory||l.category}</div>
-        <button onClick={e=>toggleSave(l.id,e)} style={{position:'absolute',top:'8px',right:'8px',background:'rgba(255,255,255,0.92)',border:'none',borderRadius:'50%',width:'26px',height:'26px',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',fontSize:'14px',color:saved.has(l.id)?'#EF4444':'#9CA3AF'}}>
-          {saved.has(l.id)?'♥':'♡'}
-        </button>
-        <div style={{position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(to top,rgba(0,0,0,0.65),transparent)',padding:'24px 10px 8px',color:'white',fontSize:'13px',fontWeight:600}}>{l.price_label}</div>
-      </div>
-      <div style={{padding:'10px 12px'}}>
-        <div style={{fontSize:'12px',fontWeight:500,color:'#111',marginBottom:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
-        <div style={{fontSize:'11px',color:'#9CA3AF'}}>{l.neighbourhood?l.neighbourhood+', ':''}{l.city}</div>
-      </div>
-    </div>
+  const filtered = listings.filter(l=>
+    !search || l.title?.toLowerCase().includes(search.toLowerCase())
   )
 
-  return (
-    <main style={{fontFamily:'system-ui,-apple-system,sans-serif',background:'#F7F7F7',minHeight:'100vh'}}>
-      <style>{`@keyframes adpulse{0%,100%{opacity:1;border-color:#E5E7EB}50%{opacity:0.93;border-color:#D1D5DB}}`}</style>
-
-      <header style={{background:'#fff',borderBottom:'1px solid #EBEBEB',position:'sticky',top:0,zIndex:100}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'12px 20px',display:'flex',alignItems:'center',gap:'16px'}}>
-          <div style={{flexShrink:0}}>
-            <div style={{fontSize:'18px',fontWeight:900,color:'#111',letterSpacing:'2px',lineHeight:1}}>HAGERHUB</div>
-            <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'2px',marginTop:'2px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
+  const Card = ({l}:{l:Listing}) => {
+    const imgs = l.image_urls?.length ? l.image_urls : IMGS[l.category]||[]
+    const img = imgs[0]||''
+    return (
+      <div onClick={()=>window.location.href=`/${locale}/listing/${l.id}`}
+        style={{background:'#fff',borderRadius:'12px',overflow:'hidden',border:'1px solid #F3F4F6',cursor:'pointer',transition:'box-shadow .15s'}}>
+        <div style={{position:'relative',paddingTop:'66%',background:'#F9FAFB'}}>
+          {img && <img src={img} alt={l.title} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/>}
+          <div style={{position:'absolute',bottom:'8px',left:'8px',background:'rgba(0,0,0,0.7)',color:'white',fontSize:'12px',fontWeight:700,padding:'3px 8px',borderRadius:'6px'}}>
+            ETB {l.price_label}
           </div>
-          <div style={{flex:1,display:'flex',alignItems:'center',background:'#F5F5F5',border:'1.5px solid #EBEBEB',borderRadius:'10px',overflow:'hidden'}}>
-            <input style={{flex:1,border:'none',padding:'10px 14px',fontSize:'14px',outline:'none',background:'transparent',color:'#111',fontFamily:'inherit'}} placeholder="Search properties, cars, jobs across Ethiopia..." value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&fetchListings()}/>
-            <button onClick={fetchListings} style={{background:'#111',border:'none',color:'white',padding:'10px 22px',fontSize:'13px',fontWeight:700,cursor:'pointer',whiteSpace:'nowrap',fontFamily:'inherit'}}>Search</button>
-          </div>
-          <div style={{display:'flex',alignItems:'center',gap:'8px',flexShrink:0}}>
-            <AuthButton />
-            <a href="/post" style={{background:'#111',color:'white',padding:'9px 18px',borderRadius:'8px',fontSize:'13px',fontWeight:700,textDecoration:'none',whiteSpace:'nowrap'}}>+ Post Ad</a>
-            <LanguageSwitcher />
-            <AIAssistant />
+          <button onClick={(e)=>toggleSave(l.id,e)}
+            style={{position:'absolute',top:'8px',right:'8px',background:'rgba(255,255,255,0.9)',border:'none',borderRadius:'50%',width:'30px',height:'30px',cursor:'pointer',fontSize:'15px',display:'flex',alignItems:'center',justifyContent:'center'}}>
+            {saved.has(l.id)?'♥':'♡'}
+          </button>
+          <div style={{position:'absolute',top:'8px',left:'8px',background:'#2563EB',color:'white',fontSize:'10px',fontWeight:600,padding:'2px 7px',borderRadius:'5px'}}>
+            {l.subcategory||l.category}
           </div>
         </div>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',display:'flex',borderTop:'1px solid #F5F5F5',overflowX:'auto'}}>
-          {cats.map(c=>(
-            <button key={c} onClick={()=>setActiveCat(c)} style={{padding:'10px 20px',border:'none',background:'none',fontSize:'13px',fontWeight:600,color:activeCat===c?'#111':'#6B7280',borderBottom:activeCat===c?'2.5px solid #111':'2.5px solid transparent',cursor:'pointer',whiteSpace:'nowrap',fontFamily:'inherit'}}>
-              {c}
+        <div style={{padding:'10px 12px 12px'}}>
+          <div style={{fontSize:'13px',fontWeight:600,color:'#111',marginBottom:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
+          <div style={{fontSize:'11px',color:'#6B7280'}}>{l.neighbourhood}, {l.city}</div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
+      <style>{`
+        @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.92} }
+        *{box-sizing:border-box;margin:0;padding:0}
+      `}</style>
+
+      {/* NAV */}
+      <nav style={{position:'sticky',top:0,zIndex:100,background:'#fff',borderBottom:'1px solid #EBEBEB'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
+          <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
+            <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>HAGERHUB</div>
+            <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
+          </a>
+          <div style={{flex:1,maxWidth:'480px',position:'relative'}}>
+            <input value={search} onChange={e=>setSearch(e.target.value)}
+              placeholder={t('nav.search')}
+              style={{width:'100%',padding:'9px 14px 9px 38px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',outline:'none',fontFamily:'inherit'}}/>
+            <span style={{position:'absolute',left:'12px',top:'50%',transform:'translateY(-50%)',color:'#9CA3AF',fontSize:'14px'}}>⌕</span>
+          </div>
+          <button style={{padding:'9px 18px',background:'#111',color:'white',border:'none',borderRadius:'8px',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',flexShrink:0}}>
+            {t('nav.search').split('፣')[0].length > 3 ? 'Search' : t('nav.search')}
+          </button>
+          <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+            <AuthButton/>
+            <a href={`/${locale}/post`} style={{fontSize:'13px',fontWeight:600,padding:'9px 18px',background:'#111',color:'white',borderRadius:'8px',textDecoration:'none',border:'none',whiteSpace:'nowrap'}}>
+              {t('nav.post')}
+            </a>
+            <LanguageSwitcher/>
+            <AIAssistant/>
+          </div>
+        </div>
+
+        {/* CATEGORY TABS */}
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',display:'flex',gap:'0',borderTop:'1px solid #F3F4F6'}}>
+          {TABS.map(tab=>(
+            <button key={tab.key} onClick={()=>setActiveCat(tab.name)}
+              style={{padding:'12px 18px',fontSize:'13px',fontWeight:activeCat===tab.name?700:400,
+                color:activeCat===tab.name?'#111':'#6B7280',background:'none',border:'none',
+                borderBottom:activeCat===tab.name?'2px solid #111':'2px solid transparent',
+                cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'color .15s'}}>
+              {t('cats.' + tab.key)}
             </button>
           ))}
         </div>
-      </header>
+      </nav>
 
-      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'20px',display:'grid',gridTemplateColumns:'1fr 260px',gap:'20px',alignItems:'start'}}>
+      {/* MAIN */}
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns:'1fr 240px',gap:'24px',alignItems:'start'}}>
         <div>
+          {/* POPULAR CATEGORIES GRID */}
           {activeCat==='All' && (
-            <div style={{background:'#fff',borderRadius:'12px',border:'1px solid #EBEBEB',overflow:'hidden',marginBottom:'20px'}}>
-              <div style={{padding:'12px 16px',borderBottom:'1px solid #F5F5F5',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                <span style={{fontSize:'14px',fontWeight:700,color:'#111'}}>Popular Categories</span>
-                <span style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>See all →</span>
+            <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px 24px',marginBottom:'24px'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>
+                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111'}}>{t('home.browse')}</h2>
+                <span style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
               </div>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)'}}>
-                {POPULAR.map((cat,i)=>(
-                  <div key={cat.name} onClick={()=>setActiveCat(cat.name)} style={{padding:'14px 12px',borderRight:i<4?'1px solid #F5F5F5':'none',cursor:'pointer'}}>
-                    <div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'8px'}}>{cat.name}</div>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'16px'}}>
+                {POPULAR.map(cat=>(
+                  <div key={cat.key} onClick={()=>setActiveCat(cat.name)} style={{cursor:'pointer'}}>
+                    <div style={{fontSize:'12px',fontWeight:700,color:'#111',marginBottom:'6px'}}>
+                      {t('cats.' + cat.key)}
+                    </div>
                     {cat.items.map(item=>(
-                      <div key={item} style={{fontSize:'11px',color:'#6B7280',marginBottom:'4px',lineHeight:1.3}}>{item}</div>
+                      <div key={item} style={{fontSize:'11px',color:'#6B7280',marginBottom:'4px'}}>{item}</div>
                     ))}
-                    <div style={{fontSize:'11px',color:'#2563EB',fontWeight:600,marginTop:'8px'}}>All in {cat.name} →</div>
+                    <div style={{fontSize:'11px',color:'#2563EB',fontWeight:600,marginTop:'8px'}}>
+                      {t('home.viewAll')} →
+                    </div>
                   </div>
                 ))}
               </div>
@@ -215,18 +256,20 @@ export default function Home() {
           )}
 
           {loading ? (
-            <div style={{textAlign:'center',padding:'60px',color:'#9CA3AF',background:'#fff',borderRadius:'12px'}}>Loading listings...</div>
+            <div style={{textAlign:'center',padding:'60px',color:'#9CA3AF',background:'#fff',borderRadius:'12px'}}>{t('home.loading')}</div>
           ) : filtered.length===0 ? (
-            <div style={{textAlign:'center',padding:'60px',color:'#9CA3AF',background:'#fff',borderRadius:'12px'}}>No listings yet in this category</div>
+            <div style={{textAlign:'center',padding:'60px',color:'#9CA3AF',background:'#fff',borderRadius:'12px'}}>{t('home.none')}</div>
           ) : activeCat==='All' ? (
             POPULAR.map(cat=>{
               const items=filtered.filter(l=>l.category===cat.name)
               if(items.length===0) return null
               return (
-                <div key={cat.name} style={{marginBottom:'24px'}}>
+                <div key={cat.key} style={{marginBottom:'24px'}}>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}}>
-                    <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0}}>Popular in {cat.name}</h2>
-                    <span onClick={()=>setActiveCat(cat.name)} style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>See all →</span>
+                    <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0}}>
+                      Popular in {t('cats.' + cat.key)}
+                    </h2>
+                    <span onClick={()=>setActiveCat(cat.name)} style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
                   </div>
                   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
                     {items.slice(0,4).map(l=><Card key={l.id} l={l}/>)}
@@ -237,7 +280,7 @@ export default function Home() {
           ) : (
             <div>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
-                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0}}>{activeCat}</h2>
+                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0}}>{t('cats.' + TABS.find(t=>t.name===activeCat)?.key || 'all')}</h2>
                 <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit'}}>← Back</button>
               </div>
               <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
@@ -256,11 +299,11 @@ export default function Home() {
           <div style={{fontSize:'11px',color:'#9CA3AF',letterSpacing:'1.5px',marginBottom:'24px'}}>ETHIOPIA'S #1 MARKETPLACE · የኢትዮጵያ ቁጥር 1 ገበያ</div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'24px',marginBottom:'28px'}}>
             {[
-              {title:'Company',links:['About Us','Careers','Advertise with Us','Legal Hub']},
-              {title:'Ethiopia',links:['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa']},
-              {title:'Support',links:['Help Center','Contact Us','Safety Tips','Report Listing']},
-              {title:'Follow Us',links:['Facebook','Telegram','Instagram','TikTok']},
-              {title:'Languages',links:['English','አማርኛ']},
+              {title:t('footer.company'), links:['About Us','Careers','Advertise with Us','Legal Hub']},
+              {title:t('footer.ethiopia'),links:['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa']},
+              {title:t('footer.support'), links:['Help Center','Contact Us','Safety Tips','Report Listing']},
+              {title:t('footer.follow'),  links:['Facebook','Telegram','Instagram','TikTok']},
+              {title:'Languages',         links:['English','አማርኛ']},
             ].map(col=>(
               <div key={col.title}>
                 <div style={{fontSize:'10px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1.5px',color:'#9CA3AF',marginBottom:'10px'}}>{col.title}</div>

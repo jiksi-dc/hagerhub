@@ -2,13 +2,6 @@
 import {useLocale} from 'next-intl'
 import {useRouter, usePathname} from 'next/navigation'
 
-const LANGS = [
-  {code:'en', label:'🇺🇸 English'},
-  {code:'am', label:'🇪🇹 አማርኛ'},
-  {code:'ar', label:'🇸🇦 العربية'},
-  {code:'fr', label:'🇫🇷 Français'},
-]
-
 export default function LanguageSwitcher() {
   const locale = useLocale()
   const router = useRouter()
@@ -16,7 +9,7 @@ export default function LanguageSwitcher() {
 
   const switchLocale = (newLocale: string) => {
     const segments = pathname.split('/')
-    if (['en','am','ar','fr'].includes(segments[1])) {
+    if (['en','am'].includes(segments[1])) {
       segments[1] = newLocale
     } else {
       segments.splice(1, 0, newLocale)
@@ -25,13 +18,18 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div style={{position:'relative'}}>
-      <select
-        value={locale}
-        onChange={e=>switchLocale(e.target.value)}
-        style={{background:'#9CA3AF',color:'white',border:'none',borderRadius:'30px',padding:'12px 20px',fontSize:'14px',fontWeight:700,cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,0.3)'}}>
-        {LANGS.map(l=><option key={l.code} value={l.code}>{l.label}</option>)}
-      </select>
+    <div style={{display:'flex',alignItems:'center',gap:'4px',position:'relative'}}>
+      <button
+        onClick={()=>switchLocale('en')}
+        style={{fontSize:'13px',fontWeight:locale==='en'?700:400,color:locale==='en'?'#111':'#6B7280',background:'none',border:'none',cursor:'pointer',padding:'4px 6px',fontFamily:'inherit'}}>
+        EN
+      </button>
+      <span style={{color:'#D1D5DB',fontSize:'12px'}}>|</span>
+      <button
+        onClick={()=>switchLocale('am')}
+        style={{fontSize:'13px',fontWeight:locale==='am'?700:400,color:locale==='am'?'#111':'#6B7280',background:'none',border:'none',cursor:'pointer',padding:'4px 6px',fontFamily:'inherit'}}>
+        አማርኛ
+      </button>
     </div>
   )
 }
