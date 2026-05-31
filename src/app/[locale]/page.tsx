@@ -162,7 +162,7 @@ export default function Home() {
         <div style={{position:'relative',paddingTop:'66%',background:'#F9FAFB'}}>
           {img && <img src={img} alt={l.title} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/>}
           <div style={{position:'absolute',bottom:'8px',left:'8px',background:'rgba(0,0,0,0.7)',color:'white',fontSize:'12px',fontWeight:700,padding:'3px 8px',borderRadius:'6px'}}>
-            ETB {l.price_label}
+            {l.price_label}
           </div>
           <button onClick={(e)=>toggleSave(l.id,e)}
             style={{position:'absolute',top:'8px',right:'8px',background:'rgba(255,255,255,0.9)',border:'none',borderRadius:'50%',width:'30px',height:'30px',cursor:'pointer',fontSize:'15px',display:'flex',alignItems:'center',justifyContent:'center'}}>
@@ -201,7 +201,7 @@ export default function Home() {
             <span style={{position:'absolute',left:'12px',top:'50%',transform:'translateY(-50%)',color:'#9CA3AF',fontSize:'14px'}}>⌕</span>
           </div>
           <button style={{padding:'9px 18px',background:'#111',color:'white',border:'none',borderRadius:'8px',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',flexShrink:0}}>
-            {t('nav.search').split('፣')[0].length > 3 ? 'Search' : t('nav.search')}
+            {t('nav.searchBtn')}
           </button>
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
             <AuthButton/>

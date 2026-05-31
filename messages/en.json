@@ -1,8 +1,9 @@
 {
   "nav": {
-    "search": "Search properties, cars, jobs...",
-    "post": "+ Post",
-    "login": "Log in",
+    "search": "Search properties, cars, jobs across Ethiopia...",
+    "searchBtn": "Search",
+    "post": "+ Post Ad",
+    "login": "Sign in",
     "view": "View →"
   },
   "home": {
@@ -10,7 +11,7 @@
     "browse": "Browse Categories",
     "available": "listings available",
     "loading": "Loading listings...",
-    "none": "No listings found",
+    "none": "No listings yet in this category",
     "viewAll": "View all",
     "seeAll": "See all →"
   },
