@@ -429,7 +429,7 @@ export default function Home() {
           )}
         </div>
 
-        {SIDEBARS[activeCat] || SIDEBARS['All']}
+        <div className='sidebar-ads'>{SIDEBARS[activeCat] || SIDEBARS['All']}</div>
       </div>
 
       <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
