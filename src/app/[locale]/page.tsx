@@ -34,7 +34,7 @@ const IMGS: Record<string,string[]> = {
 
 interface Listing {
   image_urls?:string[]; id:string; title:string; price_label:string; city:string
-  neighbourhood:string; category:string; subcategory:string; created_at:string
+  neighbourhood:string; category:string; subcategory:string; created_at:string; user_id:string; verified?:boolean
 }
 
 const adBase:React.CSSProperties = {borderRadius:'12px',overflow:'hidden',border:'1px solid #E5E7EB'}
@@ -156,6 +156,12 @@ export default function Home() {
     if(data) setSaved(new Set(data.map((r:any)=>r.listing_id)))
   }
 
+  async function fetchProfile(userId: string) {
+    const supabase = createClient()
+    const {data} = await supabase.from('profiles').select('verified').eq('id', userId).single()
+    return data?.verified || false
+  }
+
   async function fetchListings() {
     setLoading(true)
     const supabase = createClient()
@@ -221,6 +227,11 @@ export default function Home() {
           <div style={{position:'absolute',top:'8px',left:'8px',background:'#2563EB',color:'white',fontSize:'10px',fontWeight:600,padding:'2px 7px',borderRadius:'5px'}}>
             {l.subcategory||l.category}
           </div>
+          {l.verified && (
+            <div style={{position:'absolute',bottom:'8px',right:'8px',background:'#059669',color:'white',fontSize:'9px',fontWeight:700,padding:'2px 7px',borderRadius:'5px',display:'flex',alignItems:'center',gap:'3px'}}>
+              ✓ Verified
+            </div>
+          )}
         </div>
         <div style={{padding:'10px 12px 12px'}}>
           <div style={{fontSize:'13px',fontWeight:600,color:'#111',marginBottom:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>

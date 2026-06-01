@@ -30,12 +30,20 @@ export default function ListingPage() {
   const [saved, setSaved] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [activeImg, setActiveImg] = useState(0)
+  const [verified, setVerified] = useState(false)
   const [lightbox, setLightbox] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
     supabase.from('listings').select('*').eq('id', id).single()
-      .then(({ data }) => { setListing(data); setLoading(false) })
+      .then(({ data }) => {
+        setListing(data)
+        setLoading(false)
+        if (data?.user_id) {
+          supabase.from('profiles').select('verified').eq('id', data.user_id).single()
+            .then(({ data: p }) => setVerified(p?.verified || false))
+        }
+      })
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user)
       if (data.user) {
@@ -223,6 +231,11 @@ export default function ListingPage() {
         <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
             <div style={{fontSize:'26px',fontWeight:800,color:'#111',marginBottom:'4px'}}>{listing.price_label}</div>
+            {verified && (
+              <div style={{display:'inline-flex',alignItems:'center',gap:'4px',background:'#ECFDF5',color:'#059669',fontSize:'11px',fontWeight:700,padding:'3px 10px',borderRadius:'20px',marginBottom:'8px'}}>
+                ✓ Verified Seller
+              </div>
+            )}
             <div style={{fontSize:'12px',color:'#9CA3AF',marginBottom:'20px'}}>{listing.city}</div>
             <button style={{width:'100%',padding:'12px',background:'#111',color:'white',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',marginBottom:'10px'}}>
               Contact Seller
