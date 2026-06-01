@@ -30,6 +30,7 @@ export default function ListingPage() {
   const [saved, setSaved] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [activeImg, setActiveImg] = useState(0)
+  const [lightbox, setLightbox] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -44,6 +45,13 @@ export default function ListingPage() {
     })
   }, [id])
 
+  // Close lightbox on Escape key
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightbox(false) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
+
   const toggleSave = async () => {
     if (!user) { window.location.href = `/${locale}/login`; return }
     const supabase = createClient()
@@ -57,21 +65,64 @@ export default function ListingPage() {
 
   const imgs = listing?.image_urls?.length ? listing.image_urls : [IMGS[listing?.category || ''] || '']
 
-  if (loading) return (
-    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'-apple-system,sans-serif',color:'#9CA3AF'}}>
-      Loading...
-    </div>
-  )
+  const prevImg = (e: React.MouseEvent) => { e.stopPropagation(); setActiveImg(i => (i - 1 + imgs.length) % imgs.length) }
+  const nextImg = (e: React.MouseEvent) => { e.stopPropagation(); setActiveImg(i => (i + 1) % imgs.length) }
 
+  if (loading) return (
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'-apple-system,sans-serif',color:'#9CA3AF'}}>Loading...</div>
+  )
   if (!listing) return (
-    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'-apple-system,sans-serif',color:'#9CA3AF'}}>
-      Listing not found.
-    </div>
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'-apple-system,sans-serif',color:'#9CA3AF'}}>Listing not found.</div>
   )
 
   return (
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{'*{box-sizing:border-box;margin:0;padding:0}'}</style>
+
+      {/* LIGHTBOX */}
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(false)}
+          style={{position:'fixed',inset:0,zIndex:99999,background:'rgba(0,0,0,0.95)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'zoom-out'}}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setLightbox(false)}
+            style={{position:'absolute',top:'16px',right:'20px',background:'none',border:'none',color:'white',fontSize:'32px',cursor:'pointer',lineHeight:1,zIndex:100000}}
+          >×</button>
+
+          {/* Prev arrow */}
+          {imgs.length > 1 && (
+            <button onClick={prevImg}
+              style={{position:'absolute',left:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'white',fontSize:'24px',width:'44px',height:'44px',borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              ‹
+            </button>
+          )}
+
+          {/* Main image */}
+          <img
+            src={imgs[activeImg]}
+            alt={listing.title}
+            onClick={e => e.stopPropagation()}
+            style={{maxWidth:'90vw',maxHeight:'90vh',objectFit:'contain',borderRadius:'8px',userSelect:'none'}}
+          />
+
+          {/* Next arrow */}
+          {imgs.length > 1 && (
+            <button onClick={nextImg}
+              style={{position:'absolute',right:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'white',fontSize:'24px',width:'44px',height:'44px',borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              ›
+            </button>
+          )}
+
+          {/* Image counter */}
+          {imgs.length > 1 && (
+            <div style={{position:'absolute',bottom:'20px',left:'50%',transform:'translateX(-50%)',color:'rgba(255,255,255,0.7)',fontSize:'13px',background:'rgba(0,0,0,0.4)',padding:'4px 12px',borderRadius:'20px'}}>
+              {activeImg + 1} / {imgs.length}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* NAV */}
       <nav style={{position:'sticky',top:0,zIndex:100,background:'#fff',borderBottom:'1px solid #EBEBEB'}}>
@@ -98,31 +149,57 @@ export default function ListingPage() {
         <span style={{color:'#111'}}>{listing.title}</span>
       </div>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
       <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 40px',display:'grid',gridTemplateColumns:'1fr 340px',gap:'24px',alignItems:'start'}}>
 
         {/* LEFT */}
         <div>
           {/* IMAGE GALLERY */}
           <div style={{background:'#fff',borderRadius:'14px',overflow:'hidden',border:'1px solid #F3F4F6',marginBottom:'16px'}}>
-            <div style={{position:'relative',height:'480px',background:'#F9FAFB'}}>
+            {/* Main image — click to open lightbox */}
+            <div
+              onClick={() => setLightbox(true)}
+              style={{position:'relative',height:'420px',background:'#F3F4F6',cursor:'zoom-in',overflow:'hidden'}}
+            >
               {imgs[activeImg] && (
                 <img src={imgs[activeImg]} alt={listing.title}
-                  style={{width:'100%',height:'100%',objectFit:'contain'}}/>
+                  style={{width:'100%',height:'100%',objectFit:'contain',transition:'transform 0.2s'}}
+                  onMouseEnter={e=>(e.currentTarget.style.transform='scale(1.02)')}
+                  onMouseLeave={e=>(e.currentTarget.style.transform='scale(1)')}
+                />
               )}
+              {/* Zoom hint */}
+              <div style={{position:'absolute',bottom:'12px',right:'12px',background:'rgba(0,0,0,0.5)',color:'white',fontSize:'11px',padding:'4px 10px',borderRadius:'20px',pointerEvents:'none'}}>
+                Click to zoom
+              </div>
               <div style={{position:'absolute',top:'12px',left:'12px',background:'#2563EB',color:'white',fontSize:'11px',fontWeight:600,padding:'3px 10px',borderRadius:'6px'}}>
                 {listing.subcategory || listing.category}
               </div>
-              <button onClick={toggleSave}
+              <button onClick={e=>{e.stopPropagation();toggleSave()}}
                 style={{position:'absolute',top:'12px',right:'12px',background:'rgba(255,255,255,0.95)',border:'none',borderRadius:'50%',width:'36px',height:'36px',fontSize:'18px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 2px 8px rgba(0,0,0,0.1)'}}>
                 {saved ? '♥' : '♡'}
               </button>
+              {/* Prev/Next on main image */}
+              {imgs.length > 1 && (
+                <>
+                  <button onClick={prevImg}
+                    style={{position:'absolute',left:'12px',top:'50%',transform:'translateY(-50%)',background:'rgba(255,255,255,0.9)',border:'none',borderRadius:'50%',width:'36px',height:'36px',fontSize:'20px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 2px 8px rgba(0,0,0,0.15)'}}>
+                    ‹
+                  </button>
+                  <button onClick={nextImg}
+                    style={{position:'absolute',right:'52px',top:'50%',transform:'translateY(-50%)',background:'rgba(255,255,255,0.9)',border:'none',borderRadius:'50%',width:'36px',height:'36px',fontSize:'20px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 2px 8px rgba(0,0,0,0.15)'}}>
+                    ›
+                  </button>
+                </>
+              )}
             </div>
+
+            {/* Thumbnails */}
             {imgs.length > 1 && (
               <div style={{display:'flex',gap:'8px',padding:'12px',overflowX:'auto'}}>
                 {imgs.map((img, i) => (
                   <div key={i} onClick={() => setActiveImg(i)}
-                    style={{width:'72px',height:'54px',borderRadius:'6px',overflow:'hidden',cursor:'pointer',border:activeImg===i?'2px solid #2563EB':'2px solid transparent',flexShrink:0}}>
+                    style={{width:'72px',height:'54px',borderRadius:'6px',overflow:'hidden',cursor:'pointer',border:activeImg===i?'2px solid #2563EB':'2px solid transparent',flexShrink:0,background:'#F9FAFB'}}>
                     <img src={img} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
                   </div>
                 ))}
@@ -144,11 +221,9 @@ export default function ListingPage() {
 
         {/* RIGHT SIDEBAR */}
         <div style={{display:'flex',flexDirection:'column',gap:'14px',position:'sticky',top:'76px'}}>
-          {/* PRICE CARD */}
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
             <div style={{fontSize:'26px',fontWeight:800,color:'#111',marginBottom:'4px'}}>{listing.price_label}</div>
             <div style={{fontSize:'12px',color:'#9CA3AF',marginBottom:'20px'}}>{listing.city}</div>
-
             <button style={{width:'100%',padding:'12px',background:'#111',color:'white',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',marginBottom:'10px'}}>
               Contact Seller
             </button>
@@ -158,14 +233,9 @@ export default function ListingPage() {
             </button>
           </div>
 
-          {/* DETAILS */}
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
             <div style={{fontSize:'12px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#9CA3AF',marginBottom:'14px'}}>Details</div>
-            {[
-              ['Category', listing.category],
-              ['Type', listing.subcategory],
-              ['Location', `${listing.neighbourhood}, ${listing.city}`],
-            ].map(([label, value]) => value && (
+            {[['Category',listing.category],['Type',listing.subcategory],['Location',`${listing.neighbourhood}, ${listing.city}`]].map(([label,value])=>value&&(
               <div key={label} style={{display:'flex',justifyContent:'space-between',padding:'9px 0',borderBottom:'1px solid #F3F4F6',fontSize:'13px'}}>
                 <span style={{color:'#6B7280'}}>{label}</span>
                 <span style={{color:'#111',fontWeight:500}}>{value}</span>
@@ -173,7 +243,6 @@ export default function ListingPage() {
             ))}
           </div>
 
-          {/* SAFETY TIP */}
           <div style={{background:'#FFFBEB',borderRadius:'14px',border:'1px solid #FEF3C7',padding:'16px'}}>
             <div style={{fontSize:'12px',fontWeight:700,color:'#92400E',marginBottom:'6px'}}>Safety tip</div>
             <div style={{fontSize:'12px',color:'#92400E',lineHeight:1.6}}>Meet in a safe public place. Never send money in advance. Verify the item before paying.</div>
