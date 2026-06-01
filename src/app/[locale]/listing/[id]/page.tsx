@@ -364,7 +364,7 @@ export default function ListingPage() {
               style={{display:'inline-flex',alignItems:'center',gap:'6px',fontSize:'12px',color:'#2563EB',fontWeight:600,textDecoration:'none',marginBottom:'16px'}}>
               View seller profile →
             </a>
-            <button style={{width:'100%',padding:'12px',background:'#111',color:'white',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',marginBottom:'10px'}}>
+            <button onClick={handleContact} style={{width:'100%',padding:'12px',background:'#111',color:'white',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',marginBottom:'10px'}}>
               Contact Seller
             </button>
             <button onClick={toggleSave}
