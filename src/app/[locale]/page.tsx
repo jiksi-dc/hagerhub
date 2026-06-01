@@ -122,6 +122,13 @@ export default function Home() {
   const [filterMinPrice, setFilterMinPrice] = useState('')
   const [filterMaxPrice, setFilterMaxPrice] = useState('')
   const [filterSort, setFilterSort] = useState('newest')
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(()=>{
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  },[])
 
   const TABS = [
     { key:'all',        name:'All' },
@@ -317,7 +324,7 @@ export default function Home() {
             <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>HAGERHUB</div>
             <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
           </a>
-          <div style={{flex:1,maxWidth:'480px',position:'relative'}}>
+          <div style={{flex:1,maxWidth:'480px',position:'relative',display: isMobile ? 'none' : 'block'}}>
             <input value={search} onChange={e=>setSearch(e.target.value)}
               placeholder={t('nav.search')}
               style={{width:'100%',padding:'9px 14px 9px 38px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',outline:'none',fontFamily:'inherit'}}/>
@@ -351,7 +358,7 @@ export default function Home() {
       </nav>
 
       {/* MAIN */}
-      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 240px' : '220px 1fr 240px',gap:'24px',alignItems:'start'}}>
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: isMobile ? '1fr' : activeCat==='All' ? '1fr 240px' : '220px 1fr 240px',gap:'24px',alignItems:'start'}}>
 
         {/* FILTER PANEL — only when category is active */}
         {activeCat !== 'All' && <FilterPanel/>}
@@ -364,7 +371,7 @@ export default function Home() {
                 <h2 style={{fontSize:'15px',fontWeight:700,color:'#111'}}>{t('home.browse')}</h2>
                 <span style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
               </div>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'16px'}}>
+              <div style={{display:'grid',gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(5,1fr)',gap:'16px'}}>
                 {POPULAR.map(cat=>(
                   <div key={cat.key} onClick={()=>setActiveCat(cat.name)} style={{cursor:'pointer'}}>
                     <div style={{fontSize:'12px',fontWeight:700,color:'#111',marginBottom:'6px'}}>
@@ -409,14 +416,14 @@ export default function Home() {
                     </h2>
                     <span onClick={()=>setActiveCat(cat.name)} style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
                   </div>
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+                  <div style={{display:'grid',gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
                     {items.slice(0,4).map(l=><Card key={l.id} l={l}/>)}
                   </div>
                 </div>
               )
             })
           ) : (
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+            <div style={{display:'grid',gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
               {filtered.map(l=><Card key={l.id} l={l}/>)}
             </div>
           )}
