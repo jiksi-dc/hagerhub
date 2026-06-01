@@ -285,18 +285,20 @@ export default function Home() {
         <label style={filterLabel}>Price (ETB)</label>
         <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             placeholder="Min"
             value={filterMinPrice}
-            onChange={e=>setFilterMinPrice(e.target.value)}
+            onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))}
             style={{...filterInput,width:'50%'}}
           />
           <span style={{color:'#9CA3AF',fontSize:'12px'}}>—</span>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             placeholder="Max"
             value={filterMaxPrice}
-            onChange={e=>setFilterMaxPrice(e.target.value)}
+            onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))}
             style={{...filterInput,width:'50%'}}
           />
         </div>
