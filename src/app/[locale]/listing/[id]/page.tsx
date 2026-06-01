@@ -31,6 +31,9 @@ export default function ListingPage() {
   const [user, setUser] = useState<any>(null)
   const [activeImg, setActiveImg] = useState(0)
   const [verified, setVerified] = useState(false)
+  const [showContact, setShowContact] = useState(false)
+  const [sellerPhone, setSellerPhone] = useState('')
+  const [copied, setCopied] = useState(false)
   const [lightbox, setLightbox] = useState(false)
   const [showReport, setShowReport] = useState(false)
   const [reportReason, setReportReason] = useState('')
@@ -45,8 +48,11 @@ export default function ListingPage() {
         setListing(data)
         setLoading(false)
         if (data?.user_id) {
-          supabase.from('profiles').select('verified').eq('id', data.user_id).single()
-            .then(({ data: p }) => setVerified(p?.verified || false))
+          supabase.from('profiles').select('verified, phone').eq('id', data.user_id).single()
+            .then(({ data: p }) => {
+              setVerified(p?.verified || false)
+              setSellerPhone(p?.phone || '')
+            })
         }
       })
     supabase.auth.getUser().then(({ data }) => {
@@ -74,6 +80,17 @@ export default function ListingPage() {
       await supabase.from('saved_listings').insert({ user_id: user.id, listing_id: id })
     }
     setSaved(!saved)
+  }
+
+  const handleContact = () => {
+    if (!user) { window.location.href = `/${locale}/login`; return }
+    setShowContact(true)
+  }
+
+  const copyPhone = () => {
+    navigator.clipboard.writeText(sellerPhone)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   const submitReport = async () => {
@@ -105,6 +122,47 @@ export default function ListingPage() {
   return (
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{'*{box-sizing:border-box;margin:0;padding:0}'}</style>
+
+      {/* CONTACT MODAL */}
+      {showContact && (
+        <div onClick={()=>setShowContact(false)} style={{position:'fixed',inset:0,zIndex:99998,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',padding:'20px'}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:'white',borderRadius:'20px',padding:'28px',width:'100%',maxWidth:'380px',boxShadow:'0 20px 60px rgba(0,0,0,0.2)'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}}>
+              <h3 style={{fontSize:'16px',fontWeight:700,color:'#111'}}>Contact Seller</h3>
+              <button onClick={()=>setShowContact(false)} style={{background:'none',border:'none',fontSize:'20px',cursor:'pointer',color:'#6B7280'}}>×</button>
+            </div>
+            {sellerPhone ? (
+              <>
+                <div style={{background:'#F9FAFB',borderRadius:'12px',padding:'16px 20px',marginBottom:'16px',textAlign:'center'}}>
+                  <div style={{fontSize:'11px',color:'#9CA3AF',marginBottom:'6px',textTransform:'uppercase',letterSpacing:'1px'}}>Phone Number</div>
+                  <div style={{fontSize:'22px',fontWeight:800,color:'#111',letterSpacing:'1px'}}>{sellerPhone}</div>
+                </div>
+                <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+                  <button onClick={copyPhone}
+                    style={{width:'100%',padding:'12px',background:copied?'#059669':'#111',color:'white',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',transition:'background 0.2s'}}>
+                    {copied ? '✓ Copied!' : 'Copy number'}
+                  </button>
+                  <a href={`https://wa.me/${sellerPhone.replace(/[^0-9]/g,'')}`} target="_blank" rel="noopener noreferrer"
+                    style={{width:'100%',padding:'12px',background:'#25D366',color:'white',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',textAlign:'center',textDecoration:'none',display:'block'}}>
+                    WhatsApp
+                  </a>
+                  <a href={`tel:${sellerPhone}`}
+                    style={{width:'100%',padding:'12px',background:'#F3F4F6',color:'#111',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',textAlign:'center',textDecoration:'none',display:'block'}}>
+                    Call now
+                  </a>
+                </div>
+                <div style={{marginTop:'16px',padding:'12px 14px',background:'#FFFBEB',borderRadius:'10px',border:'1px solid #FEF3C7'}}>
+                  <div style={{fontSize:'11px',color:'#92400E',lineHeight:1.6}}>Always meet in a public place. Never send money before seeing the item.</div>
+                </div>
+              </>
+            ) : (
+              <div style={{textAlign:'center',padding:'20px',color:'#9CA3AF',fontSize:'14px'}}>
+                This seller has not added a phone number yet.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* REPORT MODAL */}
       {showReport && (
