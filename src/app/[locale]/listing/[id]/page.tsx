@@ -32,6 +32,11 @@ export default function ListingPage() {
   const [activeImg, setActiveImg] = useState(0)
   const [verified, setVerified] = useState(false)
   const [lightbox, setLightbox] = useState(false)
+  const [showReport, setShowReport] = useState(false)
+  const [reportReason, setReportReason] = useState('')
+  const [reportDetails, setReportDetails] = useState('')
+  const [reportSubmitted, setReportSubmitted] = useState(false)
+  const [reportLoading, setReportLoading] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
