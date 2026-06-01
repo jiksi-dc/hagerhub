@@ -1,6 +1,7 @@
 {
   "nav": {
     "search": "Rechercher des propriétés, voitures, emplois...",
+        "searchBtn": "Rechercher",
     "post": "+ Publier",
     "login": "Connexion",
     "view": "Voir →"
