@@ -150,7 +150,7 @@ export default function ListingPage() {
       </div>
 
       {/* MAIN */}
-      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 40px',display:'grid',gridTemplateColumns:'1fr 340px',gap:'24px',alignItems:'start'}}>
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 40px',display:'grid',gridTemplateColumns:'1fr',gap:'24px',alignItems:'start'}}>
 
         {/* LEFT */}
         <div>
@@ -220,7 +220,7 @@ export default function ListingPage() {
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <div style={{display:'flex',flexDirection:'column',gap:'14px',position:'sticky',top:'76px'}}>
+        <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
             <div style={{fontSize:'26px',fontWeight:800,color:'#111',marginBottom:'4px'}}>{listing.price_label}</div>
             <div style={{fontSize:'12px',color:'#9CA3AF',marginBottom:'20px'}}>{listing.city}</div>
