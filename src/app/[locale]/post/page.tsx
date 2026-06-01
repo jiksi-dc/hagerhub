@@ -171,7 +171,7 @@ export default function PostAd() {
             <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
               {CATS.map(c => (
                 <button key={c} onClick={()=>{setCat(c);setStep(2)}} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 20px',border:'1px solid #EBEBEB',borderRadius:'12px',background:'#fff',cursor:'pointer',fontSize:'15px',fontWeight:600,color:'#111',fontFamily:'inherit',textAlign:'left'}}>
-                  <span>{c === 'Properties' ? '🏠' : c === 'Vehicles' ? '🚗' : c === 'Machinery' ? '⚙️' : c === 'Classifieds' ? '📱' : '💼'} {c}</span>
+                  <span>{c}</span>
                   <span style={{color:'#9CA3AF',fontSize:'18px'}}>›</span>
                 </button>
               ))}
@@ -211,7 +211,7 @@ export default function PostAd() {
               <label style={lbl as any}>Photos <span style={{color:'#9CA3AF',fontWeight:400}}>(up to 10)</span></label>
               <label style={{display:'block',border:'2px dashed #E5E7EB',borderRadius:'12px',padding:'24px',textAlign:'center',cursor:'pointer',background:'#FAFAFA'}}>
                 <input type="file" accept="image/*,.heic,.heif" multiple style={{display:'none'}} onChange={e=>setPhotos(Array.from(e.target.files||[]))}/>
-                <div style={{fontSize:'32px',marginBottom:'8px'}}>📸</div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginBottom:'8px'}}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                 <div style={{fontSize:'14px',fontWeight:700,color:'#374151',marginBottom:'4px'}}>Tap to add photos</div>
                 <div style={{fontSize:'12px',color:'#9CA3AF'}}>JPG, PNG, HEIC (iPhone) · Up to 10 photos</div>
               </label>
