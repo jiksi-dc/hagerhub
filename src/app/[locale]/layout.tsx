@@ -1,8 +1,6 @@
 import {NextIntlClientProvider} from 'next-intl'
 import {getMessages} from 'next-intl/server'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
 import AIAssistant from '@/components/AIAssistant'
-import AuthButton from '@/components/AuthButton'
 import '../globals.css'
 import '../desktop.css'
 
@@ -14,10 +12,8 @@ export default async function LocaleLayout({children, params}: {children: React.
       <body>
         <NextIntlClientProvider messages={messages}>
           {children}
-          <LanguageSwitcher/>
           <AIAssistant/>
-          </NextIntlClientProvider>
-        <AuthButton />
+        </NextIntlClientProvider>
       </body>
     </html>
   )
