@@ -9,6 +9,11 @@ import LanguageSwitcher from '@/components/LanguageSwitcher'
 interface Profile {
   id: string; full_name: string; phone: string; verified: boolean; created_at: string
 }
+interface Review {
+  id: string; reviewer_id: string; rating: number; comment: string; created_at: string
+  reviewer_name?: string
+}
+
 interface Listing {
   id: string; title: string; price_label: string; city: string; neighbourhood: string
   category: string; subcategory: string; image_urls?: string[]; created_at: string
@@ -29,19 +34,53 @@ export default function SellerProfile() {
 
   const [profile, setProfile] = useState<Profile | null>(null)
   const [listings, setListings] = useState<Listing[]>([])
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [myRating, setMyRating] = useState(0)
+  const [myComment, setMyComment] = useState('')
+  const [hoverRating, setHoverRating] = useState(0)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const supabase = createClient()
     Promise.all([
       supabase.from('profiles').select('*').eq('id', sellerId).single(),
-      supabase.from('listings').select('*').eq('user_id', sellerId).eq('status', 'active').order('created_at', { ascending: false })
-    ]).then(([{ data: p }, { data: l }]) => {
+      supabase.from('listings').select('*').eq('user_id', sellerId).eq('status', 'active').order('created_at', { ascending: false }),
+      supabase.from('reviews').select('*').eq('seller_id', sellerId).order('created_at', { ascending: false })
+    ]).then(([{ data: p }, { data: l }, { data: r }]) => {
       setProfile(p)
       setListings(l || [])
+      setReviews(r || [])
       setLoading(false)
     })
+    supabase.auth.getUser().then(({ data }) => {
+      setCurrentUser(data.user)
+    })
   }, [sellerId])
+
+  const submitReview = async () => {
+    if (!myRating || !currentUser) return
+    setSubmitting(true)
+    const supabase = createClient()
+    await supabase.from('reviews').insert({
+      seller_id: sellerId,
+      reviewer_id: currentUser.id,
+      rating: myRating,
+      comment: myComment
+    })
+    const { data: r } = await supabase.from('reviews').select('*').eq('seller_id', sellerId).order('created_at', { ascending: false })
+    setReviews(r || [])
+    setMyRating(0)
+    setMyComment('')
+    setSubmitting(false)
+    setSubmitted(true)
+  }
+
+  const avgRating = reviews.length ? (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1) : null
+  const alreadyReviewed = currentUser && reviews.some(r => r.reviewer_id === currentUser.id)
+  const isSelf = currentUser?.id === sellerId
 
   const memberSince = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString('en-ET', { year: 'numeric', month: 'long' })
@@ -98,6 +137,13 @@ export default function SellerProfile() {
             <div style={{fontSize:'13px',color:'#6B7280'}}>
               {listings.length} active listing{listings.length !== 1 ? 's' : ''}
             </div>
+            {avgRating && (
+              <div style={{display:'flex',alignItems:'center',gap:'6px',marginTop:'6px'}}>
+                <span style={{color:'#F59E0B',fontSize:'16px'}}>{'★'.repeat(Math.round(Number(avgRating)))}{'☆'.repeat(5-Math.round(Number(avgRating)))}</span>
+                <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{avgRating}</span>
+                <span style={{fontSize:'12px',color:'#9CA3AF'}}>({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
+              </div>
+            )}
           </div>
 
           {/* Safety tip */}
@@ -143,7 +189,78 @@ export default function SellerProfile() {
             })}
           </div>
         )}
+      {/* REVIEWS SECTION */}
+      <div style={{marginTop:'32px'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>
+          <h2 style={{fontSize:'15px',fontWeight:700,color:'#111'}}>
+            Reviews {reviews.length > 0 && <span style={{color:'#9CA3AF',fontWeight:400}}>({reviews.length})</span>}
+          </h2>
+          {avgRating && <span style={{fontSize:'13px',color:'#F59E0B',fontWeight:700}}>★ {avgRating} average</span>}
+        </div>
+
+        {/* Leave a review */}
+        {currentUser && !isSelf && !alreadyReviewed && (
+          <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px',marginBottom:'16px'}}>
+            <div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'12px'}}>Leave a review</div>
+            <div style={{display:'flex',gap:'4px',marginBottom:'12px'}}>
+              {[1,2,3,4,5].map(star => (
+                <button key={star}
+                  onClick={() => setMyRating(star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  style={{background:'none',border:'none',fontSize:'28px',cursor:'pointer',color:(hoverRating||myRating)>=star?'#F59E0B':'#E5E7EB',transition:'color 0.1s'}}>
+                  ★
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={myComment}
+              onChange={e => setMyComment(e.target.value)}
+              placeholder="Share your experience with this seller (optional)"
+              rows={3}
+              style={{width:'100%',padding:'10px 14px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',fontFamily:'inherit',outline:'none',resize:'none',marginBottom:'12px'}}
+            />
+            <button onClick={submitReview} disabled={!myRating || submitting}
+              style={{padding:'10px 24px',background:myRating?'#111':'#F3F4F6',color:myRating?'white':'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'13px',fontWeight:600,cursor:myRating?'pointer':'default',fontFamily:'inherit'}}>
+              {submitting ? 'Submitting...' : 'Submit review'}
+            </button>
+            {submitted && <div style={{marginTop:'8px',fontSize:'12px',color:'#059669'}}>Thank you for your review!</div>}
+          </div>
+        )}
+
+        {alreadyReviewed && (
+          <div style={{background:'#F0FDF4',borderRadius:'12px',padding:'12px 16px',marginBottom:'16px',fontSize:'13px',color:'#059669'}}>
+            You have already reviewed this seller.
+          </div>
+        )}
+
+        {reviews.length === 0 ? (
+          <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'40px',textAlign:'center',color:'#9CA3AF',fontSize:'14px'}}>
+            No reviews yet. Be the first to review this seller.
+          </div>
+        ) : (
+          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+            {reviews.map(r => (
+              <div key={r.id} style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'16px 20px'}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'6px'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                    <div style={{width:'32px',height:'32px',borderRadius:'50%',background:'#E5E7EB',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'12px',fontWeight:700,color:'#6B7280'}}>
+                      U
+                    </div>
+                    <div style={{fontSize:'13px',fontWeight:600,color:'#111'}}>Verified user</div>
+                  </div>
+                  <div style={{fontSize:'12px',color:'#9CA3AF'}}>{new Date(r.created_at).toLocaleDateString('en-ET',{year:'numeric',month:'short',day:'numeric'})}</div>
+                </div>
+                <div style={{color:'#F59E0B',fontSize:'16px',marginBottom:'6px'}}>
+                  {'★'.repeat(r.rating)}{'☆'.repeat(5-r.rating)}
+                </div>
+                {r.comment && <div style={{fontSize:'13px',color:'#374151',lineHeight:1.7}}>{r.comment}</div>}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+    </div>
     </main>
   )
 }
