@@ -84,3 +84,12 @@ body {
     grid-template-columns: repeat(6, 1fr);
   }
 }
+
+@media (max-width: 768px) {
+  .main-grid { grid-template-columns: 1fr !important; }
+  .browse-cats { grid-template-columns: repeat(2, 1fr) !important; }
+  .cards-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .sidebar-ads { order: 10; }
+  .nav-search { display: none !important; }
+  .nav-search-btn { display: none !important; }
+}
