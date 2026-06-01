@@ -71,6 +71,20 @@ export default function ListingPage() {
     setSaved(!saved)
   }
 
+  const submitReport = async () => {
+    if (!reportReason) return
+    setReportLoading(true)
+    const supabase = createClient()
+    await supabase.from('reports').insert({
+      listing_id: id,
+      reporter_id: user?.id || null,
+      reason: reportReason,
+      details: reportDetails
+    })
+    setReportLoading(false)
+    setReportSubmitted(true)
+  }
+
   const imgs = listing?.image_urls?.length ? listing.image_urls : [IMGS[listing?.category || ''] || '']
 
   const prevImg = (e: React.MouseEvent) => { e.stopPropagation(); setActiveImg(i => (i - 1 + imgs.length) % imgs.length) }
@@ -86,6 +100,52 @@ export default function ListingPage() {
   return (
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{'*{box-sizing:border-box;margin:0;padding:0}'}</style>
+
+      {/* REPORT MODAL */}
+      {showReport && (
+        <div onClick={()=>setShowReport(false)} style={{position:'fixed',inset:0,zIndex:99998,background:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',padding:'20px'}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:'white',borderRadius:'20px',padding:'28px',width:'100%',maxWidth:'420px',boxShadow:'0 20px 60px rgba(0,0,0,0.2)'}}>
+            {reportSubmitted ? (
+              <div style={{textAlign:'center',padding:'20px 0'}}>
+                <div style={{fontSize:'40px',marginBottom:'12px'}}>✓</div>
+                <div style={{fontSize:'16px',fontWeight:700,color:'#111',marginBottom:'8px'}}>Report submitted</div>
+                <div style={{fontSize:'13px',color:'#6B7280',marginBottom:'24px'}}>Thank you. Our team will review this listing.</div>
+                <button onClick={()=>{setShowReport(false);setReportSubmitted(false);setReportReason('');setReportDetails('')}}
+                  style={{padding:'10px 24px',background:'#111',color:'white',border:'none',borderRadius:'10px',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
+                  Close
+                </button>
+              </div>
+            ) : (
+              <>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}}>
+                  <h3 style={{fontSize:'16px',fontWeight:700,color:'#111'}}>Report this listing</h3>
+                  <button onClick={()=>setShowReport(false)} style={{background:'none',border:'none',fontSize:'20px',cursor:'pointer',color:'#6B7280'}}>×</button>
+                </div>
+                <div style={{fontSize:'13px',color:'#6B7280',marginBottom:'16px'}}>Why are you reporting this listing?</div>
+                <div style={{display:'flex',flexDirection:'column',gap:'8px',marginBottom:'16px'}}>
+                  {['Scam or fraud','Wrong category','Offensive content','Already sold','Duplicate listing','Other'].map(r=>(
+                    <button key={r} onClick={()=>setReportReason(r)}
+                      style={{padding:'10px 14px',borderRadius:'10px',border:`1.5px solid ${reportReason===r?'#111':'#E5E7EB'}`,background:reportReason===r?'#111':'#fff',color:reportReason===r?'white':'#374151',fontSize:'13px',fontWeight:500,cursor:'pointer',fontFamily:'inherit',textAlign:'left'}}>
+                      {r}
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  value={reportDetails}
+                  onChange={e=>setReportDetails(e.target.value)}
+                  placeholder="Additional details (optional)"
+                  rows={3}
+                  style={{width:'100%',padding:'10px 14px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',fontFamily:'inherit',outline:'none',resize:'none',marginBottom:'16px'}}
+                />
+                <button onClick={submitReport} disabled={!reportReason||reportLoading}
+                  style={{width:'100%',padding:'12px',background:reportReason?'#DC2626':'#F3F4F6',color:reportReason?'white':'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:reportReason?'pointer':'default',fontFamily:'inherit'}}>
+                  {reportLoading ? 'Submitting...' : 'Submit report'}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* LIGHTBOX */}
       {lightbox && (
@@ -247,6 +307,10 @@ export default function ListingPage() {
             <button onClick={toggleSave}
               style={{width:'100%',padding:'12px',background:saved?'#EFF6FF':'#F9FAFB',color:saved?'#2563EB':'#374151',border:`1.5px solid ${saved?'#2563EB':'#E5E7EB'}`,borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
               {saved ? '♥ Saved' : '♡ Save listing'}
+            </button>
+            <button onClick={()=>setShowReport(true)}
+              style={{width:'100%',padding:'10px',background:'none',color:'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'12px',cursor:'pointer',fontFamily:'inherit',marginTop:'4px'}}>
+              Report this listing
             </button>
           </div>
 
