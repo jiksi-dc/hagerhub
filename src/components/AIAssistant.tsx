@@ -1,61 +1,78 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 
-interface Message {
-  role: 'user' | 'assistant'
-  content: string
-}
-
 export default function AIAssistant() {
   const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Hi! I\'m HagerHub AI. I can help you find listings, answer questions about properties, vehicles, jobs and more. How can I help you today? 🦁🇪🇹' }
-  ])
   const [input, setInput] = useState('')
+  const [messages, setMessages] = useState<{role:string,content:string}[]>([])
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  }, [messages, loading])
 
-  async function send() {
+  const send = async () => {
     if (!input.trim() || loading) return
-    const userMsg = input.trim()
+    const userMsg = { role: 'user', content: input.trim() }
+    setMessages(prev => [...prev, userMsg])
     setInput('')
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }])
     setLoading(true)
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg })
+        body: JSON.stringify({ messages: [...messages, userMsg] })
       })
       const data = await res.json()
-      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
+      setMessages(prev => [...prev, { role: 'assistant', content: data.content || 'Sorry, I could not respond.' }])
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Something went wrong. Please try again.' }])
     }
     setLoading(false)
   }
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
+
   return (
     <>
-      {/* Floating button */}
+      {/* Trigger button — always top right, fixed */}
       <button
         onClick={() => setOpen(!open)}
-        style={{position:'fixed',top:'12px',right:'12px',zIndex:9999,width:'48px',height:'48px',borderRadius:'50%',background:'linear-gradient(135deg,#9CA3AF,#05613d)',border:'none',cursor:'pointer',boxShadow:'0 4px 20px rgba(0,87,217,0.4)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'19px',color:'white',fontWeight:900,transition:'transform 0.2s'}}
+        style={{
+          position:'fixed', top:'12px', right:'12px', zIndex:10000,
+          width:'40px', height:'40px', borderRadius:'50%',
+          background:'#2563EB', border:'none', cursor:'pointer',
+          display:'flex', alignItems:'center', justifyContent:'center',
+          fontSize:'18px', color:'white', fontWeight:700,
+          boxShadow:'0 2px 12px rgba(37,99,235,0.4)',
+          transition:'transform 0.2s'
+        }}
         onMouseEnter={e=>(e.currentTarget.style.transform='scale(1.1)')}
-        onMouseLeave={e=>(e.currentTarget.style.transform='scale(1)')}>
-        {open ? '✕' : '✦'}
+        onMouseLeave={e=>(e.currentTarget.style.transform='scale(1)')}
+      >
+        {open ? '×' : '✦'}
       </button>
 
       {/* Chat window */}
       {open && (
-        <div style={{position:'fixed',top:'80px',right:'12px',zIndex:9999,width:'320px',height:'480px',background:'white',borderRadius:'20px',boxShadow:'0 8px 40px rgba(0,0,0,0.2)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
+        <div style={{
+          position:'fixed',
+          top:'60px',
+          right:'12px',
+          zIndex:9999,
+          width:'min(320px, calc(100vw - 24px))',
+          height:'min(480px, calc(100vh - 80px))',
+          background:'white',
+          borderRadius:'20px',
+          boxShadow:'0 8px 40px rgba(0,0,0,0.2)',
+          display:'flex',
+          flexDirection:'column',
+          overflow:'hidden'
+        }}>
           {/* Header */}
           <div style={{background:'linear-gradient(135deg,#9CA3AF,#05613d)',padding:'16px',display:'flex',alignItems:'center',gap:'10px'}}>
-            <div style={{width:'36px',height:'36px',borderRadius:'50%',background:'rgba(255,255,255,0.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px'}}>🤖</div>
+            <div style={{width:'36px',height:'36px',background:'rgba(255,255,255,0.2)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px'}}>✦</div>
             <div>
               <div style={{color:'white',fontWeight:800,fontSize:'14px'}}>HagerHub AI</div>
               <div style={{color:'rgba(255,255,255,0.7)',fontSize:'11px'}}>Ethiopia's Marketplace Assistant</div>
@@ -64,7 +81,12 @@ export default function AIAssistant() {
 
           {/* Messages */}
           <div style={{flex:1,overflowY:'auto',padding:'12px',display:'flex',flexDirection:'column',gap:'8px'}}>
-            {messages.map((m, i) => (
+            {messages.length === 0 && (
+              <div style={{textAlign:'center',color:'#9CA3AF',fontSize:'13px',marginTop:'40px'}}>
+                Ask me about listings, prices, locations...
+              </div>
+            )}
+            {messages.map((m,i) => (
               <div key={i} style={{display:'flex',justifyContent:m.role==='user'?'flex-end':'flex-start'}}>
                 <div style={{maxWidth:'80%',padding:'10px 14px',borderRadius:m.role==='user'?'18px 18px 4px 18px':'18px 18px 18px 4px',background:m.role==='user'?'#9CA3AF':'#F0F2F5',color:m.role==='user'?'white':'#111',fontSize:'13px',lineHeight:1.5}}>
                   {m.content}
@@ -91,7 +113,8 @@ export default function AIAssistant() {
             <button
               onClick={send}
               disabled={loading}
-              style={{width:'38px',height:'38px',borderRadius:'50%',background:'#9CA3AF',border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'16px',flexShrink:0}}>
+              style={{width:'38px',height:'38px',borderRadius:'50%',background:'#9CA3AF',border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'16px',flexShrink:0}}
+            >
               ➤
             </button>
           </div>
