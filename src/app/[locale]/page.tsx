@@ -122,6 +122,13 @@ export default function Home() {
   const [filterMinPrice, setFilterMinPrice] = useState('')
   const [filterMaxPrice, setFilterMaxPrice] = useState('')
   const [filterSort, setFilterSort] = useState('newest')
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(()=>{
+    const check = ()=>setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize',check)
+    return ()=>window.removeEventListener('resize',check)
+  },[])
 
   const TABS = [
     { key:'all',        name:'All' },
@@ -364,7 +371,7 @@ export default function Home() {
                 <h2 style={{fontSize:'15px',fontWeight:700,color:'#111'}}>{t('home.browse')}</h2>
                 <span style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
               </div>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'16px'}}>
+              <div style={{display:'grid',gridTemplateColumns:isMobile?'repeat(2,1fr)':'repeat(5,1fr)',gap:'16px'}}>
                 {POPULAR.map(cat=>(
                   <div key={cat.key} onClick={()=>setActiveCat(cat.name)} style={{cursor:'pointer'}}>
                     <div style={{fontSize:'12px',fontWeight:700,color:'#111',marginBottom:'6px'}}>
@@ -409,20 +416,20 @@ export default function Home() {
                     </h2>
                     <span onClick={()=>setActiveCat(cat.name)} style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
                   </div>
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+                  <div style={{display:'grid',gridTemplateColumns:isMobile?'repeat(2,1fr)':'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
                     {items.slice(0,4).map(l=><Card key={l.id} l={l}/>)}
                   </div>
                 </div>
               )
             })
           ) : (
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+            <div style={{display:'grid',gridTemplateColumns:isMobile?'repeat(2,1fr)':'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
               {filtered.map(l=><Card key={l.id} l={l}/>)}
             </div>
           )}
         </div>
 
-        {SIDEBARS[activeCat] || SIDEBARS['All']}
+        <div style={{display:isMobile?'none':'block'}}>{SIDEBARS[activeCat] || SIDEBARS['All']}</div>
       </div>
 
       <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
