@@ -41,6 +41,8 @@ export default function AuthButton() {
         <div style={{position:'absolute',right:0,top:'44px',background:'white',border:'1px solid #E5E7EB',borderRadius:'12px',boxShadow:'0 4px 20px rgba(0,0,0,0.12)',width:'180px',padding:'8px',zIndex:999}}>
           <p style={{fontSize:'11px',color:'#9CA3AF',padding:'4px 8px',margin:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.email}</p>
           <hr style={{margin:'6px 0',border:'none',borderTop:'1px solid #F3F4F6'}}/>
+          <a href='/dashboard' style={{display:'block',padding:'8px',fontSize:'13px',color:'#111',textDecoration:'none',borderRadius:'8px'}}>Dashboard</a>
+          <hr style={{margin:'4px 0',border:'none',borderTop:'1px solid #F3F4F6'}}/>
           <button onClick={signOut} style={{width:'100%',textAlign:'left',padding:'8px',fontSize:'13px',color:'#EF4444',background:'none',border:'none',cursor:'pointer',borderRadius:'8px',fontFamily:'inherit'}}>Sign out</button>
         </div>
       )}
