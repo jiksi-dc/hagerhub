@@ -140,6 +140,7 @@ export default function PostAd() {
         company, employment_type: empType, salary,
         condition, capacity,
 event_date: eventDate || null,
+event_end_date: eventEndDate || null,
 event_time: eventTime || null,
 venue, website, organizer, region,
 admission_fee: admission,
