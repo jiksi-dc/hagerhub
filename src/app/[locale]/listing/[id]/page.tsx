@@ -41,6 +41,11 @@ export default function ListingPage() {
   const [reportSubmitted, setReportSubmitted] = useState(false)
   const [reportLoading, setReportLoading] = useState(false)
 const [shareCopied, setShareCopied] = useState(false)
+const [comments, setComments] = useState<any[]>([])
+const [commentText, setCommentText] = useState('')
+const [commentLoading, setCommentLoading] = useState(false)
+const [markSoldLoading, setMarkSoldLoading] = useState(false)
+const [isSold, setIsSold] = useState(false)
 const [similar, setSimilar] = useState<Partial<Listing>[]>([])
 
   useEffect(() => {
@@ -67,6 +72,8 @@ if (data?.user_id) {
           .then(({ data: s }) => setSaved(!!s))
       }
     })
+    // Load comments
+    fetch(`/api/comments?listing_id=${id}`).then(r=>r.json()).then(d=>setComments(d.comments||[]))
   }, [id])
 
   // Close lightbox on Escape key
@@ -411,6 +418,55 @@ const submitReport = async () => {
           </div>
         </div>
       </div>
+      {/* COMMENTS SECTION */}
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 40px'}}>
+        <h2 style={{fontSize:'16px',fontWeight:700,color:'#111',marginBottom:'16px'}}>Questions & Answers</h2>
+        <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
+          {/* Comment list */}
+          {comments.length === 0 ? (
+            <div style={{textAlign:'center',padding:'20px',color:'#9CA3AF',fontSize:'13px'}}>No questions yet. Be the first to ask!</div>
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',gap:'14px',marginBottom:'20px'}}>
+              {comments.map((c:any) => (
+                <div key={c.id} style={{display:'flex',gap:'12px',padding:'12px',background:c.is_seller_reply?'#F0FDF4':'#F9FAFB',borderRadius:'10px',border:c.is_seller_reply?'1px solid #BBF7D0':'1px solid #F3F4F6'}}>
+                  <div style={{width:'32px',height:'32px',borderRadius:'50%',background:c.is_seller_reply?'#059669':'#E5E7EB',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'12px',fontWeight:700,color:c.is_seller_reply?'white':'#6B7280',flexShrink:0}}>
+                    {c.profiles?.full_name?.charAt(0)?.toUpperCase()||'?'}
+                  </div>
+                  <div style={{flex:1}}>
+                    <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'4px'}}>
+                      <span style={{fontSize:'12px',fontWeight:700,color:c.is_seller_reply?'#059669':'#111'}}>{c.profiles?.full_name||'User'}</span>
+                      {c.is_seller_reply && <span style={{fontSize:'10px',background:'#ECFDF5',color:'#059669',padding:'1px 7px',borderRadius:'10px',fontWeight:700}}>Seller</span>}
+                      <span style={{fontSize:'11px',color:'#9CA3AF'}}>{new Date(c.created_at).toLocaleDateString('en-ET',{month:'short',day:'numeric'})}</span>
+                    </div>
+                    <div style={{fontSize:'13px',color:'#374151',lineHeight:1.6}}>{c.body}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Post comment */}
+          {user ? (
+            <div style={{display:'flex',gap:'10px',alignItems:'flex-start',borderTop:comments.length?'1px solid #F3F4F6':'none',paddingTop:comments.length?'16px':'0'}}>
+              <div style={{width:'32px',height:'32px',borderRadius:'50%',background:'#E5E7EB',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'12px',fontWeight:700,color:'#6B7280',flexShrink:0}}>?</div>
+              <div style={{flex:1,display:'flex',gap:'8px'}}>
+                <input value={commentText} onChange={e=>setCommentText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&!e.shiftKey&&submitComment()}
+                  placeholder={listing.user_id===user.id?'Reply to a question...':'Ask the seller a question...'}
+                  maxLength={500}
+                  style={{flex:1,padding:'10px 14px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',fontFamily:'inherit',outline:'none'}}/>
+                <button onClick={submitComment} disabled={!commentText.trim()||commentLoading}
+                  style={{padding:'10px 18px',background:commentText.trim()?'#111':'#F3F4F6',color:commentText.trim()?'white':'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'13px',fontWeight:600,cursor:commentText.trim()?'pointer':'default',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+                  {commentLoading?'...':'Send'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div style={{textAlign:'center',padding:'16px',borderTop:comments.length?'1px solid #F3F4F6':'none',paddingTop:comments.length?'16px':'0'}}>
+              <a href={`/${locale}/login`} style={{color:'#2563EB',fontSize:'13px',fontWeight:600}}>Sign in to ask a question →</a>
+            </div>
+          )}
+        </div>
+      </div>
+
       {similar.length > 0 && (
         <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 40px'}}>
           <h2 style={{fontSize:'16px',fontWeight:700,color:'#111',marginBottom:'16px'}}>Similar listings in {listing.city}</h2>
