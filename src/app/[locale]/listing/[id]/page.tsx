@@ -41,7 +41,7 @@ export default function ListingPage() {
   const [reportSubmitted, setReportSubmitted] = useState(false)
   const [reportLoading, setReportLoading] = useState(false)
 const [shareCopied, setShareCopied] = useState(false)
-const [similar, setSimilar] = useState<Listing[]>([])
+const [similar, setSimilar] = useState<Partial<Listing>[]>([])
 
   useEffect(() => {
     const supabase = createClient()
