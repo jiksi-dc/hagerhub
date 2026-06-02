@@ -57,53 +57,10 @@ const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=150}:{bg:string,name:stri
   </div>
 )
 
-const SIDEBARS: Record<string, React.ReactNode> = {
-  All: (
-    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
-      <AdCard bg="#006400" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide" cta="Book Now" tag="Premium partner" delay="0s" height={150}/>
-      <AdCard bg="#003087" name="CBE Home Loans" sub="Up to ETB 5,000,000 · Low interest" cta="Apply Now" tag="Partner" delay="1s" height={100}/>
-      <div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginBottom:'3px',marginTop:'4px'}}>Ad</div>
-      <div style={{...adBase,animation:'adpulse 6s ease-in-out infinite 2s'}}>
-        <div style={{height:'80px',background:'#FF6B00',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px'}}>
-          <div><div style={{fontSize:'12px',fontWeight:600,color:'white'}}>Telebirr</div><div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',marginTop:'2px'}}>Pay smarter across Ethiopia</div></div>
-          <button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'9px',padding:'4px 10px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.25)',cursor:'pointer',flexShrink:0}}>Get App</button>
-        </div>
-      </div>
-    </div>
-  ),
-  Properties: (
-    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
-      <AdCard bg="#1a3a5c" name="Midroc Real Estate" sub="Premium residential & commercial properties across Ethiopia" cta="View Properties" tag="Property partner" delay="0s" height={160}/>
-      <AdCard bg="#0C4A6E" name="CBE Home Loans" sub="Finance your dream home · Up to ETB 5,000,000 at low interest" cta="Apply for a Loan" tag="Property partner" delay="1s" height={160}/>
-    </div>
-  ),
-  Vehicles: (
-    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
-      <AdCard bg="#1a1a2e" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance · Best rates in Ethiopia" cta="Get a Quote" tag="Vehicle partner" delay="0s" height={160}/>
-      <AdCard bg="#006400" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide" cta="Book Now" tag="Partner" delay="1s" height={100}/>
-    </div>
-  ),
-  Machinery: (
-    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
-      <AdCard bg="#78350F" name="Midroc Construction" sub="Leading construction company in Ethiopia · Equipment & Services" cta="Learn More" tag="Machinery partner" delay="0s" height={160}/>
-      <AdCard bg="#166534" name="Ethiopian Agri-Business" sub="Farm equipment financing & leasing across Ethiopia" cta="Apply Now" tag="Partner" delay="1s" height={100}/>
-    </div>
-  ),
-  Classifieds: (
-    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
-      <AdCard bg="#FF6B00" name="Telebirr" sub="Pay for anything across Ethiopia · Send & Receive money instantly" cta="Get App" tag="Payment partner" delay="0s" height={160}/>
-      <AdCard bg="#003087" name="CBE" sub="Digital banking · Instant transfers · Mobile banking" cta="Learn More" tag="Partner" delay="1s" height={100}/>
-    </div>
-  ),
-  Jobs: (
-    <div style={{display:'flex',flexDirection:'column',gap:'10px',position:'sticky',top:'120px',alignSelf:'start'}}>
-      <AdCard bg="#006400" name="Ethiopian Airlines" sub="We are hiring · Join Africa's largest airline today" cta="View Jobs" tag="Employer partner" delay="0s" height={160}/>
-      <AdCard bg="#1a3a5c" name="Midroc Group" sub="Career opportunities across Ethiopia · Apply now" cta="Apply Now" tag="Employer partner" delay="1s" height={100}/>
-    </div>
-  ),
-}
+// Sidebar is now dynamic — reads featured/top listings from Supabase
+// Rendered inside Home() as <Sidebar/> with access to featuredListings state
 
-const filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#6B7280',marginBottom:'8px',display:'block'}
+const filterLabelconst filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#6B7280',marginBottom:'8px',display:'block'}
 const filterSelect:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',background:'#fff',fontFamily:'inherit',outline:'none',cursor:'pointer'}
 const filterInput:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',fontFamily:'inherit',outline:'none'}
 
@@ -154,6 +111,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState<Set<string>>(new Set())
   const [user, setUser] = useState<any>(null)
+const [featuredListings, setFeaturedListings] = useState<any[]>([])
 
   // Filter state
   const [filterCity, setFilterCity] = useState('')
@@ -201,7 +159,13 @@ export default function Home() {
     return data?.verified || false
   }
 
-  async function fetchListings() {
+  async function fetchFeatured() {
+const supabase = createClient()
+const {data} = await supabase.from('listings').select('*').eq('status','active').eq('is_featured',true).gte('boost_expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(6)
+setFeaturedListings(data||[])
+}
+
+async function fetchListings() {
     setLoading(true)
     const supabase = createClient()
     let q = supabase.from('listings').select('*').eq('status','active').order('created_at',{ascending:false})
@@ -359,6 +323,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{`
         @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.92} }
+@keyframes featuredshimmer { 0%,100%{box-shadow:0 0 0 rgba(218,165,32,0)} 50%{box-shadow:0 4px 20px rgba(218,165,32,0.15)} }
         *{box-sizing:border-box;margin:0;padding:0}
         select:focus,input:focus{border-color:#2563EB!important}
       `}</style>
@@ -492,7 +457,17 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           )}
         </div>
 
-        {SIDEBARS[activeCat] || SIDEBARS['All']}
+        <div style={{position:'sticky',top:'120px',alignSelf:'start',display:'flex',flexDirection:'column',gap:'0'}}>
+{featuredListings.length > 0 ? (
+<>
+<div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginBottom:'8px'}}>Featured listings</div>
+{featuredListings.slice(0,3).map(l=><FeaturedCard key={l.id} l={l} locale={locale}/>)}
+</>
+) : (
+<BoostCTA locale={locale}/>
+)}
+<BoostCTA locale={locale}/>
+</div>
       </div>
 
       <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
