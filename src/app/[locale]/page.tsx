@@ -60,7 +60,7 @@ const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=150}:{bg:string,name:stri
 // Sidebar is now dynamic — reads featured/top listings from Supabase
 // Rendered inside Home() as <Sidebar/> with access to featuredListings state
 
-const filterLabelconst filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#6B7280',marginBottom:'8px',display:'block'}
+const filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#6B7280',marginBottom:'8px',display:'block'}
 const filterSelect:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',background:'#fff',fontFamily:'inherit',outline:'none',cursor:'pointer'}
 const filterInput:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',fontFamily:'inherit',outline:'none'}
 
