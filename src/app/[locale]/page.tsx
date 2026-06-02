@@ -15,6 +15,7 @@ const POPULAR = [
 ]
 
 const SUBCATS: Record<string,string[]> = {
+Discover: ['Tourist Attraction','National Park','Festival & Cultural Event','Concert & Entertainment','Food & Dining Experience','Museum & Heritage','Tour Package','Sports Event'],
   Properties: ['Residential for Rent','Residential for Sale','Commercial','Land & Plots'],
   Vehicles:   ['Used Cars','New Cars','Trucks & LGVs','Motorcycles'],
   Machinery:  ['Farm Equipment','Construction','Generators','Industrial'],
@@ -106,6 +107,44 @@ const filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTran
 const filterSelect:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',background:'#fff',fontFamily:'inherit',outline:'none',cursor:'pointer'}
 const filterInput:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',fontFamily:'inherit',outline:'none'}
 
+
+const DiscoverCard = ({l, locale}: {l: any, locale: string}) => {
+const isUpcoming = l.event_date && new Date(l.event_date) >= new Date()
+const isPast = l.event_date && new Date(l.event_date) < new Date()
+const dateObj = l.event_date ? new Date(l.event_date) : null
+const day = dateObj ? dateObj.getDate() : null
+const month = dateObj ? dateObj.toLocaleString('en-ET',{month:'short'}) : null
+return (
+<div onClick={()=>window.location.href=`/${locale}/listing/${l.id}`}
+style={{background:'#fff',borderRadius:'14px',overflow:'hidden',border:'1px solid #F3F4F6',cursor:'pointer',display:'flex',gap:'0',minHeight:'100px',transition:'box-shadow .15s'}}>
+{/* Date block */}
+{dateObj && (
+<div style={{width:'72px',minWidth:'72px',background:isUpcoming?'#0f3460':'#F3F4F6',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'12px 8px'}}>
+<div style={{fontSize:'22px',fontWeight:900,color:isUpcoming?'white':'#6B7280',lineHeight:1}}>{day}</div>
+<div style={{fontSize:'11px',fontWeight:700,color:isUpcoming?'rgba(255,255,255,0.8)':'#9CA3AF',textTransform:'uppercase',letterSpacing:'1px'}}>{month}</div>
+</div>
+)}
+{/* Content */}
+<div style={{flex:1,padding:'12px 14px',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
+<div>
+<div style={{display:'flex',alignItems:'center',gap:'6px',marginBottom:'4px',flexWrap:'wrap'}}>
+<span style={{fontSize:'10px',fontWeight:700,background:isUpcoming?'#ECFDF5':isPast?'#F3F4F6':'#EFF6FF',color:isUpcoming?'#059669':isPast?'#9CA3AF':'#2563EB',padding:'2px 8px',borderRadius:'10px',letterSpacing:'0.5px'}}>
+{isUpcoming?'Upcoming':isPast?'Past':l.subcategory}
+</span>
+{l.subcategory && <span style={{fontSize:'10px',color:'#9CA3AF'}}>{l.subcategory}</span>}
+</div>
+<div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
+<div style={{fontSize:'11px',color:'#6B7280'}}>{l.city}{l.event_time?' · '+l.event_time:''}</div>
+</div>
+<div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:'8px'}}>
+<span style={{fontSize:'12px',fontWeight:700,color:'#111'}}>{l.price_label}</span>
+{l.admission_fee && <span style={{fontSize:'10px',background:'#FFFBEB',color:'#92400E',padding:'2px 7px',borderRadius:'10px',fontWeight:600}}>{l.admission_fee}</span>}
+</div>
+</div>
+</div>
+)
+}
+
 export default function Home() {
   const t = useTranslations()
   const locale = useLocale()
@@ -166,7 +205,8 @@ export default function Home() {
     setLoading(true)
     const supabase = createClient()
     let q = supabase.from('listings').select('*').eq('status','active').order('created_at',{ascending:false})
-    if (activeCat!=='All') q = q.eq('category',activeCat)
+    if (activeCat==='Discover') q = q.eq('category','Discover Ethiopia')
+else if (activeCat!=='All') q = q.eq('category',activeCat)
     const {data} = await q.limit(100)
     setListings(data||[])
     setLoading(false)
@@ -354,7 +394,7 @@ export default function Home() {
           {TABS.map(tab=>(
             <button key={tab.key} onClick={()=>setActiveCat(tab.name)}
               style={{padding:'12px 18px',fontSize:'13px',fontWeight:activeCat===tab.name?700:400,
-                color:activeCat===tab.name?'#111':'#6B7280',background:'none',border:'none',
+                color:activeCat===tab.name?(tab.key==='discover'?'#0f3460':'#111'):(tab.key==='discover'?'#0f3460':'#6B7280'),background:'none',border:'none',
                 borderBottom:activeCat===tab.name?'2px solid #111':'2px solid transparent',
                 cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'color .15s'}}>
               {t('cats.' + tab.key)}
