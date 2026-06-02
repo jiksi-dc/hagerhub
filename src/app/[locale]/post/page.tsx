@@ -34,6 +34,7 @@ export default function PostAd() {
   // Common fields
   const [title, setTitle] = useState('')
   const [price, setPrice] = useState('')
+const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
   const [phone, setPhone] = useState('')
   const [desc, setDesc] = useState('')
   const [city, setCity] = useState('Addis Ababa')
@@ -140,7 +141,9 @@ export default function PostAd() {
       setStatus('💾 Saving your listing...')
       const supabase = createClient()
       const { error: dbErr } = await supabase.from('listings').insert({
-        title, description: desc, price_label: `ETB ${Number(price).toLocaleString()}`,
+        title, description: desc, price_label: `${currency} ${Number(price).toLocaleString()}`,
+price_amount: Number(price),
+price_currency: currency,
         category: cat, subcategory: subcat, city, neighbourhood,
         status: 'active', image_urls,
         make, model, year, mileage: km, fuel_type: fuel, body_type: bodyType,
@@ -250,7 +253,17 @@ admission_fee: admission,
               cat === 'Machinery' ? 'e.g. Caterpillar 320D Excavator' :
               'e.g. iPhone 15 Pro Max 256GB'
             }/>
-            <Field label="Price *" value={price} onChange={setPrice} placeholder="0" type="number" suffix="ETB"/>
+            <div style={{marginBottom:'20px'}}>
+<label style={lbl as any}>Price *</label>
+<div style={{display:'flex',gap:'8px'}}>
+<div style={{display:'flex',border:'1px solid #E5E7EB',borderRadius:'10px',overflow:'hidden',flexShrink:0}}>
+<button onClick={()=>setCurrency('ETB')} style={{padding:'12px 14px',background:currency==='ETB'?'#111':'#fff',color:currency==='ETB'?'white':'#374151',border:'none',cursor:'pointer',fontWeight:700,fontSize:'13px',fontFamily:'inherit'}}>ETB</button>
+<button onClick={()=>setCurrency('USD')} style={{padding:'12px 14px',background:currency==='USD'?'#111':'#fff',color:currency==='USD'?'white':'#374151',border:'none',cursor:'pointer',fontWeight:700,fontSize:'13px',fontFamily:'inherit'}}>USD</button>
+</div>
+<input type="number" value={price} onChange={e=>setPrice(e.target.value)} placeholder="0" style={{...inp,flex:1}}/>
+</div>
+{currency==='USD' && price && <div style={{fontSize:'12px',color:'#6B7280',marginTop:'6px'}}>≈ ETB {(Number(price)*57).toLocaleString()} at current rate</div>}
+</div>
             <Field label="Phone number *" value={phone} onChange={setPhone} placeholder="+251 9XX XXX XXX"/>
 
             {/* VEHICLE FIELDS */}
