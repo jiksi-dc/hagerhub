@@ -34,13 +34,13 @@ export default function ListingPage() {
   const [showContact, setShowContact] = useState(false)
   const [sellerPhone, setSellerPhone] = useState('')
   const [copied, setCopied] = useState(false)
-const [shareCopied, setShareCopied] = useState(false)
   const [lightbox, setLightbox] = useState(false)
   const [showReport, setShowReport] = useState(false)
   const [reportReason, setReportReason] = useState('')
   const [reportDetails, setReportDetails] = useState('')
   const [reportSubmitted, setReportSubmitted] = useState(false)
   const [reportLoading, setReportLoading] = useState(false)
+const [shareCopied, setShareCopied] = useState(false)
 const [similar, setSimilar] = useState<Listing[]>([])
 
   useEffect(() => {
@@ -49,7 +49,10 @@ const [similar, setSimilar] = useState<Listing[]>([])
       .then(({ data }) => {
         setListing(data)
         setLoading(false)
-        if (data?.user_id) {
+        if (data?.category && data?.city) {
+supabase.from('listings').select('id,title,price_label,city,category,subcategory,image_urls').eq('category', data.category).eq('city', data.city).neq('id', id).eq('status','active').limit(4).then(({ data: s }) => setSimilar(s || []))
+}
+if (data?.user_id) {
           supabase.from('profiles').select('verified, phone').eq('id', data.user_id).single()
             .then(({ data: p }) => {
               setVerified(p?.verified || false)
@@ -390,7 +393,8 @@ const submitReport = async () => {
               style={{width:'100%',padding:'10px',background:'none',color:'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'12px',cursor:'pointer',fontFamily:'inherit',marginTop:'4px'}}>
               Report this listing
             </button>
-feat: similar listings section on detail page
+          </div>
+
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
             <div style={{fontSize:'12px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#9CA3AF',marginBottom:'14px'}}>Details</div>
             {[['Category',listing.category],['Type',listing.subcategory],['Location',`${listing.neighbourhood}, ${listing.city}`]].map(([label,value])=>value&&(
@@ -407,6 +411,27 @@ feat: similar listings section on detail page
           </div>
         </div>
       </div>
+      {similar.length > 0 && (
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 40px'}}>
+          <h2 style={{fontSize:'16px',fontWeight:700,color:'#111',marginBottom:'16px'}}>Similar listings in {listing.city}</h2>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'14px'}}>
+            {similar.map(s=>(
+              <a key={s.id} href={`/${locale}/listing/${s.id}`} style={{textDecoration:'none'}}>
+                <div style={{background:'#fff',borderRadius:'12px',border:'1px solid #F3F4F6',overflow:'hidden'}}>
+                  <div style={{height:'130px',background:'#F9FAFB',overflow:'hidden'}}>
+                    <img src={s.image_urls?.[0]||IMGS[s.category]||''} alt={s.title} style={{width:'100%',height:'100%',objectFit:'contain'}}/>
+                  </div>
+                  <div style={{padding:'10px 12px'}}>
+                    <div style={{fontSize:'13px',fontWeight:600,color:'#111',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginBottom:'2px'}}>{s.title}</div>
+                    <div style={{fontSize:'11px',color:'#9CA3AF',marginBottom:'6px'}}>{s.city}</div>
+                    <div style={{fontSize:'13px',fontWeight:700,color:'#2563EB'}}>{s.price_label}</div>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   )
 }
