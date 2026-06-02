@@ -40,6 +40,7 @@ export default function ListingPage() {
   const [reportDetails, setReportDetails] = useState('')
   const [reportSubmitted, setReportSubmitted] = useState(false)
   const [reportLoading, setReportLoading] = useState(false)
+const [similar, setSimilar] = useState<Listing[]>([])
 
   useEffect(() => {
     const supabase = createClient()
@@ -377,8 +378,7 @@ export default function ListingPage() {
               style={{width:'100%',padding:'10px',background:'none',color:'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'12px',cursor:'pointer',fontFamily:'inherit',marginTop:'4px'}}>
               Report this listing
             </button>
-          </div>
-
+feat: similar listings section on detail page
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
             <div style={{fontSize:'12px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#9CA3AF',marginBottom:'14px'}}>Details</div>
             {[['Category',listing.category],['Type',listing.subcategory],['Location',`${listing.neighbourhood}, ${listing.city}`]].map(([label,value])=>value&&(
