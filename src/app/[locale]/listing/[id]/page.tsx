@@ -116,7 +116,30 @@ setTimeout(() => setShareCopied(false), 2000)
 }
 }
 
-const submitReport = async () => {
+const markAsSold = async () => {
+    if (!confirm('Mark this listing as sold? It will be removed from active listings.')) return
+    setMarkSoldLoading(true)
+    const supabase = createClient()
+    await supabase.from('listings').update({ status: 'sold' }).eq('id', id)
+    setIsSold(true)
+    setMarkSoldLoading(false)
+  }
+
+  const submitComment = async () => {
+    if (!commentText.trim() || !user) return
+    setCommentLoading(true)
+    const isSellerReply = listing?.user_id === user.id
+    const res = await fetch('/api/comments', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ listing_id: id, body: commentText.trim(), user_id: user.id, is_seller_reply: isSellerReply })
+    })
+    const d = await res.json()
+    if (d.comment) { setComments(prev => [...prev, d.comment]); setCommentText('') }
+    setCommentLoading(false)
+  }
+
+  const submitReport = async () => {
     if (!reportReason) return
     setReportLoading(true)
     const supabase = createClient()
