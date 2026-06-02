@@ -8,6 +8,7 @@ const CITIES = ['Addis Ababa','Dire Dawa','Hawassa','Bahir Dar','Mekelle','Adama
 const VEHICLE_MAKES = ['Toyota','Hyundai','Nissan','Honda','Mercedes','BMW','Mitsubishi','Isuzu','Ford','Volkswagen','Kia','Suzuki','Land Rover','Jeep','Other']
 
 const SUBCATEGORIES: Record<string, string[]> = {
+Discover: ['Tourist Attraction','National Park','Nature & Wildlife','Museum & Heritage','Religious Site','Festival & Cultural Event','Concert & Entertainment','Sports Event','Food & Dining Experience','Market & Shopping','Tour Package','Other Experience'],
   Properties: ['Residential for Rent','Residential for Sale','Commercial for Rent','Commercial for Sale','Land & Plots'],
   Vehicles: ['Cars','Trucks & LGVs','Motorcycles','Auto Parts & Accessories','Heavy Vehicles'],
   Machinery: ['Farm Equipment','Construction Machinery','Generators','Industrial Equipment','Other Machinery'],
@@ -138,6 +139,10 @@ export default function PostAd() {
         purpose, bedrooms, bathrooms, area_sqm: area,
         company, employment_type: empType, salary,
         condition, capacity,
+event_date: eventDate || null,
+event_time: eventTime || null,
+venue, website, organizer, region,
+admission_fee: admission,
         contact_phone: phone,
         user_id: user?.id,
       })
@@ -149,7 +154,7 @@ export default function PostAd() {
 
   if (!user) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',fontSize:'16px',color:'#9CA3AF'}}>Loading...</div>
 
-  const CATS = ['Properties','Vehicles','Machinery','Classifieds','Jobs']
+  const CATS = ['Properties','Vehicles','Machinery','Classifieds','Jobs','Discover Ethiopia']
 
   return (
     <main style={{fontFamily:'system-ui,-apple-system,sans-serif',background:'#F7F7F7',minHeight:'100vh'}}>
@@ -171,7 +176,7 @@ export default function PostAd() {
             <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
               {CATS.map(c => (
                 <button key={c} onClick={()=>{setCat(c);setStep(2)}} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 20px',border:'1px solid #EBEBEB',borderRadius:'12px',background:'#fff',cursor:'pointer',fontSize:'15px',fontWeight:600,color:'#111',fontFamily:'inherit',textAlign:'left'}}>
-                  <span>{c}</span>
+                  <span>{c === 'Discover Ethiopia' ? '🇪🇹 Discover Ethiopia' : c}</span>
                   <span style={{color:'#9CA3AF',fontSize:'18px'}}>›</span>
                 </button>
               ))}
