@@ -419,7 +419,7 @@ const submitReport = async () => {
               <a key={s.id} href={`/${locale}/listing/${s.id}`} style={{textDecoration:'none'}}>
                 <div style={{background:'#fff',borderRadius:'12px',border:'1px solid #F3F4F6',overflow:'hidden'}}>
                   <div style={{height:'130px',background:'#F9FAFB',overflow:'hidden'}}>
-                    <img src={s.image_urls?.[0]||IMGS[s.category]||''} alt={s.title} style={{width:'100%',height:'100%',objectFit:'contain'}}/>
+                    <img src={s.image_urls?.[0]||IMGS[s.category||'']||''} alt={s.title} style={{width:'100%',height:'100%',objectFit:'contain'}}/>
                   </div>
                   <div style={{padding:'10px 12px'}}>
                     <div style={{fontSize:'13px',fontWeight:600,color:'#111',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginBottom:'2px'}}>{s.title}</div>
