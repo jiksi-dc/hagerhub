@@ -66,6 +66,16 @@ export default function PostAd() {
   const [condition, setCondition] = useState('')
   const [capacity, setCapacity] = useState('')
 
+  // Discover fields
+  const [eventDate, setEventDate] = useState('')
+  const [eventEndDate, setEventEndDate] = useState('')
+  const [eventTime, setEventTime] = useState('')
+  const [venue, setVenue] = useState('')
+  const [website, setWebsite] = useState('')
+  const [organizer, setOrganizer] = useState('')
+  const [region, setRegion] = useState('')
+  const [admission, setAdmission] = useState('Free')
+
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => {
