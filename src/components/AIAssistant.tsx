@@ -19,13 +19,13 @@ export default function AIAssistant() {
     setInput('')
     setLoading(true)
     try {
-      const res = await fetch('/api/ai', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...messages, userMsg] })
+        body: JSON.stringify({ message: input.trim() })
       })
       const data = await res.json()
-      setMessages(prev => [...prev, { role: 'assistant', content: data.content || 'Sorry, I could not respond.' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: data.reply || 'Sorry, I could not respond.' }])
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Something went wrong. Please try again.' }])
     }
