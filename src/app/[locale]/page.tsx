@@ -57,8 +57,42 @@ const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=150}:{bg:string,name:stri
   </div>
 )
 
-// Sidebar is now dynamic — reads featured/top listings from Supabase
-// Rendered inside Home() as <Sidebar/> with access to featuredListings state
+// FeaturedCard — blends with page, subtle gold shimmer, shown in sidebar
+const FeaturedCard = ({l, locale}: {l:any, locale:string}) => {
+  const imgs = l.image_urls?.length ? l.image_urls : IMGS[l.category]||[]
+  const img = imgs[0]||''
+  return (
+    <a href={`/${locale}/listing/${l.id}`} style={{textDecoration:'none',display:'block',marginBottom:'10px'}}>
+      <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',overflow:'hidden',animation:'featuredshimmer 3s ease-in-out infinite',position:'relative'}}>
+        <div style={{background:'linear-gradient(90deg,#B8860B,#DAA520,#B8860B)',height:'3px'}}/>
+        <div style={{position:'absolute',top:'10px',right:'10px',background:'linear-gradient(135deg,#B8860B,#DAA520)',color:'white',fontSize:'9px',fontWeight:800,letterSpacing:'1px',padding:'2px 7px',borderRadius:'5px'}}>⭐ FEATURED</div>
+        <div style={{height:'120px',background:'#F9FAFB',overflow:'hidden'}}>
+          {img && <img src={img} alt={l.title} style={{width:'100%',height:'100%',objectFit:'contain'}}/>}
+        </div>
+        <div style={{padding:'10px 12px'}}>
+          <div style={{fontSize:'10px',color:'#9CA3AF',marginBottom:'3px'}}>{l.subcategory||l.category} · {l.city}</div>
+          <div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'5px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <span style={{fontSize:'14px',fontWeight:800,color:'#111'}}>{l.price_label}</span>
+            <span style={{fontSize:'11px',color:'#2563EB',fontWeight:600}}>View →</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  )
+}
+
+// BoostCTA — prompts sellers to boost their listing
+const BoostCTA = ({locale}: {locale:string}) => (
+  <a href={`/${locale}/boost`} style={{textDecoration:'none',display:'block',marginBottom:'10px'}}>
+    <div style={{background:'#fff',borderRadius:'14px',border:'1.5px dashed #E5E7EB',padding:'16px',textAlign:'center'}}>
+      <div style={{fontSize:'18px',marginBottom:'6px'}}>⭐</div>
+      <div style={{fontSize:'12px',fontWeight:700,color:'#111',marginBottom:'4px'}}>Boost your listing</div>
+      <div style={{fontSize:'11px',color:'#6B7280',lineHeight:1.5,marginBottom:'10px'}}>Get 10× more views. Featured from $2/week.</div>
+      <div style={{background:'#111',color:'white',fontSize:'11px',fontWeight:700,padding:'7px 14px',borderRadius:'8px',display:'inline-block'}}>Learn more →</div>
+    </div>
+  </a>
+)
 
 const filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#6B7280',marginBottom:'8px',display:'block'}
 const filterSelect:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',background:'#fff',fontFamily:'inherit',outline:'none',cursor:'pointer'}
