@@ -364,6 +364,23 @@ export default function Home() {
       </nav>
 
       {/* MAIN */}
+
+      {/* DISCOVER ETHIOPIA BANNER */}
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 8px'}}>
+        <a href={`/${locale}/discover`} style={{textDecoration:'none',display:'block'}}>
+          <div style={{background:'linear-gradient(135deg,#1a1a2e,#0f3460)',borderRadius:'16px',padding:'24px 28px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'16px',position:'relative',overflow:'hidden'}}>
+            <div style={{position:'absolute',right:0,top:0,bottom:0,width:'40%',backgroundImage:'url(https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=60)',backgroundSize:'cover',backgroundPosition:'center',opacity:0.3,borderRadius:'0 16px 16px 0'}}/>
+            <div style={{position:'relative'}}>
+              <div style={{fontSize:'11px',fontWeight:700,letterSpacing:'3px',color:'#FCD34D',marginBottom:'6px'}}>🇪🇹 NEW</div>
+              <div style={{fontSize:'20px',fontWeight:900,color:'white',marginBottom:'4px'}}>Discover Ethiopia</div>
+              <div style={{fontSize:'13px',color:'rgba(255,255,255,0.75)'}}>UNESCO sites · National Parks · Festivals · Tribal Cultures · More</div>
+            </div>
+            <div style={{position:'relative',background:'#FCD34D',color:'#111',padding:'10px 20px',borderRadius:'10px',fontSize:'13px',fontWeight:800,whiteSpace:'nowrap'}}>
+              Explore now →
+            </div>
+          </div>
+        </a>
+      </div>
       <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 240px' : '220px 1fr 240px',gap:'24px',alignItems:'start'}}>
 
         {/* FILTER PANEL — only when category is active */}
