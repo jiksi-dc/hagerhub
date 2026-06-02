@@ -34,6 +34,7 @@ export default function ListingPage() {
   const [showContact, setShowContact] = useState(false)
   const [sellerPhone, setSellerPhone] = useState('')
   const [copied, setCopied] = useState(false)
+const [shareCopied, setShareCopied] = useState(false)
   const [lightbox, setLightbox] = useState(false)
   const [showReport, setShowReport] = useState(false)
   const [reportReason, setReportReason] = useState('')
@@ -94,7 +95,18 @@ const [similar, setSimilar] = useState<Listing[]>([])
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const submitReport = async () => {
+  const shareListing = async () => {
+const url = window.location.href
+if (navigator.share) {
+try { await navigator.share({ title: listing?.title, text: listing?.price_label, url }) } catch(e) {}
+} else {
+navigator.clipboard.writeText(url)
+setShareCopied(true)
+setTimeout(() => setShareCopied(false), 2000)
+}
+}
+
+const submitReport = async () => {
     if (!reportReason) return
     setReportLoading(true)
     const supabase = createClient()
