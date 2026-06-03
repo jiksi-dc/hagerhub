@@ -38,20 +38,56 @@ interface Listing {
   neighbourhood:string; category:string; subcategory:string; created_at:string; user_id:string; verified?:boolean
 }
 
-const adBase:React.CSSProperties = {borderRadius:'12px',overflow:'hidden',border:'1px solid #E5E7EB'}
-
-const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=150}:{bg:string,name:string,sub:string,cta:string,tag:string,delay?:string,height?:number}) => (
-  <div style={{marginBottom:'4px'}}>
-    <div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginBottom:'3px'}}>{tag}</div>
-    <div style={{...adBase,animation:`adpulse 4s ease-in-out infinite ${delay}`}}>
-      <div style={{height:`${height}px`,background:bg,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'7px',padding:'14px'}}>
-        <div style={{fontSize:'13px',fontWeight:600,color:'white',textAlign:'center'}}>{name}</div>
-        <div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',textAlign:'center',lineHeight:1.5}}>{sub}</div>
-        <button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'10px',padding:'5px 14px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.3)',cursor:'pointer',marginTop:'3px'}}>{cta}</button>
-      </div>
-      <div style={{background:'#fff',padding:'9px 11px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <div style={{fontSize:'11px',fontWeight:500,color:'#111'}}>{name}</div>
-        <div style={{fontSize:'10px',color:'#2563EB',cursor:'pointer'}}>Visit →</div>
+// Premium AdCard — blending animated ad units
+const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=180,logo,accent='rgba(255,255,255,0.12)'}:{bg:string,name:string,sub:string,cta:string,tag:string,delay?:string,height?:number,logo?:string,accent?:string}) => (
+  <div style={{marginBottom:'0'}}>
+    <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'4px',fontWeight:600}}>{tag}</div>
+    <div style={{
+      borderRadius:'16px',overflow:'hidden',
+      boxShadow:'0 2px 16px rgba(0,0,0,0.10)',
+      animation:`adblend 5s ease-in-out infinite ${delay}`,
+      position:'relative',cursor:'pointer',
+      transition:'transform 0.2s ease, box-shadow 0.2s ease',
+    }}>
+      {/* Ad image/colour area */}
+      <div style={{
+        height:`${height}px`,
+        background:bg,
+        position:'relative',
+        display:'flex',flexDirection:'column',
+        justifyContent:'flex-end',
+        padding:'16px',
+        overflow:'hidden',
+      }}>
+        {/* Shimmer overlay */}
+        <div style={{
+          position:'absolute',top:0,left:0,right:0,bottom:0,
+          background:'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.06) 100%)',
+          animation:`shimmerslide 3s ease-in-out infinite ${delay}`,
+          pointerEvents:'none',
+        }}/>
+        {/* Gradient blend to footer */}
+        <div style={{
+          position:'absolute',bottom:0,left:0,right:0,height:'60%',
+          background:'linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%)',
+          pointerEvents:'none',
+        }}/>
+        {/* Content */}
+        <div style={{position:'relative',zIndex:1}}>
+          <div style={{fontSize:'15px',fontWeight:800,color:'white',marginBottom:'4px',textShadow:'0 1px 4px rgba(0,0,0,0.3)'}}>{name}</div>
+          <div style={{fontSize:'11px',color:'rgba(255,255,255,0.88)',lineHeight:1.5,marginBottom:'10px'}}>{sub}</div>
+          <button style={{
+            background:accent,
+            backdropFilter:'blur(8px)',
+            color:'white',
+            fontSize:'11px',fontWeight:700,
+            padding:'7px 16px',
+            borderRadius:'20px',
+            border:'1px solid rgba(255,255,255,0.35)',
+            cursor:'pointer',
+            letterSpacing:'0.3px',
+          }}>{cta} →</button>
+        </div>
       </div>
     </div>
   </div>
@@ -356,7 +392,9 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
   return (
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{`
-        @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.92} }
+        @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.94} }
+@keyframes adblend { 0%,100%{box-shadow:0 2px 16px rgba(0,0,0,0.10);transform:translateY(0)} 50%{box-shadow:0 8px 32px rgba(0,0,0,0.22);transform:translateY(-3px)} }
+@keyframes shimmerslide { 0%,100%{opacity:0.5} 50%{opacity:1} }
 @keyframes featuredshimmer { 0%,100%{box-shadow:0 0 0 rgba(218,165,32,0)} 50%{box-shadow:0 4px 20px rgba(218,165,32,0.15)} }
         *{box-sizing:border-box;margin:0;padding:0}
         select:focus,input:focus{border-color:#2563EB!important}
@@ -420,7 +458,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           </div>
         </a>
       </div>
-      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 240px' : '220px 1fr 240px',gap:'24px',alignItems:'start'}}>
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 280px' : '200px 1fr 280px',gap:'24px',alignItems:'start'}}>
 
         {/* FILTER PANEL — only when category is active */}
         {activeCat !== 'All' && <FilterPanel/>}
@@ -491,46 +529,61 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           )}
         </div>
 
-        <div style={{position:'sticky',top:'120px',alignSelf:'start',display:'flex',flexDirection:'column',gap:'10px'}}>
-{featuredListings.length > 0 && (
-<>
-<div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginBottom:'4px'}}>Featured listings</div>
-{featuredListings.slice(0,3).map(l=><FeaturedCard key={l.id} l={l} locale={locale}/>)}
-</>
-)}
-<BoostCTA locale={locale}/>
-{activeCat==='All' && <>
-<AdCard bg="#006400" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide" cta="Book Now" tag="Premium partner" delay="0s" height={150}/>
-<AdCard bg="#003087" name="CBE Home Loans" sub="Up to ETB 5,000,000 Low interest" cta="Apply Now" tag="Partner" delay="1s" height={100}/>
-<div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginTop:'4px'}}>Ad</div>
-<div style={{borderRadius:'12px',overflow:'hidden',border:'1px solid #E5E7EB',animation:'adpulse 6s ease-in-out infinite 2s'}}>
-<div style={{height:'80px',background:'#FF6B00',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px'}}>
-<div><div style={{fontSize:'12px',fontWeight:600,color:'white'}}>Telebirr</div><div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',marginTop:'2px'}}>Pay smarter across Ethiopia</div></div>
-<button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'9px',padding:'4px 10px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.25)',cursor:'pointer'}}>Get App</button>
-</div>
-</div>
-</>}
-{activeCat==='Properties' && <>
-<AdCard bg="#1a3a5c" name="Midroc Real Estate" sub="Premium residential and commercial properties across Ethiopia" cta="View Properties" tag="Property partner" delay="0s" height={160}/>
-<AdCard bg="#0C4A6E" name="CBE Home Loans" sub="Finance your dream home. Up to ETB 5,000,000" cta="Apply for a Loan" tag="Property partner" delay="1s" height={100}/>
-</>}
-{activeCat==='Vehicles' && <>
-<AdCard bg="#1a1a2e" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance. Best rates in Ethiopia" cta="Get a Quote" tag="Vehicle partner" delay="0s" height={160}/>
-<AdCard bg="#006400" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide" cta="Book Now" tag="Partner" delay="1s" height={100}/>
-</>}
-{activeCat==='Machinery' && <>
-<AdCard bg="#78350F" name="Midroc Construction" sub="Leading construction company in Ethiopia" cta="Learn More" tag="Machinery partner" delay="0s" height={160}/>
-<AdCard bg="#166534" name="Ethiopian Agri-Business" sub="Farm equipment financing and leasing" cta="Apply Now" tag="Partner" delay="1s" height={100}/>
-</>}
-{activeCat==='Classifieds' && <>
-<AdCard bg="#FF6B00" name="Telebirr" sub="Pay for anything across Ethiopia. Send and Receive money instantly" cta="Get App" tag="Payment partner" delay="0s" height={160}/>
-<AdCard bg="#003087" name="CBE" sub="Digital banking. Instant transfers. Mobile banking" cta="Learn More" tag="Partner" delay="1s" height={100}/>
-</>}
-{activeCat==='Jobs' && <>
-<AdCard bg="#006400" name="Ethiopian Airlines" sub="We are hiring. Join Africa's largest airline today" cta="View Jobs" tag="Employer partner" delay="0s" height={160}/>
-<AdCard bg="#1a3a5c" name="Midroc Group" sub="Career opportunities across Ethiopia. Apply now" cta="Apply Now" tag="Employer partner" delay="1s" height={100}/>
-</>}
-</div>
+        <div style={{position:'sticky',top:'120px',alignSelf:'start',display:'flex',flexDirection:'column',gap:'14px',width:'100%'}}>
+
+          {/* Featured listings — shown when boosted listings exist */}
+          {featuredListings.length > 0 && (
+            <div>
+              <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'8px',fontWeight:600}}>Featured listings</div>
+              {featuredListings.slice(0,2).map(l=><FeaturedCard key={l.id} l={l} locale={locale}/>)}
+            </div>
+          )}
+
+          {/* ALL — Ethiopian Airlines hero + CBE + Telebirr */}
+          {activeCat==='All' && <>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#004d00 60%,#003300 100%)" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide. Africa's largest airline." cta="Book Now" tag="Premium Partner" delay="0s" height={200} accent="rgba(255,255,255,0.2)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Finance your dream. Up to ETB 5,000,000 at the lowest rates." cta="Apply Now" tag="Financial Partner" delay="1.2s" height={160} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Send money, pay bills and shop across Ethiopia instantly." cta="Get the App" tag="Payment Partner" delay="2.4s" height={140} accent="rgba(255,255,255,0.18)"/>
+          </>}
+
+          {/* PROPERTIES */}
+          {activeCat==='Properties' && <>
+            <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Real Estate" sub="Premium residential and commercial properties across Ethiopia." cta="View Properties" tag="Property Partner" delay="0s" height={220} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Up to ETB 5,000,000 · Low interest · Fast approval." cta="Apply for a Loan" tag="Financial Partner" delay="1.5s" height={160} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Sunshine Construction" sub="Build your dream home with Ethiopia's trusted builders." cta="Get a Quote" tag="Construction Partner" delay="2.5s" height={130} accent="rgba(255,255,255,0.12)"/>
+          </>}
+
+          {/* VEHICLES */}
+          {activeCat==='Vehicles' && <>
+            <AdCard bg="linear-gradient(160deg,#1a1a2e 0%,#0d0d1a 100%)" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance at the best rates in Ethiopia." cta="Get a Quote" tag="Insurance Partner" delay="0s" height={200} accent="rgba(255,255,255,0.14)"/>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines Cargo" sub="Ship anything across Ethiopia and beyond. Fast and reliable." cta="Ship Now" tag="Logistics Partner" delay="1.5s" height={150} accent="rgba(255,255,255,0.18)"/>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for your vehicle purchase securely with Telebirr." cta="Pay with Telebirr" tag="Payment Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.18)"/>
+          </>}
+
+          {/* MACHINERY */}
+          {activeCat==='Machinery' && <>
+            <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Midroc Construction" sub="Leading construction equipment supplier across Ethiopia." cta="Learn More" tag="Machinery Partner" delay="0s" height={210} accent="rgba(255,255,255,0.12)"/>
+            <AdCard bg="linear-gradient(160deg,#166534 0%,#0a3a1c 100%)" name="Ethiopian Agri-Business" sub="Farm equipment financing and leasing. Apply across Ethiopia." cta="Apply Now" tag="Agricultural Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.14)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Business Loans" sub="Finance your machinery purchase with Ethiopia's trusted bank." cta="Apply Now" tag="Financial Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
+          </>}
+
+          {/* CLASSIFIEDS */}
+          {activeCat==='Classifieds' && <>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for anything across Ethiopia. Send and receive money instantly." cta="Get the App" tag="Payment Partner" delay="0s" height={200} accent="rgba(255,255,255,0.18)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Digital Banking" sub="Instant transfers, mobile banking, zero fees for first year." cta="Open an Account" tag="Banking Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#4c1d95 0%,#2e1065 100%)" name="Safaricom Ethiopia" sub="Stay connected. Ethiopia's fastest growing mobile network." cta="Learn More" tag="Telecom Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.16)"/>
+          </>}
+
+          {/* JOBS */}
+          {activeCat==='Jobs' && <>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines" sub="Join Africa's largest airline. 130+ destinations. Apply today." cta="View Jobs" tag="Top Employer" delay="0s" height={210} accent="rgba(255,255,255,0.2)"/>
+            <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Group" sub="Career opportunities across construction, mining and real estate." cta="Apply Now" tag="Top Employer" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE" sub="Join Ethiopia's largest bank. Over 50 open positions." cta="View Openings" tag="Top Employer" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
+          </>}
+
+          {/* BoostCTA — at the bottom, not competing with ads */}
+          <BoostCTA locale={locale}/>
+        </div>
       </div>
 
       <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
