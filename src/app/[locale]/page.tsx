@@ -491,15 +491,45 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           )}
         </div>
 
-        <div style={{position:'sticky',top:'120px',alignSelf:'start',display:'flex',flexDirection:'column',gap:'0'}}>
-{featuredListings.length > 0 ? (
+        <div style={{position:'sticky',top:'120px',alignSelf:'start',display:'flex',flexDirection:'column',gap:'10px'}}>
+{featuredListings.length > 0 && (
 <>
-<div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginBottom:'8px'}}>Featured listings</div>
+<div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginBottom:'4px'}}>Featured listings</div>
 {featuredListings.slice(0,3).map(l=><FeaturedCard key={l.id} l={l} locale={locale}/>)}
 </>
-) : (
-<BoostCTA locale={locale}/>
 )}
+<BoostCTA locale={locale}/>
+{activeCat==='All' && <>
+<AdCard bg="#006400" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide" cta="Book Now" tag="Premium partner" delay="0s" height={150}/>
+<AdCard bg="#003087" name="CBE Home Loans" sub="Up to ETB 5,000,000 Low interest" cta="Apply Now" tag="Partner" delay="1s" height={100}/>
+<div style={{fontSize:'9px',color:'#9CA3AF',letterSpacing:'1.5px',textTransform:'uppercase',marginTop:'4px'}}>Ad</div>
+<div style={{borderRadius:'12px',overflow:'hidden',border:'1px solid #E5E7EB',animation:'adpulse 6s ease-in-out infinite 2s'}}>
+<div style={{height:'80px',background:'#FF6B00',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px'}}>
+<div><div style={{fontSize:'12px',fontWeight:600,color:'white'}}>Telebirr</div><div style={{fontSize:'10px',color:'rgba(255,255,255,0.85)',marginTop:'2px'}}>Pay smarter across Ethiopia</div></div>
+<button style={{background:'rgba(255,255,255,0.18)',color:'white',fontSize:'9px',padding:'4px 10px',borderRadius:'8px',border:'1px solid rgba(255,255,255,0.25)',cursor:'pointer'}}>Get App</button>
+</div>
+</div>
+</>}
+{activeCat==='Properties' && <>
+<AdCard bg="#1a3a5c" name="Midroc Real Estate" sub="Premium residential and commercial properties across Ethiopia" cta="View Properties" tag="Property partner" delay="0s" height={160}/>
+<AdCard bg="#0C4A6E" name="CBE Home Loans" sub="Finance your dream home. Up to ETB 5,000,000" cta="Apply for a Loan" tag="Property partner" delay="1s" height={100}/>
+</>}
+{activeCat==='Vehicles' && <>
+<AdCard bg="#1a1a2e" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance. Best rates in Ethiopia" cta="Get a Quote" tag="Vehicle partner" delay="0s" height={160}/>
+<AdCard bg="#006400" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide" cta="Book Now" tag="Partner" delay="1s" height={100}/>
+</>}
+{activeCat==='Machinery' && <>
+<AdCard bg="#78350F" name="Midroc Construction" sub="Leading construction company in Ethiopia" cta="Learn More" tag="Machinery partner" delay="0s" height={160}/>
+<AdCard bg="#166534" name="Ethiopian Agri-Business" sub="Farm equipment financing and leasing" cta="Apply Now" tag="Partner" delay="1s" height={100}/>
+</>}
+{activeCat==='Classifieds' && <>
+<AdCard bg="#FF6B00" name="Telebirr" sub="Pay for anything across Ethiopia. Send and Receive money instantly" cta="Get App" tag="Payment partner" delay="0s" height={160}/>
+<AdCard bg="#003087" name="CBE" sub="Digital banking. Instant transfers. Mobile banking" cta="Learn More" tag="Partner" delay="1s" height={100}/>
+</>}
+{activeCat==='Jobs' && <>
+<AdCard bg="#006400" name="Ethiopian Airlines" sub="We are hiring. Join Africa's largest airline today" cta="View Jobs" tag="Employer partner" delay="0s" height={160}/>
+<AdCard bg="#1a3a5c" name="Midroc Group" sub="Career opportunities across Ethiopia. Apply now" cta="Apply Now" tag="Employer partner" delay="1s" height={100}/>
+</>}
 </div>
       </div>
 
