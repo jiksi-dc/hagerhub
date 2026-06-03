@@ -500,7 +500,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
 ) : (
 <BoostCTA locale={locale}/>
 )}
-<BoostCTA locale={locale}/>
 </div>
       </div>
 
