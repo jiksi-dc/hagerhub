@@ -128,9 +128,10 @@ const markAsSold = async () => {
   }
 
   const submitComment = async () => {
-    if (!commentText.trim() || !user) return
-    setCommentLoading(true)
+    if (!user) return
     const isSellerReply = listing?.user_id === user.id
+    if (!isSellerReply && !commentRating) return
+    setCommentLoading(true)
     const res = await fetch('/api/comments', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},

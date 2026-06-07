@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await supabase
     .from('listing_comments')
-    .select('id, body, created_at, is_seller_reply, user_id, profiles(full_name)')
+    .select('id, body, rating, created_at, is_seller_reply, user_id, profiles(full_name)')
     .eq('listing_id', listing_id)
     .order('created_at', { ascending: true })
 
@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
 
 // POST /api/comments
 export async function POST(req: NextRequest) {
-  const { listing_id, body, user_id, is_seller_reply } = await req.json()
-  if (!listing_id || !body || !user_id) {
-    return Response.json({ error: 'listing_id, body, user_id required' }, { status: 400 })
+  const { listing_id, body, user_id, is_seller_reply, rating } = await req.json()
+  if (!listing_id || !user_id) {
+    return Response.json({ error: 'listing_id and user_id required' }, { status: 400 })
   }
   if (body.length > 500) {
     return Response.json({ error: 'Comment too long (max 500 chars)' }, { status: 400 })
@@ -33,8 +33,8 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await supabase
     .from('listing_comments')
-    .insert({ listing_id, body: body.trim(), user_id, is_seller_reply: !!is_seller_reply })
-    .select('id, body, created_at, is_seller_reply, user_id, profiles(full_name)')
+    .insert({ listing_id, body: body?.trim()||'', user_id, is_seller_reply: !!is_seller_reply, rating: rating||null })
+    .select('id, body, rating, created_at, is_seller_reply, user_id, profiles(full_name)')
     .single()
 
   if (error) return Response.json({ error: error.message }, { status: 500 })
