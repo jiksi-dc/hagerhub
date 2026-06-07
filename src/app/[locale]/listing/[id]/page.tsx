@@ -450,7 +450,7 @@ const markAsSold = async () => {
         <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
           {/* Comment list */}
           {comments.length === 0 ? (
-            <div style={{textAlign:'center',padding:'20px',color:'#9CA3AF',fontSize:'13px'}}>No questions yet. Be the first to ask!</div>
+            <div style={{textAlign:'center',padding:'20px',color:'#9CA3AF',fontSize:'13px'}}>No reviews yet. Be the first to review!</div>
           ) : (
             <div style={{display:'flex',flexDirection:'column',gap:'14px',marginBottom:'20px'}}>
               {comments.map((c:any) => (
@@ -462,6 +462,7 @@ const markAsSold = async () => {
                     <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'4px'}}>
                       <span style={{fontSize:'12px',fontWeight:700,color:c.is_seller_reply?'#059669':'#111'}}>{c.profiles?.full_name||'User'}</span>
                       {c.is_seller_reply && <span style={{fontSize:'10px',background:'#ECFDF5',color:'#059669',padding:'1px 7px',borderRadius:'10px',fontWeight:700}}>Seller</span>}
+                      {c.rating > 0 && <span style={{color:'#F59E0B',fontSize:'14px'}}>{Array.from({length:5},(_,i)=>i<c.rating?'★':'☆').join('')}</span>}
                       <span style={{fontSize:'11px',color:'#9CA3AF'}}>{new Date(c.created_at).toLocaleDateString('en-ET',{month:'short',day:'numeric'})}</span>
                     </div>
                     <div style={{fontSize:'13px',color:'#374151',lineHeight:1.6}}>{c.body}</div>
