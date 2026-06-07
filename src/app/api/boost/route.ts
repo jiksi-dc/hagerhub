@@ -2,26 +2,27 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 
+// Stripe SDK requires the Node.js runtime (not Edge)
+export const runtime = 'nodejs'
+
 // POST /api/boost — creates a Stripe Checkout session for boosting a listing
 export async function POST(req: NextRequest) {
   const { listing_id, tier, locale } = await req.json()
-  // tier: 'featured' ($2/week) or 'top' ($5/week)
 
   if (!listing_id || !tier) {
     return Response.json({ error: 'listing_id and tier required' }, { status: 400 })
   }
 
   const TIERS: Record<string, { name: string; price: number; days: number }> = {
-    featured: { name: 'Featured Listing — 1 Week', price: 200, days: 7 },   // $2.00
-    featured_month: { name: 'Featured Listing — 1 Month', price: 700, days: 30 }, // $7.00
-    top: { name: 'Top Ad — 1 Week', price: 500, days: 7 },                  // $5.00
-    top_month: { name: 'Top Ad — 1 Month', price: 1800, days: 30 },         // $18.00
+    featured: { name: 'Featured Listing — 1 Week', price: 200, days: 7 },
+    featured_month: { name: 'Featured Listing — 1 Month', price: 700, days: 30 },
+    top: { name: 'Top Ad — 1 Week', price: 500, days: 7 },
+    top_month: { name: 'Top Ad — 1 Month', price: 1800, days: 30 },
   }
 
   const selected = TIERS[tier]
   if (!selected) return Response.json({ error: 'Invalid tier' }, { status: 400 })
 
-  // Check Stripe key is configured
   if (!process.env.STRIPE_SECRET_KEY) {
     return Response.json({ error: 'Payment not configured yet. Contact support.' }, { status: 503 })
   }

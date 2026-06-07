@@ -41,7 +41,6 @@ export async function POST(req: NextRequest) {
 
     const isTop = tier.startsWith('top')
 
-    // Store payment record
     await supabase.from('boost_payments').insert({
       listing_id,
       tier,
@@ -50,7 +49,6 @@ export async function POST(req: NextRequest) {
       boost_expires_at: boostExpiry.toISOString(),
     })
 
-    // Activate boost on listing
     const { error } = await supabase
       .from('listings')
       .update({
@@ -71,7 +69,7 @@ export async function POST(req: NextRequest) {
   return Response.json({ received: true })
 }
 
-// Required: disable body parsing so Stripe signature verification works
-export const config = {
-  api: { bodyParser: false }
-}
+// App Router handlers don't pre-parse the body (we read req.text() above for
+// Stripe signature verification). Force the Node.js runtime — the Stripe SDK
+// does not run on the Edge runtime.
+export const runtime = 'nodejs'
