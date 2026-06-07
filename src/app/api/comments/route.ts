@@ -13,12 +13,25 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await supabase
     .from('listing_comments')
-    .select('id, body, rating, created_at, is_seller_reply, user_id, profiles(full_name)')
+    .select('id, body, rating, created_at, is_seller_reply, user_id')
     .eq('listing_id', listing_id)
     .order('created_at', { ascending: true })
 
   if (error) return Response.json({ error: error.message }, { status: 500 })
-  return Response.json({ comments: data || [] })
+
+  const comments = data || []
+  const userIds = [...new Set(comments.map(c => c.user_id).filter(Boolean))]
+  let nameById: Record<string, string> = {}
+  if (userIds.length) {
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, full_name')
+      .in('id', userIds)
+    nameById = Object.fromEntries((profiles || []).map(p => [p.id, p.full_name]))
+  }
+  const withNames = comments.map(c => ({ ...c, profiles: { full_name: nameById[c.user_id] || null } }))
+
+  return Response.json({ comments: withNames })
 }
 
 // POST /api/comments
@@ -34,9 +47,16 @@ export async function POST(req: NextRequest) {
   const { data, error } = await supabase
     .from('listing_comments')
     .insert({ listing_id, body: body?.trim()||'', user_id, is_seller_reply: !!is_seller_reply, rating: rating||null })
-    .select('id, body, rating, created_at, is_seller_reply, user_id, profiles(full_name)')
+    .select('id, body, rating, created_at, is_seller_reply, user_id')
     .single()
 
   if (error) return Response.json({ error: error.message }, { status: 500 })
-  return Response.json({ comment: data })
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user_id)
+    .single()
+
+  return Response.json({ comment: { ...data, profiles: { full_name: profile?.full_name || null } } })
 }
