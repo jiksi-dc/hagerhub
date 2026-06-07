@@ -51,6 +51,7 @@ const Select = ({label, value, onChange, options}: any) => (
       {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
     </select>
   </div>
+)
 
 export default function PostAd() {
   const router = useRouter()
