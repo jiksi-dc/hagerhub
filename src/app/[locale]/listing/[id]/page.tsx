@@ -418,6 +418,12 @@ const markAsSold = async () => {
             <button onClick={handleContact} style={{width:'100%',padding:'12px',background:'#111',color:'white',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',marginBottom:'10px'}}>
               Contact Seller
             </button>
+            {user && listing.user_id === user.id && (
+              <a href={`/${locale}/boost?listing_id=${listing.id}`}
+                style={{display:'block',width:'100%',padding:'12px',background:'#FFFBEB',color:'#92400E',border:'1.5px solid #FDE68A',borderRadius:'10px',fontSize:'14px',fontWeight:700,cursor:'pointer',fontFamily:'inherit',marginBottom:'10px',textAlign:'center',textDecoration:'none'}}>
+                Boost this listing
+              </a>
+            )}
             <button onClick={toggleSave}
               style={{width:'100%',padding:'12px',background:saved?'#EFF6FF':'#F9FAFB',color:saved?'#2563EB':'#374151',border:`1.5px solid ${saved?'#2563EB':'#E5E7EB'}`,borderRadius:'10px',fontSize:'14px',fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
               {saved ? '♥ Saved' : '♡ Save listing'}
