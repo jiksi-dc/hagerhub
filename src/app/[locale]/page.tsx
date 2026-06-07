@@ -103,7 +103,7 @@ const FeaturedCard = ({l, locale}: {l:any, locale:string}) => {
         <div style={{background:'linear-gradient(90deg,#B8860B,#DAA520,#B8860B)',height:'3px'}}/>
         <div style={{position:'absolute',top:'10px',right:'10px',background:'linear-gradient(135deg,#B8860B,#DAA520)',color:'white',fontSize:'9px',fontWeight:800,letterSpacing:'1px',padding:'2px 7px',borderRadius:'5px'}}>⭐ FEATURED</div>
         <div style={{height:'120px',background:'#F9FAFB',overflow:'hidden'}}>
-          {img && <img src={img} alt={l.title} style={{width:'100%',height:'100%',objectFit:'contain'}}/>}
+          {img && <img src={img} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>}
         </div>
         <div style={{padding:'10px 12px'}}>
           <div style={{fontSize:'10px',color:'#9CA3AF',marginBottom:'3px'}}>{l.subcategory||l.category} · {l.city}</div>
@@ -290,7 +290,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
       <div onClick={()=>window.location.href=`/${locale}/listing/${l.id}`}
         style={{background:'#fff',borderRadius:'12px',overflow:'hidden',border:'1px solid #F3F4F6',cursor:'pointer',transition:'box-shadow .15s'}}>
         <div style={{position:'relative',height:'180px',background:'#F9FAFB'}}>
-          {img && <img src={img} alt={l.title} style={{width:'100%',height:'100%',objectFit:'contain'}}/>}
+          {img && <img src={img} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>}
           <div style={{position:'absolute',bottom:'8px',left:'8px',background:'rgba(0,0,0,0.7)',color:'white',fontSize:'12px',fontWeight:700,padding:'3px 8px',borderRadius:'6px'}}>
             {l.price_label}
           </div>
