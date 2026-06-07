@@ -20,6 +20,38 @@ const inp = {border:'1px solid #E5E7EB',borderRadius:'10px',padding:'12px 16px',
 const lbl = {fontSize:'13px',fontWeight:700,color:'#374151',marginBottom:'6px',display:'block'}
 const sel = {...inp,cursor:'pointer'}
 
+const ToggleGroup = ({label, options, value, onChange}: {label:string, options:string[], value:string, onChange:(v:string)=>void}) => (
+  <div style={{marginBottom:'20px'}}>
+    <label style={lbl as any}>{label}</label>
+    <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
+      {options.map(o => (
+        <button key={o} onClick={()=>onChange(o)} style={{padding:'8px 16px',borderRadius:'8px',border:`1.5px solid ${value===o?'#111':'#E5E7EB'}`,background:value===o?'#111':'#fff',color:value===o?'#fff':'#374151',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
+          {o}
+        </button>
+      ))}
+    </div>
+  </div>
+)
+
+const Field = ({label, value, onChange, placeholder, type='text', suffix=''}: any) => (
+  <div style={{marginBottom:'20px'}}>
+    <label style={lbl as any}>{label}</label>
+    <div style={{position:'relative'}}>
+      <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} style={{...inp, paddingRight: suffix ? '60px' : '16px'}}/>
+      {suffix && <span style={{position:'absolute',right:'14px',top:'50%',transform:'translateY(-50%)',fontSize:'13px',color:'#9CA3AF',fontWeight:600}}>{suffix}</span>}
+    </div>
+  </div>
+)
+
+const Select = ({label, value, onChange, options}: any) => (
+  <div style={{marginBottom:'20px'}}>
+    <label style={lbl as any}>{label}</label>
+    <select value={value} onChange={e=>onChange(e.target.value)} style={sel as any}>
+      <option value="">Select...</option>
+      {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
+    </select>
+  </div>
+
 export default function PostAd() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
@@ -87,38 +119,6 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
 
   const years = Array.from({length: 35}, (_, i) => (2025 - i).toString())
 
-  const ToggleGroup = ({label, options, value, onChange}: {label:string, options:string[], value:string, onChange:(v:string)=>void}) => (
-    <div style={{marginBottom:'20px'}}>
-      <label style={lbl as any}>{label}</label>
-      <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
-        {options.map(o => (
-          <button key={o} onClick={()=>onChange(o)} style={{padding:'8px 16px',borderRadius:'8px',border:`1.5px solid ${value===o?'#111':'#E5E7EB'}`,background:value===o?'#111':'#fff',color:value===o?'#fff':'#374151',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
-            {o}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-
-  const Field = ({label, value, onChange, placeholder, type='text', suffix=''}: any) => (
-    <div style={{marginBottom:'20px'}}>
-      <label style={lbl as any}>{label}</label>
-      <div style={{position:'relative'}}>
-        <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder} style={{...inp, paddingRight: suffix ? '60px' : '16px'}}/>
-        {suffix && <span style={{position:'absolute',right:'14px',top:'50%',transform:'translateY(-50%)',fontSize:'13px',color:'#9CA3AF',fontWeight:600}}>{suffix}</span>}
-      </div>
-    </div>
-  )
-
-  const Select = ({label, value, onChange, options}: any) => (
-    <div style={{marginBottom:'20px'}}>
-      <label style={lbl as any}>{label}</label>
-      <select value={value} onChange={e=>onChange(e.target.value)} style={sel as any}>
-        <option value="">Select...</option>
-        {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
-      </select>
-    </div>
-  )
 
   async function handleSubmit() {
     if (!title || !price || !phone || !desc) { setError('Please fill in all required fields.'); return }
