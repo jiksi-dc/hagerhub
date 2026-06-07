@@ -44,6 +44,8 @@ const [shareCopied, setShareCopied] = useState(false)
 const [comments, setComments] = useState<any[]>([])
 const [commentText, setCommentText] = useState('')
 const [commentLoading, setCommentLoading] = useState(false)
+const [commentRating, setCommentRating] = useState(0)
+const [hoverRating, setHoverRating] = useState(0)
 const [markSoldLoading, setMarkSoldLoading] = useState(false)
 const [isSold, setIsSold] = useState(false)
 const [similar, setSimilar] = useState<Partial<Listing>[]>([])
@@ -132,10 +134,10 @@ const markAsSold = async () => {
     const res = await fetch('/api/comments', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ listing_id: id, body: commentText.trim(), user_id: user.id, is_seller_reply: isSellerReply })
+      body: JSON.stringify({ listing_id: id, body: commentText.trim(), user_id: user.id, is_seller_reply: isSellerReply, rating: commentRating })
     })
     const d = await res.json()
-    if (d.comment) { setComments(prev => [...prev, d.comment]); setCommentText('') }
+    if (d.comment) { setComments(prev => [...prev, d.comment]); setCommentText(''); setCommentRating(0) }
     setCommentLoading(false)
   }
 
@@ -443,7 +445,7 @@ const markAsSold = async () => {
       </div>
       {/* COMMENTS SECTION */}
       <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 40px'}}>
-        <h2 style={{fontSize:'16px',fontWeight:700,color:'#111',marginBottom:'16px'}}>Questions & Answers</h2>
+        <h2 style={{fontSize:'16px',fontWeight:700,color:'#111',marginBottom:'16px'}}>Comments & Reviews</h2>
         <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
           {/* Comment list */}
           {comments.length === 0 ? (
@@ -473,18 +475,18 @@ const markAsSold = async () => {
               <div style={{width:'32px',height:'32px',borderRadius:'50%',background:'#E5E7EB',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'12px',fontWeight:700,color:'#6B7280',flexShrink:0}}>?</div>
               <div style={{flex:1,display:'flex',gap:'8px'}}>
                 <input value={commentText} onChange={e=>setCommentText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&!e.shiftKey&&submitComment()}
-                  placeholder={listing.user_id===user.id?'Reply to a question...':'Ask the seller a question...'}
+                  placeholder={listing.user_id===user.id?'Reply to a review...':'Share your experience with this listing...'}
                   maxLength={500}
                   style={{flex:1,padding:'10px 14px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',fontFamily:'inherit',outline:'none'}}/>
                 <button onClick={submitComment} disabled={!commentText.trim()||commentLoading}
                   style={{padding:'10px 18px',background:commentText.trim()?'#111':'#F3F4F6',color:commentText.trim()?'white':'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'13px',fontWeight:600,cursor:commentText.trim()?'pointer':'default',fontFamily:'inherit',whiteSpace:'nowrap'}}>
-                  {commentLoading?'...':'Send'}
+                  {commentLoading?'Posting...':'Post Review'}
                 </button>
               </div>
             </div>
           ) : (
             <div style={{textAlign:'center',padding:'16px',borderTop:comments.length?'1px solid #F3F4F6':'none',paddingTop:comments.length?'16px':'0'}}>
-              <a href={`/${locale}/login`} style={{color:'#2563EB',fontSize:'13px',fontWeight:600}}>Sign in to ask a question →</a>
+              <a href={`/${locale}/login`} style={{color:'#2563EB',fontSize:'13px',fontWeight:600}}>Sign in to leave a review →</a>
             </div>
           )}
         </div>
