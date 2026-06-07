@@ -472,17 +472,40 @@ const markAsSold = async () => {
           )}
           {/* Post comment */}
           {user ? (
-            <div style={{display:'flex',gap:'10px',alignItems:'flex-start',borderTop:comments.length?'1px solid #F3F4F6':'none',paddingTop:comments.length?'16px':'0'}}>
-              <div style={{width:'32px',height:'32px',borderRadius:'50%',background:'#E5E7EB',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'12px',fontWeight:700,color:'#6B7280',flexShrink:0}}>?</div>
-              <div style={{flex:1,display:'flex',gap:'8px'}}>
-                <input value={commentText} onChange={e=>setCommentText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&!e.shiftKey&&submitComment()}
-                  placeholder={listing.user_id===user.id?'Reply to a review...':'Share your experience with this listing...'}
-                  maxLength={500}
-                  style={{flex:1,padding:'10px 14px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',fontFamily:'inherit',outline:'none'}}/>
-                <button onClick={submitComment} disabled={!commentText.trim()||commentLoading}
-                  style={{padding:'10px 18px',background:commentText.trim()?'#111':'#F3F4F6',color:commentText.trim()?'white':'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'13px',fontWeight:600,cursor:commentText.trim()?'pointer':'default',fontFamily:'inherit',whiteSpace:'nowrap'}}>
-                  {commentLoading?'Posting...':'Post Review'}
-                </button>
+            <div style={{borderTop:comments.length?'1px solid #F3F4F6':'none',paddingTop:comments.length?'16px':'0'}}>
+              {listing.user_id !== user.id && (
+                <div style={{marginBottom:'12px'}}>
+                  <div style={{fontSize:'12px',fontWeight:600,color:'#374151',marginBottom:'6px'}}>Rating <span style={{color:'#EF4444'}}>*</span></div>
+                  <div style={{display:'flex',gap:'2px',alignItems:'center'}}>
+                    {[1,2,3,4,5].map(star=>(
+                      <button key={star} type="button"
+                        onClick={()=>setCommentRating(star)}
+                        onMouseEnter={()=>setHoverRating(star)}
+                        onMouseLeave={()=>setHoverRating(0)}
+                        style={{background:'none',border:'none',cursor:'pointer',fontSize:'28px',padding:'0 2px',color:(hoverRating||commentRating)>=star?'#F59E0B':'#D1D5DB',lineHeight:1,transition:'color 0.1s'}}>
+                        ★
+                      </button>
+                    ))}
+                    {commentRating > 0 && <span style={{fontSize:'12px',color:'#6B7280',marginLeft:'6px'}}>{['','Poor','Fair','Good','Very Good','Excellent'][commentRating]}</span>}
+                  </div>
+                </div>
+              )}
+              <div style={{display:'flex',gap:'8px',alignItems:'flex-start'}}>
+                <div style={{width:'32px',height:'32px',borderRadius:'50%',background:'#2563EB',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'12px',fontWeight:700,color:'white',flexShrink:0}}>
+                  {user.email?.charAt(0)?.toUpperCase()||'?'}
+                </div>
+                <div style={{flex:1,display:'flex',flexDirection:'column',gap:'8px'}}>
+                  <textarea value={commentText} onChange={e=>setCommentText(e.target.value)}
+                    placeholder={listing.user_id===user.id?'Reply to a review...':'Share your experience (optional)...'}
+                    maxLength={500} rows={2}
+                    style={{width:'100%',padding:'10px 14px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',fontFamily:'inherit',outline:'none',resize:'none',boxSizing:'border-box'}}/>
+                  <div style={{display:'flex',justifyContent:'flex-end'}}>
+                    <button onClick={submitComment} disabled={(listing.user_id!==user.id&&!commentRating)||commentLoading}
+                      style={{padding:'10px 20px',background:(commentRating>0||listing.user_id===user.id)?'#111':'#F3F4F6',color:(commentRating>0||listing.user_id===user.id)?'white':'#9CA3AF',border:'none',borderRadius:'10px',fontSize:'13px',fontWeight:600,cursor:(commentRating>0||listing.user_id===user.id)?'pointer':'default',fontFamily:'inherit'}}>
+                      {commentLoading?'Posting...':'Post Review'}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
