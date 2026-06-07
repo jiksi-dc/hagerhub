@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   if (!listing_id || !user_id) {
     return Response.json({ error: 'listing_id and user_id required' }, { status: 400 })
   }
-  if (body.length > 500) {
+  if (body && body.length > 500) {
     return Response.json({ error: 'Comment too long (max 500 chars)' }, { status: 400 })
   }
 
