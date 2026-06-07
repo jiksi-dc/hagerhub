@@ -61,6 +61,7 @@ export default function PostAd() {
   const [subcat, setSubcat] = useState('')
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
+  const [postedId, setPostedId] = useState<string|null>(null)
   const [error, setError] = useState('')
   const [photos, setPhotos] = useState<File[]>([])
 
@@ -141,7 +142,7 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
 
       setStatus('💾 Saving your listing...')
       const supabase = createClient()
-      const { error: dbErr } = await supabase.from('listings').insert({
+      const { data: newListing, error: dbErr } = await supabase.from('listings').insert({
         title, description: desc, price_label: `${currency} ${Number(price).toLocaleString()}`,
 price_amount: Number(price),
 price_currency: currency,
@@ -160,10 +161,10 @@ venue, website, organizer, region,
 admission_fee: admission,
         contact_phone: phone,
         user_id: user?.id,
-      })
+      }).select('id').single()
       if (dbErr) { setError('Failed to save: ' + dbErr.message); setLoading(false); setStatus(''); return }
+      setPostedId(newListing?.id || null)
       setStatus('🎉 Your listing is live!')
-      setTimeout(() => router.push('/'), 2000)
     } catch (e: any) { setError(e.message || 'Something went wrong'); setLoading(false); setStatus('') }
   }
 
@@ -181,8 +182,18 @@ admission_fee: admission,
 
       <div style={{maxWidth:'640px',margin:'32px auto',padding:'0 20px'}}>
 
+        {postedId && (
+          <div style={{background:'#fff',borderRadius:'16px',padding:'40px 32px',border:'1px solid #EBEBEB',textAlign:'center'}}>
+            <div style={{fontSize:'40px',marginBottom:'12px'}}>🎉</div>
+            <div style={{fontSize:'22px',fontWeight:900,color:'#111',marginBottom:'6px'}}>Your listing is live!</div>
+            <div style={{fontSize:'14px',color:'#9CA3AF',marginBottom:'28px'}}>Want more buyers? Boost it to the top of the category.</div>
+            <a href={`/boost?listing_id=${postedId}`} style={{display:'block',width:'100%',padding:'15px',background:'#111',color:'white',borderRadius:'12px',fontSize:'15px',fontWeight:800,textDecoration:'none',marginBottom:'12px'}}>⚡ Boost this listing</a>
+            <a href={`/listing/${postedId}`} style={{display:'block',width:'100%',padding:'13px',background:'#F9FAFB',color:'#374151',border:'1.5px solid #E5E7EB',borderRadius:'12px',fontSize:'14px',fontWeight:600,textDecoration:'none'}}>View my listing</a>
+          </div>
+        )}
+
         {/* STEP 1 — Choose Category */}
-        {step === 1 && (
+        {!postedId && step === 1 && (
           <div style={{background:'#fff',borderRadius:'16px',padding:'32px',border:'1px solid #EBEBEB'}}>
             <div style={{textAlign:'center',marginBottom:'28px'}}>
               <div style={{fontSize:'22px',fontWeight:900,color:'#111',marginBottom:'6px'}}>Choose a category</div>
@@ -200,7 +211,7 @@ admission_fee: admission,
         )}
 
         {/* STEP 2 — Choose Subcategory */}
-        {step === 2 && (
+        {!postedId && step === 2 && (
           <div style={{background:'#fff',borderRadius:'16px',padding:'32px',border:'1px solid #EBEBEB'}}>
             <button onClick={()=>setStep(1)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'14px',color:'#6B7280',marginBottom:'20px',fontFamily:'inherit',padding:0}}>← Back</button>
             <div style={{textAlign:'center',marginBottom:'28px'}}>
@@ -218,7 +229,7 @@ admission_fee: admission,
         )}
 
         {/* STEP 3 — Fill Form */}
-        {step === 3 && (
+        {!postedId && step === 3 && (
           <div style={{background:'#fff',borderRadius:'16px',padding:'32px',border:'1px solid #EBEBEB'}}>
             <button onClick={()=>setStep(2)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'14px',color:'#6B7280',marginBottom:'20px',fontFamily:'inherit',padding:0}}>← Back</button>
             <div style={{marginBottom:'28px'}}>
