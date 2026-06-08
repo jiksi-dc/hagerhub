@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase'
 
 const CITIES = ['Addis Ababa','Dire Dawa','Hawassa','Bahir Dar','Mekelle','Adama','Gondar','Jimma','Dessie','Jijiga']
 
-const VEHICLE_MAKES = ['Toyota','Hyundai','Nissan','Honda','Mercedes','BMW','Mitsubishi','Isuzu','Ford','Volkswagen','Kia','Suzuki','Land Rover','Jeep','Other']
+const VEHICLE_MAKES = ['Toyota','Hyundai','Nissan','Honda','Mitsubishi','Suzuki','Isuzu','Mazda','Subaru','Daihatsu','Lexus','Kia','Mercedes','BMW','Audi','Volkswagen','Volvo','Škoda','Opel','Peugeot','Citroën','Renault','Fiat','Ford','Chevrolet','Jeep','Land Rover','BYD','Chery','Geely','Changan','Great Wall','MG','Haval','Dongfeng','Foton','JAC','Tata','Hino','Scania','Other']
 
 const SUBCATEGORIES: Record<string, string[]> = {
 Discover: ['Tourist Attraction','National Park','Nature & Wildlife','Museum & Heritage','Religious Site','Festival & Cultural Event','Concert & Entertainment','Sports Event','Food & Dining Experience','Market & Shopping','Tour Package','Other Experience'],
