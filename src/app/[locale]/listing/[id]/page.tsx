@@ -16,7 +16,7 @@ interface Listing {
   purpose?: string; bedrooms?: string; bathrooms?: string; area_sqm?: string
   condition?: string; capacity?: string; company?: string
   employment_type?: string; salary?: string
-  address?: string
+  address?: string; amenities?: string[]
 }
 
 const IMGS: Record<string,string> = {
@@ -463,6 +463,19 @@ const markAsSold = async () => {
               Report this listing
             </button>
           </div>
+
+          {listing.amenities && listing.amenities.length > 0 && (
+            <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px',marginBottom:'16px'}}>
+              <div style={{fontSize:'12px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#9CA3AF',marginBottom:'14px'}}>Amenities</div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px'}}>
+                {listing.amenities.map(a => (
+                  <div key={a} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'13px',color:'#374151'}}>
+                    <span style={{color:'#059669',fontWeight:700}}>✓</span>{a}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
             <div style={{fontSize:'12px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#9CA3AF',marginBottom:'14px'}}>Details</div>

@@ -16,6 +16,8 @@ Discover: ['Tourist Attraction','National Park','Nature & Wildlife','Museum & He
   Jobs: ['Accounting & Finance','Engineering','IT & Technology','Healthcare','Education','Sales & Marketing','Other'],
 }
 
+const AMENITIES = ['24-hour Electricity','Water Tank','Air Conditioning','Balcony','Parking Space','Kitchen Cabinets','Furnished','Elevator','Security/Guard','Backup Generator','Garden','Internet/WiFi']
+
 const inp = {border:'1px solid #E5E7EB',borderRadius:'10px',padding:'12px 16px',fontSize:'14px',width:'100%',outline:'none',fontFamily:'inherit',color:'#111',background:'#fff'}
 const lbl = {fontSize:'13px',fontWeight:700,color:'#374151',marginBottom:'6px',display:'block'}
 const sel = {...inp,cursor:'pointer'}
@@ -95,6 +97,7 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
   const [bedrooms, setBedrooms] = useState('')
   const [bathrooms, setBathrooms] = useState('')
   const [area, setArea] = useState('')
+  const [amenities, setAmenities] = useState<string[]>([])
 
   // Job fields
   const [company, setCompany] = useState('')
@@ -130,7 +133,7 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
           setMake(l.make||''); setModel(l.model||''); setYear(l.year||''); setKm(l.mileage||'')
           setFuel(l.fuel_type||''); setBodyType(l.body_type||''); setBodyCondition(l.body_condition||'')
           setMechCondition(l.mechanical_condition||''); setSellerType(l.seller_type||''); setTransmission(l.transmission||'')
-          setPurpose(l.purpose||''); setBedrooms(l.bedrooms||''); setBathrooms(l.bathrooms||''); setArea(l.area_sqm||'')
+          setPurpose(l.purpose||''); setBedrooms(l.bedrooms||''); setBathrooms(l.bathrooms||''); setArea(l.area_sqm||''); setAmenities(l.amenities||[])
           setCompany(l.company||''); setEmpType(l.employment_type||''); setSalary(l.salary||'')
           setCondition(l.condition||''); setCapacity(l.capacity||'')
           setEventDate(l.event_date||''); setEventEndDate(l.event_end_date||''); setEventTime(l.event_time||'')
@@ -177,7 +180,7 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
         seller_type: sellerType, transmission,
         purpose, bedrooms, bathrooms, area_sqm: area,
         company, employment_type: empType, salary,
-        condition, capacity,
+        condition, capacity, amenities,
         event_date: eventDate || null, event_end_date: eventEndDate || null, event_time: eventTime || null,
         venue, website, organizer, region, admission_fee: admission,
         contact_phone: phone,
@@ -327,6 +330,20 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
               <Select label="Bathrooms" value={bathrooms} onChange={setBathrooms} options={['1','2','3','4','5+']}/>
               <Field label="Area" value={area} onChange={setArea} placeholder="0" type="number" suffix="m²"/>
               <Field label="Neighbourhood" value={neighbourhood} onChange={setNeighbourhood} placeholder="e.g. Bole, CMC, Kazanchis"/>
+              <div style={{marginBottom:'20px'}}>
+                <label style={lbl as any}>Amenities <span style={{color:'#9CA3AF',fontWeight:400}}>(tap all that apply)</span></label>
+                <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
+                  {AMENITIES.map(a => {
+                    const on = amenities.includes(a)
+                    return (
+                      <button key={a} type="button" onClick={()=>setAmenities(on?amenities.filter(x=>x!==a):[...amenities,a])}
+                        style={{padding:'8px 14px',borderRadius:'8px',border:`1.5px solid ${on?'#111':'#E5E7EB'}`,background:on?'#111':'#fff',color:on?'#fff':'#374151',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
+                        {on?'✓ ':''}{a}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
             </>)}
 
             {/* JOBS FIELDS */}
