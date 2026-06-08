@@ -48,6 +48,16 @@ export default function AdminDashboard() {
   const [catFilter, setCatFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
 
+  const loadData = async () => {
+    const supabase = createClient()
+    const [{ data: l }, { data: r }] = await Promise.all([
+      supabase.from('listings').select('*').order('created_at', { ascending: false }),
+      supabase.from('reports').select('*, listings(title, city)').order('created_at', { ascending: false })
+    ])
+    setListings(l || [])
+    setReports(r || [])
+  }
+
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(async ({ data }) => {
@@ -56,12 +66,7 @@ export default function AdminDashboard() {
         return
       }
       setAuthorized(true)
-      const [{ data: l }, { data: r }] = await Promise.all([
-        supabase.from('listings').select('*').order('created_at', { ascending: false }),
-        supabase.from('reports').select('*, listings(title, city)').order('created_at', { ascending: false })
-      ])
-      setListings(l || [])
-      setReports(r || [])
+      await loadData()
       setLoading(false)
     })
   }, [])
@@ -71,20 +76,21 @@ export default function AdminDashboard() {
     const supabase = createClient()
     const { error } = await supabase.from('listings').delete().eq('id', id)
     if (error) { alert('Delete failed: ' + error.message); return }
-    setListings(prev => prev.filter(l => l.id !== id))
+    await loadData()
   }
 
   const setStatus = async (id: string, status: string) => {
     const supabase = createClient()
     const { error } = await supabase.from('listings').update({ status }).eq('id', id)
     if (error) { alert('Update failed: ' + error.message); return }
-    setListings(prev => prev.map(l => l.id === id ? { ...l, status } : l))
+    await loadData()
   }
 
   const dismissReport = async (id: string) => {
     const supabase = createClient()
-    await supabase.from('reports').delete().eq('id', id)
-    setReports(prev => prev.filter(r => r.id !== id))
+    const { error } = await supabase.from('reports').delete().eq('id', id)
+    if (error) { alert('Dismiss failed: ' + error.message); return }
+    await loadData()
   }
 
   const filteredListings = listings.filter(l => {
