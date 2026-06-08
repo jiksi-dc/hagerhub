@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 
 const CITIES = ['Addis Ababa','Dire Dawa','Hawassa','Bahir Dar','Mekelle','Adama','Gondar','Jimma','Dessie','Jijiga']
@@ -62,6 +62,9 @@ export default function PostAd() {
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [postedId, setPostedId] = useState<string|null>(null)
+  const searchParams = useSearchParams()
+  const editId = searchParams.get('edit')
+  const [existingImages, setExistingImages] = useState<string[]>([])
   const [error, setError] = useState('')
   const [photos, setPhotos] = useState<File[]>([])
 
@@ -114,11 +117,31 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => {
-      if (!data.user) router.push('/login')
-      else setUser(data.user)
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) { router.push('/login'); return }
+      setUser(data.user)
+      if (editId) {
+        const { data: l } = await supabase.from('listings').select('*').eq('id', editId).single()
+        if (l && l.user_id === data.user.id) {
+          setCat(l.category||''); setSubcat(l.subcategory||'')
+          setTitle(l.title||''); setPrice(l.price_amount?String(l.price_amount):''); setCurrency((l.price_currency==='USD'?'USD':'ETB'))
+          setPhone(l.contact_phone||''); setDesc(l.description||''); setCity(l.city||'Addis Ababa')
+          setNeighbourhood(l.neighbourhood||''); setAddress(l.address||'')
+          setMake(l.make||''); setModel(l.model||''); setYear(l.year||''); setKm(l.mileage||'')
+          setFuel(l.fuel_type||''); setBodyType(l.body_type||''); setBodyCondition(l.body_condition||'')
+          setMechCondition(l.mechanical_condition||''); setSellerType(l.seller_type||''); setTransmission(l.transmission||'')
+          setPurpose(l.purpose||''); setBedrooms(l.bedrooms||''); setBathrooms(l.bathrooms||''); setArea(l.area_sqm||'')
+          setCompany(l.company||''); setEmpType(l.employment_type||''); setSalary(l.salary||'')
+          setCondition(l.condition||''); setCapacity(l.capacity||'')
+          setEventDate(l.event_date||''); setEventEndDate(l.event_end_date||''); setEventTime(l.event_time||'')
+          setVenue(l.venue||''); setWebsite(l.website||''); setOrganizer(l.organizer||''); setRegion(l.region||'')
+          setAdmission(l.admission_fee||'Free')
+          setExistingImages(l.image_urls||[])
+          setStep(3)
+        }
+      }
     })
-  }, [])
+  }, [editId])
 
   const years = Array.from({length: 35}, (_, i) => (2025 - i).toString())
 
@@ -143,29 +166,33 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
 
       setStatus('💾 Saving your listing...')
       const supabase = createClient()
-      const { data: newListing, error: dbErr } = await supabase.from('listings').insert({
+      const finalImages = image_urls.length ? image_urls : existingImages
+      const row: any = {
         title, description: desc, price_label: `${currency} ${Number(price).toLocaleString()}`,
-price_amount: Number(price),
-price_currency: currency,
+        price_amount: Number(price), price_currency: currency,
         category: cat, subcategory: subcat, city, neighbourhood, address,
-        status: 'active', image_urls,
+        image_urls: finalImages,
         make, model, year, mileage: km, fuel_type: fuel, body_type: bodyType,
         body_condition: bodyCondition, mechanical_condition: mechCondition,
         seller_type: sellerType, transmission,
         purpose, bedrooms, bathrooms, area_sqm: area,
         company, employment_type: empType, salary,
         condition, capacity,
-event_date: eventDate || null,
-event_end_date: eventEndDate || null,
-event_time: eventTime || null,
-venue, website, organizer, region,
-admission_fee: admission,
+        event_date: eventDate || null, event_end_date: eventEndDate || null, event_time: eventTime || null,
+        venue, website, organizer, region, admission_fee: admission,
         contact_phone: phone,
-        user_id: user?.id,
-      }).select('id').single()
-      if (dbErr) { setError('Failed to save: ' + dbErr.message); setLoading(false); setStatus(''); return }
-      setPostedId(newListing?.id || null)
-      setStatus('🎉 Your listing is live!')
+      }
+      if (editId) {
+        const { error: dbErr } = await supabase.from('listings').update(row).eq('id', editId)
+        if (dbErr) { setError('Failed to save: ' + dbErr.message); setLoading(false); setStatus(''); return }
+        setPostedId(editId)
+        setStatus('🎉 Listing updated!')
+      } else {
+        const { data: newListing, error: dbErr } = await supabase.from('listings').insert({ ...row, status: 'active', user_id: user?.id }).select('id').single()
+        if (dbErr) { setError('Failed to save: ' + dbErr.message); setLoading(false); setStatus(''); return }
+        setPostedId(newListing?.id || null)
+        setStatus('🎉 Your listing is live!')
+      }
     } catch (e: any) { setError(e.message || 'Something went wrong'); setLoading(false); setStatus('') }
   }
 
@@ -178,7 +205,7 @@ admission_fee: admission,
       <header style={{background:'#fff',borderBottom:'1px solid #EBEBEB',padding:'14px 20px',display:'flex',alignItems:'center',gap:'16px'}}>
         <a href="/" style={{fontSize:'18px',fontWeight:900,color:'#111',letterSpacing:'2px',textDecoration:'none'}}>HAGERHUB</a>
         <div style={{width:'1px',height:'20px',background:'#E5E7EB'}}></div>
-        <span style={{fontSize:'15px',fontWeight:700,color:'#374151'}}>Post your ad — FREE</span>
+        <span style={{fontSize:'15px',fontWeight:700,color:'#374151'}}>{editId ? 'Edit listing' : 'Post your ad — FREE'}</span>
       </header>
 
       <div style={{maxWidth:'640px',margin:'32px auto',padding:'0 20px'}}>
@@ -186,7 +213,7 @@ admission_fee: admission,
         {postedId && (
           <div style={{background:'#fff',borderRadius:'16px',padding:'40px 32px',border:'1px solid #EBEBEB',textAlign:'center'}}>
             <div style={{fontSize:'40px',marginBottom:'12px'}}>🎉</div>
-            <div style={{fontSize:'22px',fontWeight:900,color:'#111',marginBottom:'6px'}}>Your listing is live!</div>
+            <div style={{fontSize:'22px',fontWeight:900,color:'#111',marginBottom:'6px'}}>{editId ? 'Listing updated!' : 'Your listing is live!'}</div>
             <div style={{fontSize:'14px',color:'#9CA3AF',marginBottom:'28px'}}>Want more buyers? Boost it to the top of the category.</div>
             <a href={`/boost?listing_id=${postedId}`} style={{display:'block',width:'100%',padding:'15px',background:'#111',color:'white',borderRadius:'12px',fontSize:'15px',fontWeight:800,textDecoration:'none',marginBottom:'12px'}}>⚡ Boost this listing</a>
             <a href={`/listing/${postedId}`} style={{display:'block',width:'100%',padding:'13px',background:'#F9FAFB',color:'#374151',border:'1.5px solid #E5E7EB',borderRadius:'12px',fontSize:'14px',fontWeight:600,textDecoration:'none'}}>View my listing</a>
@@ -345,7 +372,7 @@ admission_fee: admission,
             </div>
 
             <button onClick={handleSubmit} disabled={loading} style={{width:'100%',background:loading?'#9CA3AF':'#111',color:'white',border:'none',borderRadius:'12px',padding:'16px',fontSize:'16px',fontWeight:900,cursor:loading?'not-allowed':'pointer',fontFamily:'inherit'}}>
-              {loading ? status || 'Processing...' : 'Post your ad — FREE'}
+              {loading ? status || 'Processing...' : editId ? 'Save changes' : 'Post your ad — FREE'}
             </button>
           </div>
         )}

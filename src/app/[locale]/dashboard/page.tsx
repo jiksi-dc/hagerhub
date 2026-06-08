@@ -135,6 +135,10 @@ export default function Dashboard() {
               style={{fontSize:'11px',padding:'5px 10px',borderRadius:'7px',border:'1px solid #E5E7EB',background:'#fff',cursor:'pointer',fontFamily:'inherit',color:'#374151'}}>
               View
             </button>
+            <button onClick={() => window.location.href = `/${locale}/post?edit=${l.id}`}
+              style={{fontSize:'11px',padding:'5px 10px',borderRadius:'7px',border:'1px solid #DBEAFE',background:'#EFF6FF',cursor:'pointer',fontFamily:'inherit',color:'#2563EB',fontWeight:600}}>
+              Edit
+            </button>
             {!isSold ? (
               <button onClick={() => markSold(l.id)}
                 style={{fontSize:'11px',padding:'5px 10px',borderRadius:'7px',border:'1px solid #E5E7EB',background:'#fff',cursor:'pointer',fontFamily:'inherit',color:'#374151'}}>
