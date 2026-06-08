@@ -69,13 +69,15 @@ export default function AdminDashboard() {
   const deleteListing = async (id: string) => {
     if (!confirm('Permanently delete this listing?')) return
     const supabase = createClient()
-    await supabase.from('listings').delete().eq('id', id)
+    const { error } = await supabase.from('listings').delete().eq('id', id)
+    if (error) { alert('Delete failed: ' + error.message); return }
     setListings(prev => prev.filter(l => l.id !== id))
   }
 
   const setStatus = async (id: string, status: string) => {
     const supabase = createClient()
-    await supabase.from('listings').update({ status }).eq('id', id)
+    const { error } = await supabase.from('listings').update({ status }).eq('id', id)
+    if (error) { alert('Update failed: ' + error.message); return }
     setListings(prev => prev.map(l => l.id === id ? { ...l, status } : l))
   }
 
