@@ -16,7 +16,7 @@ interface Listing {
   purpose?: string; bedrooms?: string; bathrooms?: string; area_sqm?: string
   condition?: string; capacity?: string; company?: string
   employment_type?: string; salary?: string
-  address?: string; amenities?: string[]
+  address?: string; amenities?: string[]; views?: number
 }
 
 const IMGS: Record<string,string> = {
@@ -63,6 +63,9 @@ const [similar, setSimilar] = useState<Partial<Listing>[]>([])
       .then(({ data }) => {
         setListing(data)
         setLoading(false)
+        if (data?.id) {
+          supabase.from('listings').update({ views: (data.views || 0) + 1 }).eq('id', data.id).then(()=>{})
+        }
         if (data?.category && data?.city) {
 supabase.from('listings').select('id,title,price_label,city,category,subcategory,image_urls').eq('category', data.category).eq('city', data.city).neq('id', id).eq('status','active').limit(4).then(({ data: s }) => setSimilar(s || []))
 }
@@ -398,7 +401,7 @@ const markAsSold = async () => {
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'24px'}}>
             <h1 style={{fontSize:'20px',fontWeight:700,color:'#111',marginBottom:'8px'}}>{listing.title}</h1>
             <div style={{fontSize:'12px',color:'#9CA3AF',marginBottom:'20px'}}>
-              {listing.neighbourhood}, {listing.city} · Posted {new Date(listing.created_at).toLocaleDateString('en-ET',{year:'numeric',month:'long',day:'numeric'})}
+              {listing.neighbourhood}, {listing.city} · Posted {new Date(listing.created_at).toLocaleDateString('en-ET',{year:'numeric',month:'long',day:'numeric'})}{listing.views ? ` · ${listing.views.toLocaleString()} views` : ''}
             </div>
             {(() => {
               const specs = [
