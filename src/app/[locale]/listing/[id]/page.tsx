@@ -400,6 +400,29 @@ const markAsSold = async () => {
             <div style={{fontSize:'12px',color:'#9CA3AF',marginBottom:'20px'}}>
               {listing.neighbourhood}, {listing.city} · Posted {new Date(listing.created_at).toLocaleDateString('en-ET',{year:'numeric',month:'long',day:'numeric'})}
             </div>
+            {(() => {
+              const specs = [
+                listing.bedrooms && ['🛏️', `${listing.bedrooms} ${listing.bedrooms==='Studio'?'':'bedrooms'}`],
+                listing.bathrooms && ['🛁', `${listing.bathrooms} bathrooms`],
+                listing.area_sqm && ['📐', `${listing.area_sqm} m²`],
+                listing.make && ['🚗', listing.make],
+                listing.year && ['📅', listing.year],
+                listing.mileage && ['🛣️', `${Number(listing.mileage).toLocaleString()} km`],
+                listing.fuel_type && ['⛽', listing.fuel_type],
+                listing.transmission && ['⚙️', listing.transmission],
+                listing.condition && ['✨', listing.condition],
+              ].filter(Boolean) as [string,string][]
+              return specs.length ? (
+                <div style={{display:'flex',flexWrap:'wrap',gap:'20px',padding:'16px 0',borderTop:'1px solid #F3F4F6',borderBottom:'1px solid #F3F4F6',marginBottom:'20px'}}>
+                  {specs.map(([icon,label],i)=>(
+                    <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'4px',minWidth:'64px'}}>
+                      <span style={{fontSize:'22px'}}>{icon}</span>
+                      <span style={{fontSize:'12px',color:'#374151',fontWeight:600,textAlign:'center'}}>{label}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null
+            })()}
             <div style={{fontSize:'13px',color:'#374151',lineHeight:1.7,whiteSpace:'pre-wrap'}}>
               {listing.description || 'No description provided.'}
             </div>
