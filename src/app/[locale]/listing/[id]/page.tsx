@@ -10,6 +10,12 @@ interface Listing {
   id: string; title: string; description: string; price_label: string
   city: string; neighbourhood: string; category: string; subcategory: string
   image_urls?: string[]; created_at: string; user_id: string
+  make?: string; model?: string; year?: string; mileage?: string
+  fuel_type?: string; transmission?: string; body_type?: string
+  body_condition?: string; mechanical_condition?: string; seller_type?: string
+  purpose?: string; bedrooms?: string; bathrooms?: string; area_sqm?: string
+  condition?: string; capacity?: string; company?: string
+  employment_type?: string; salary?: string
 }
 
 const IMGS: Record<string,string> = {
@@ -436,7 +442,30 @@ const markAsSold = async () => {
 
           <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px'}}>
             <div style={{fontSize:'12px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#9CA3AF',marginBottom:'14px'}}>Details</div>
-            {[['Category',listing.category],['Type',listing.subcategory],['Location',`${listing.neighbourhood}, ${listing.city}`]].map(([label,value])=>value&&(
+            {[
+              ['Category',listing.category],
+              ['Type',listing.subcategory],
+              ['Location',`${listing.neighbourhood}, ${listing.city}`],
+              ['Make',listing.make],
+              ['Model',listing.model],
+              ['Year',listing.year],
+              ['Mileage',listing.mileage?`${Number(listing.mileage).toLocaleString()} km`:''],
+              ['Fuel Type',listing.fuel_type],
+              ['Transmission',listing.transmission],
+              ['Body Type',listing.body_type],
+              ['Body Condition',listing.body_condition],
+              ['Mechanical Condition',listing.mechanical_condition],
+              ['Seller Type',listing.seller_type],
+              ['Purpose',listing.purpose],
+              ['Bedrooms',listing.bedrooms],
+              ['Bathrooms',listing.bathrooms],
+              ['Area',listing.area_sqm?`${listing.area_sqm} m²`:''],
+              ['Condition',listing.condition],
+              ['Capacity',listing.capacity],
+              ['Company',listing.company],
+              ['Employment Type',listing.employment_type],
+              ['Salary',listing.salary],
+            ].map(([label,value])=>value&&(
               <div key={label} style={{display:'flex',justifyContent:'space-between',padding:'9px 0',borderBottom:'1px solid #F3F4F6',fontSize:'13px'}}>
                 <span style={{color:'#6B7280'}}>{label}</span>
                 <span style={{color:'#111',fontWeight:500}}>{value}</span>
