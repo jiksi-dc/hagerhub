@@ -16,6 +16,7 @@ interface Listing {
   purpose?: string; bedrooms?: string; bathrooms?: string; area_sqm?: string
   condition?: string; capacity?: string; company?: string
   employment_type?: string; salary?: string
+  address?: string
 }
 
 const IMGS: Record<string,string> = {
@@ -472,6 +473,17 @@ const markAsSold = async () => {
               </div>
             ))}
           </div>
+
+          {listing.address && (
+            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address)}`} target="_blank" rel="noopener noreferrer"
+              style={{display:'flex',alignItems:'center',gap:'8px',background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'16px',marginTop:'16px',textDecoration:'none'}}>
+              <span style={{fontSize:'20px'}}>📍</span>
+              <div>
+                <div style={{fontSize:'13px',fontWeight:700,color:'#111'}}>{listing.address}</div>
+                <div style={{fontSize:'12px',color:'#2563EB',fontWeight:600}}>View on map →</div>
+              </div>
+            </a>
+          )}
 
           <div style={{background:'#FFFBEB',borderRadius:'14px',border:'1px solid #FEF3C7',padding:'16px'}}>
             <div style={{fontSize:'12px',fontWeight:700,color:'#92400E',marginBottom:'6px'}}>Safety tip</div>

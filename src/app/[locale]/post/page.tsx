@@ -73,6 +73,7 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
   const [desc, setDesc] = useState('')
   const [city, setCity] = useState('Addis Ababa')
   const [neighbourhood, setNeighbourhood] = useState('')
+  const [address, setAddress] = useState('')
 
   // Vehicle fields
   const [make, setMake] = useState('')
@@ -146,7 +147,7 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
         title, description: desc, price_label: `${currency} ${Number(price).toLocaleString()}`,
 price_amount: Number(price),
 price_currency: currency,
-        category: cat, subcategory: subcat, city, neighbourhood,
+        category: cat, subcategory: subcat, city, neighbourhood, address,
         status: 'active', image_urls,
         make, model, year, mileage: km, fuel_type: fuel, body_type: bodyType,
         body_condition: bodyCondition, mechanical_condition: mechCondition,
@@ -326,6 +327,12 @@ admission_fee: admission,
               <label style={lbl as any}>Description *</label>
               <textarea value={desc} onChange={e=>setDesc(e.target.value)} placeholder="Describe your item in detail..." rows={5} style={{...inp, resize:'vertical'} as any}/>
               <div style={{fontSize:'11px',color:'#9CA3AF',textAlign:'right',marginTop:'4px'}}>{desc.length}/16000</div>
+            </div>
+
+            <div style={{marginBottom:'20px',padding:'16px',border:'1px solid #E5E7EB',borderRadius:'10px',background:'#FAFAFA'}}>
+              <div style={{fontSize:'14px',fontWeight:700,color:'#374151',marginBottom:'4px'}}>📍 Show location on a map?</div>
+              <div style={{fontSize:'12px',color:'#9CA3AF',marginBottom:'10px'}}>Optional — add an address and buyers get a "View on map" link. Leave blank to skip.</div>
+              <input value={address} onChange={e=>setAddress(e.target.value)} placeholder="e.g. Bole Road, near Edna Mall, Addis Ababa" style={inp as any}/>
             </div>
 
             <Select label="City *" value={city} onChange={setCity} options={CITIES}/>
