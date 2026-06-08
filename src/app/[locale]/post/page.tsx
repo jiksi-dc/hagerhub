@@ -17,6 +17,7 @@ Discover: ['Tourist Attraction','National Park','Nature & Wildlife','Museum & He
 }
 
 const AMENITIES = ['24-hour Electricity','Water Tank','Air Conditioning','Balcony','Parking Space','Kitchen Cabinets','Furnished','Elevator','Security/Guard','Backup Generator','Garden','Internet/WiFi']
+const CAR_FEATURES = ['Air Conditioning','Cruise Control','Sunroof','Leather Seats','Navigation/GPS','Backup Camera','Bluetooth','Power Windows','Power Steering','Alloy Wheels','Keyless Entry','Parking Sensors','Heated Seats','ABS Brakes','Airbags']
 
 const inp = {border:'1px solid #E5E7EB',borderRadius:'10px',padding:'12px 16px',fontSize:'14px',width:'100%',outline:'none',fontFamily:'inherit',color:'#111',background:'#fff'}
 const lbl = {fontSize:'13px',fontWeight:700,color:'#374151',marginBottom:'6px',display:'block'}
@@ -321,6 +322,20 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
               <Select label="Body Condition *" value={bodyCondition} onChange={setBodyCondition} options={['Excellent','Good','Fair','Needs Repair']}/>
               <Select label="Mechanical Condition *" value={mechCondition} onChange={setMechCondition} options={['Excellent','Good','Fair','Needs Repair']}/>
               <ToggleGroup label="Seller Type *" options={['Private','Dealer','Broker']} value={sellerType} onChange={setSellerType}/>
+              <div style={{marginBottom:'20px'}}>
+                <label style={lbl as any}>Features <span style={{color:'#9CA3AF',fontWeight:400}}>(tap all that apply)</span></label>
+                <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
+                  {CAR_FEATURES.map(a => {
+                    const on = amenities.includes(a)
+                    return (
+                      <button key={a} type="button" onClick={()=>setAmenities(on?amenities.filter(x=>x!==a):[...amenities,a])}
+                        style={{padding:'8px 14px',borderRadius:'8px',border:`1.5px solid ${on?'#111':'#E5E7EB'}`,background:on?'#111':'#fff',color:on?'#fff':'#374151',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit'}}>
+                        {on?'✓ ':''}{a}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
             </>)}
 
             {/* PROPERTY FIELDS */}
