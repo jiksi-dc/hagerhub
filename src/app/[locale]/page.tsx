@@ -1,0 +1,709 @@
+'use client'
+import { useState, useEffect } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
+import { createClient } from '@/lib/supabase'
+import AuthButton from '@/components/AuthButton'
+import AIAssistant from '@/components/AIAssistant'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+
+const POPULAR = [
+  { key:'properties', name:'Properties', items:['Residential for Rent','Residential for Sale','Commercial','Land & Plots'] },
+  { key:'vehicles',   name:'Vehicles',   items:['Used Cars','New Cars','Trucks & LGVs','Motorcycles'] },
+  { key:'machinery',  name:'Machinery',  items:['Farm Equipment','Construction','Generators','Industrial'] },
+  { key:'classifieds',name:'Classifieds',items:['Mobile Phones','Electronics','Furniture & Home','Clothing'] },
+  { key:'jobs',       name:'Jobs',       items:['Accounting & Finance','Engineering','IT & Technology','Healthcare'] },
+]
+
+const SUBCATS: Record<string,string[]> = {
+Discover: ['Tourist Attraction','National Park','Festival & Cultural Event','Concert & Entertainment','Food & Dining Experience','Museum & Heritage','Tour Package','Sports Event'],
+  Properties: ['Residential for Rent','Residential for Sale','Commercial','Land & Plots'],
+  Vehicles:   ['Used Cars','New Cars','Trucks & LGVs','Motorcycles'],
+  Machinery:  ['Farm Equipment','Construction','Generators','Industrial'],
+  Classifieds:['Mobile Phones','Electronics','Furniture & Home','Clothing','IT & Technology'],
+  Jobs:       ['Accounting & Finance','Engineering','IT & Technology','Healthcare','Education'],
+}
+
+const CITIES = ['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa','Mekelle','Adama','Jimma','Gondar']
+
+const IMGS: Record<string,string[]> = {
+  Properties:['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=85','https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=85'],
+  Vehicles:  ['https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600&q=85','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=85'],
+  Machinery: ['https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?w=600&q=85','https://images.unsplash.com/photo-1530685932526-48ec92998eaa?w=600&q=85'],
+  Classifieds:['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=85','https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&q=85'],
+  Jobs:      ['https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=85','https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=85'],
+}
+
+interface Listing {
+  image_urls?:string[]; id:string; title:string; price_label:string; city:string
+  neighbourhood:string; category:string; subcategory:string; created_at:string; user_id:string; verified?:boolean
+}
+
+// Premium AdCard — blending animated ad units
+const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=180,logo,accent='rgba(255,255,255,0.12)'}:{bg:string,name:string,sub:string,cta:string,tag:string,delay?:string,height?:number,logo?:string,accent?:string}) => (
+  <div style={{marginBottom:'0'}}>
+    <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'4px',fontWeight:600}}>{tag}</div>
+    <div style={{
+      borderRadius:'16px',overflow:'hidden',
+      boxShadow:'0 2px 16px rgba(0,0,0,0.10)',
+      animation:`adblend 5s ease-in-out infinite ${delay}`,
+      position:'relative',cursor:'pointer',
+      transition:'transform 0.2s ease, box-shadow 0.2s ease',
+    }}>
+      {/* Ad image/colour area */}
+      <div style={{
+        height:`${height}px`,
+        background:bg,
+        position:'relative',
+        display:'flex',flexDirection:'column',
+        justifyContent:'flex-end',
+        padding:'16px',
+        overflow:'hidden',
+      }}>
+        {/* Shimmer overlay */}
+        <div style={{
+          position:'absolute',top:0,left:0,right:0,bottom:0,
+          background:'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.06) 100%)',
+          animation:`shimmerslide 3s ease-in-out infinite ${delay}`,
+          pointerEvents:'none',
+        }}/>
+        {/* Gradient blend to footer */}
+        <div style={{
+          position:'absolute',bottom:0,left:0,right:0,height:'60%',
+          background:'linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%)',
+          pointerEvents:'none',
+        }}/>
+        {/* Content */}
+        <div style={{position:'relative',zIndex:1}}>
+          <div style={{fontSize:'15px',fontWeight:800,color:'white',marginBottom:'4px',textShadow:'0 1px 4px rgba(0,0,0,0.3)'}}>{name}</div>
+          <div style={{fontSize:'11px',color:'rgba(255,255,255,0.88)',lineHeight:1.5,marginBottom:'10px'}}>{sub}</div>
+          <button style={{
+            background:accent,
+            backdropFilter:'blur(8px)',
+            color:'white',
+            fontSize:'11px',fontWeight:700,
+            padding:'7px 16px',
+            borderRadius:'20px',
+            border:'1px solid rgba(255,255,255,0.35)',
+            cursor:'pointer',
+            letterSpacing:'0.3px',
+          }}>{cta} →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+)
+
+// FeaturedCard — blends with page, subtle gold shimmer, shown in sidebar
+const FeaturedCard = ({l, locale}: {l:any, locale:string}) => {
+  const imgs = l.image_urls?.length ? l.image_urls : IMGS[l.category]||[]
+  const img = imgs[0]||''
+  return (
+    <a href={`/${locale}/listing/${l.id}`} style={{textDecoration:'none',display:'block',marginBottom:'10px'}}>
+      <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',overflow:'hidden',animation:'featuredshimmer 3s ease-in-out infinite',position:'relative'}}>
+        <div style={{background:'linear-gradient(90deg,#B8860B,#DAA520,#B8860B)',height:'3px'}}/>
+        <div style={{position:'absolute',top:'10px',right:'10px',background:'linear-gradient(135deg,#B8860B,#DAA520)',color:'white',fontSize:'9px',fontWeight:800,letterSpacing:'1px',padding:'2px 7px',borderRadius:'5px'}}>⭐ FEATURED</div>
+        <div style={{height:'120px',background:'#F9FAFB',overflow:'hidden'}}>
+          {img && <img src={img} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>}
+        </div>
+        <div style={{padding:'10px 12px'}}>
+          <div style={{fontSize:'10px',color:'#9CA3AF',marginBottom:'3px'}}>{l.subcategory||l.category} · {l.city}</div>
+          <div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'5px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <span style={{fontSize:'14px',fontWeight:800,color:'#111'}}>{l.price_label}</span>
+            <span style={{fontSize:'11px',color:'#2563EB',fontWeight:600}}>View →</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  )
+}
+
+// BoostCTA — prompts sellers to boost their listing
+const BoostCTA = ({locale}: {locale:string}) => (
+  <a href={`/${locale}/boost`} style={{textDecoration:'none',display:'block',marginBottom:'10px'}}>
+    <div style={{background:'#fff',borderRadius:'14px',border:'1.5px dashed #E5E7EB',padding:'16px',textAlign:'center'}}>
+      <div style={{fontSize:'18px',marginBottom:'6px'}}>⭐</div>
+      <div style={{fontSize:'12px',fontWeight:700,color:'#111',marginBottom:'4px'}}>Boost your listing</div>
+      <div style={{fontSize:'11px',color:'#6B7280',lineHeight:1.5,marginBottom:'10px'}}>Get 10× more views. Featured from $2/week.</div>
+      <div style={{background:'#111',color:'white',fontSize:'11px',fontWeight:700,padding:'7px 14px',borderRadius:'8px',display:'inline-block'}}>Learn more →</div>
+    </div>
+  </a>
+)
+
+const filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',color:'#6B7280',marginBottom:'8px',display:'block'}
+const filterSelect:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',background:'#fff',fontFamily:'inherit',outline:'none',cursor:'pointer'}
+const filterInput:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',fontFamily:'inherit',outline:'none'}
+
+// ---- GOLDEN HERO data + styles ----
+const HERO_MAKES = ['Toyota','Suzuki','Hyundai','Kia','Nissan','Mitsubishi','Volkswagen','Ford','Honda','Mercedes-Benz','BMW','Lexus','Tesla','Isuzu','Mahindra','Other']
+const HERO_FIELDS = ['Accounting & Finance','Engineering','IT & Technology','Healthcare','Education','Sales & Marketing','Administration','Hospitality']
+const HERO_PURPOSE = ['For Sale','For Rent']
+const heroLbl:React.CSSProperties = {fontSize:'10px',fontWeight:700,letterSpacing:'0.4px',textTransform:'uppercase',color:'#9CA3AF',marginBottom:'4px',display:'block'}
+const heroField:React.CSSProperties = {width:'100%',height:'44px',padding:'0 12px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'14px',outline:'none',fontFamily:'inherit',background:'#fff',color:'#111'}
+
+
+const DiscoverCard = ({l, locale}: {l: any, locale: string}) => {
+const isUpcoming = l.event_date && new Date(l.event_date) >= new Date()
+const isPast = l.event_date && new Date(l.event_date) < new Date()
+const dateObj = l.event_date ? new Date(l.event_date) : null
+const day = dateObj ? dateObj.getDate() : null
+const month = dateObj ? dateObj.toLocaleString('en-ET',{month:'short'}) : null
+return (
+<div onClick={()=>window.location.href=`/${locale}/listing/${l.id}`}
+style={{background:'#fff',borderRadius:'14px',overflow:'hidden',border:'1px solid #F3F4F6',cursor:'pointer',display:'flex',gap:'0',minHeight:'100px',transition:'box-shadow .15s'}}>
+{/* Date block */}
+{dateObj && (
+<div style={{width:'72px',minWidth:'72px',background:isUpcoming?'#0f3460':'#F3F4F6',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'12px 8px'}}>
+<div style={{fontSize:'22px',fontWeight:900,color:isUpcoming?'white':'#6B7280',lineHeight:1}}>{day}</div>
+<div style={{fontSize:'11px',fontWeight:700,color:isUpcoming?'rgba(255,255,255,0.8)':'#9CA3AF',textTransform:'uppercase',letterSpacing:'1px'}}>{month}</div>
+</div>
+)}
+{/* Content */}
+<div style={{flex:1,padding:'12px 14px',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
+<div>
+<div style={{display:'flex',alignItems:'center',gap:'6px',marginBottom:'4px',flexWrap:'wrap'}}>
+<span style={{fontSize:'10px',fontWeight:700,background:isUpcoming?'#ECFDF5':isPast?'#F3F4F6':'#EFF6FF',color:isUpcoming?'#059669':isPast?'#9CA3AF':'#2563EB',padding:'2px 8px',borderRadius:'10px',letterSpacing:'0.5px'}}>
+{isUpcoming?'Upcoming':isPast?'Past':l.subcategory}
+</span>
+{l.subcategory && <span style={{fontSize:'10px',color:'#9CA3AF'}}>{l.subcategory}</span>}
+</div>
+<div style={{fontSize:'13px',fontWeight:700,color:'#111',marginBottom:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
+<div style={{fontSize:'11px',color:'#6B7280'}}>{l.city}{l.event_time?' · '+l.event_time:''}</div>
+</div>
+<div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:'8px'}}>
+<span style={{fontSize:'12px',fontWeight:700,color:'#111'}}>{l.price_label}</span>
+{l.admission_fee && <span style={{fontSize:'10px',background:'#FFFBEB',color:'#92400E',padding:'2px 7px',borderRadius:'10px',fontWeight:600}}>{l.admission_fee}</span>}
+</div>
+</div>
+</div>
+)
+}
+
+export default function Home() {
+  const t = useTranslations()
+  const locale = useLocale()
+  const [activeCat, setActiveCat] = useState('All')
+  const [search, setSearch] = useState('')
+  const [listings, setListings] = useState<Listing[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saved, setSaved] = useState<Set<string>>(new Set())
+  const [user, setUser] = useState<any>(null)
+const [featuredListings, setFeaturedListings] = useState<any[]>([])
+
+  // Filter state
+  const [filterCity, setFilterCity] = useState('')
+  const [filterSubcat, setFilterSubcat] = useState('')
+  const [filterMinPrice, setFilterMinPrice] = useState('')
+  const [filterMaxPrice, setFilterMaxPrice] = useState('')
+  const [filterSort, setFilterSort] = useState('newest')
+  const [filterPurpose, setFilterPurpose] = useState('')
+  const [filterBeds, setFilterBeds] = useState('')
+  const [filterMake, setFilterMake] = useState('')
+  const [filterField, setFilterField] = useState('')
+
+  const TABS = [
+    { key:'all',        name:'All' },
+    { key:'properties', name:'Properties' },
+    { key:'vehicles',   name:'Vehicles' },
+    { key:'machinery',  name:'Machinery' },
+    { key:'classifieds',name:'Classifieds' },
+    { key:'jobs',       name:'Jobs' },
+  ]
+
+  useEffect(()=>{
+    fetchListings()
+    const supabase = createClient()
+    supabase.auth.getUser().then(({data})=>{
+      setUser(data.user)
+      if(data.user) loadSaved(data.user.id)
+    })
+  },[activeCat])
+
+  // Reset filters when category changes
+  useEffect(()=>{
+    setFilterCity('')
+    setFilterSubcat('')
+    setFilterMinPrice('')
+    setFilterMaxPrice('')
+    setFilterSort('newest')
+    setFilterPurpose('')
+    setFilterBeds('')
+    setFilterMake('')
+    setFilterField('')
+  },[activeCat])
+
+  async function loadSaved(userId: string) {
+    const supabase = createClient()
+    const {data} = await supabase.from('saved_listings').select('listing_id').eq('user_id',userId)
+    if(data) setSaved(new Set(data.map((r:any)=>r.listing_id)))
+  }
+
+  async function fetchProfile(userId: string) {
+    const supabase = createClient()
+    const {data} = await supabase.from('profiles').select('verified').eq('id', userId).single()
+    return data?.verified || false
+  }
+
+  async function fetchFeatured() {
+const supabase = createClient()
+const {data} = await supabase.from('listings').select('*').eq('status','active').eq('is_featured',true).gte('boost_expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(6)
+setFeaturedListings(data||[])
+}
+
+async function fetchListings() {
+    setLoading(true)
+    const supabase = createClient()
+    let q = supabase.from('listings').select('*').eq('status','active').order('created_at',{ascending:false})
+    if (activeCat==='Discover') q = q.eq('category','Discover Ethiopia')
+else if (activeCat!=='All') q = q.eq('category',activeCat)
+    const {data} = await q.limit(100)
+    setListings(data||[])
+    setLoading(false)
+  }
+
+  const toggleSave = async (id:string,e:React.MouseEvent) => {
+    e.stopPropagation()
+    if(!user) { window.location.href='/login'; return }
+    const supabase = createClient()
+    const isSaved = saved.has(id)
+    setSaved(prev=>{ const n=new Set(prev); isSaved?n.delete(id):n.add(id); return n })
+    if(isSaved) {
+      await supabase.from('saved_listings').delete().eq('user_id',user.id).eq('listing_id',id)
+    } else {
+      await supabase.from('saved_listings').insert({user_id:user.id,listing_id:id})
+    }
+  }
+
+  const clearFilters = () => {
+    setFilterCity('')
+    setFilterSubcat('')
+    setFilterMinPrice('')
+    setFilterMaxPrice('')
+    setFilterSort('newest')
+    setFilterPurpose('')
+    setFilterBeds('')
+    setFilterMake('')
+    setFilterField('')
+    setSearch('')
+  }
+
+  const hasActiveFilters = filterCity || filterSubcat || filterMinPrice || filterMaxPrice || search
+
+  // Apply all filters client-side
+  let filtered = listings.filter(l => {
+    if (search && !l.title?.toLowerCase().includes(search.toLowerCase())) return false
+    if (filterCity && l.city !== filterCity) return false
+    if (filterSubcat && l.subcategory !== filterSubcat) return false
+    if (filterMinPrice && Number(l.price_label?.replace(/[^0-9]/g,'')) < Number(filterMinPrice)) return false
+    if (filterMaxPrice && Number(l.price_label?.replace(/[^0-9]/g,'')) > Number(filterMaxPrice)) return false
+    if (filterPurpose && !(l.subcategory||'').toLowerCase().includes(filterPurpose.toLowerCase())) return false
+    if (filterBeds && String((l as any).bedrooms||'') !== filterBeds) return false
+    if (filterMake && (l as any).make !== filterMake) return false
+    if (filterField && l.subcategory !== filterField) return false
+    return true
+  })
+
+  if (filterSort === 'price_asc') filtered = [...filtered].sort((a,b) => Number(a.price_label?.replace(/[^0-9]/g,'')) - Number(b.price_label?.replace(/[^0-9]/g,'')))
+  if (filterSort === 'price_desc') filtered = [...filtered].sort((a,b) => Number(b.price_label?.replace(/[^0-9]/g,'')) - Number(a.price_label?.replace(/[^0-9]/g,'')))
+
+  const Card = ({l}:{l:Listing}) => {
+    const imgs = l.image_urls?.length ? l.image_urls : IMGS[l.category]||[]
+    const img = imgs[0]||''
+    return (
+      <div onClick={()=>window.location.href=`/${locale}/listing/${l.id}`}
+        style={{background:'#fff',borderRadius:'12px',overflow:'hidden',border:'1px solid #F3F4F6',cursor:'pointer',transition:'box-shadow .15s'}}>
+        <div style={{position:'relative',height:'180px',background:'#F9FAFB'}}>
+          {img && <img src={img} alt={l.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>}
+          <div style={{position:'absolute',bottom:'8px',left:'8px',background:'rgba(0,0,0,0.7)',color:'white',fontSize:'12px',fontWeight:700,padding:'3px 8px',borderRadius:'6px'}}>
+            {l.price_label}
+          </div>
+          <button onClick={(e)=>toggleSave(l.id,e)}
+            style={{position:'absolute',top:'8px',right:'8px',background:'rgba(255,255,255,0.9)',border:'none',borderRadius:'50%',width:'30px',height:'30px',cursor:'pointer',fontSize:'15px',display:'flex',alignItems:'center',justifyContent:'center'}}>
+            {saved.has(l.id)?'♥':'♡'}
+          </button>
+          <div style={{position:'absolute',top:'8px',left:'8px',background:'#2563EB',color:'white',fontSize:'10px',fontWeight:600,padding:'2px 7px',borderRadius:'5px'}}>
+            {l.subcategory||l.category}
+          </div>
+          {l.verified && (
+            <div style={{position:'absolute',bottom:'8px',right:'8px',background:'#059669',color:'white',fontSize:'9px',fontWeight:700,padding:'2px 7px',borderRadius:'5px',display:'flex',alignItems:'center',gap:'3px'}}>
+              ✓ Verified
+            </div>
+          )}
+        </div>
+        <div style={{padding:'10px 12px 12px'}}>
+          <div style={{fontSize:'13px',fontWeight:600,color:'#111',marginBottom:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
+          <div style={{fontSize:'11px',color:'#6B7280'}}>{l.neighbourhood}, {l.city}</div>
+        </div>
+      </div>
+    )
+  }
+
+  const FilterPanel = () => (
+    <div style={{position:'sticky',top:'120px',alignSelf:'start',background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'18px',display:'flex',flexDirection:'column',gap:'18px',minWidth:'200px'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <span style={{fontSize:'13px',fontWeight:700,color:'#111'}}>Filters</span>
+        {hasActiveFilters && (
+          <button onClick={clearFilters} style={{fontSize:'11px',color:'#2563EB',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontWeight:600}}>Clear all</button>
+        )}
+      </div>
+
+      {/* Sort */}
+      <div>
+        <label style={filterLabel}>Sort by</label>
+        <select value={filterSort} onChange={e=>setFilterSort(e.target.value)} style={filterSelect}>
+          <option value="newest">Newest first</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+        </select>
+      </div>
+
+      {/* Location */}
+      <div>
+        <label style={filterLabel}>City</label>
+        <select value={filterCity} onChange={e=>setFilterCity(e.target.value)} style={filterSelect}>
+          <option value="">All cities</option>
+          {CITIES.map(c=><option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+
+      {/* Subcategory */}
+      {SUBCATS[activeCat] && (
+        <div>
+          <label style={filterLabel}>Type</label>
+          <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={filterSelect}>
+            <option value="">All types</option>
+            {SUBCATS[activeCat].map(s=><option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+      )}
+
+      {/* Price range */}
+      <div>
+        <label style={filterLabel}>Price (ETB)</label>
+        <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="Min"
+            value={filterMinPrice}
+            onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))}
+            style={{...filterInput,width:'50%'}}
+          />
+          <span style={{color:'#9CA3AF',fontSize:'12px'}}>—</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="Max"
+            value={filterMaxPrice}
+            onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))}
+            style={{...filterInput,width:'50%'}}
+          />
+        </div>
+      </div>
+
+      {/* Active filter chips */}
+      {hasActiveFilters && (
+        <div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>
+          {filterCity && <span style={{fontSize:'11px',background:'#EFF6FF',color:'#2563EB',padding:'3px 8px',borderRadius:'20px',fontWeight:500}}>{filterCity} ×</span>}
+          {filterSubcat && <span style={{fontSize:'11px',background:'#EFF6FF',color:'#2563EB',padding:'3px 8px',borderRadius:'20px',fontWeight:500}}>{filterSubcat} ×</span>}
+          {(filterMinPrice||filterMaxPrice) && <span style={{fontSize:'11px',background:'#EFF6FF',color:'#2563EB',padding:'3px 8px',borderRadius:'20px',fontWeight:500}}>ETB {filterMinPrice||'0'} – {filterMaxPrice||'∞'} ×</span>}
+        </div>
+      )}
+    </div>
+  )
+
+  return (
+    <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
+      <style>{`
+        @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.94} }
+@keyframes adblend { 0%,100%{box-shadow:0 2px 16px rgba(0,0,0,0.10);transform:translateY(0)} 50%{box-shadow:0 8px 32px rgba(0,0,0,0.22);transform:translateY(-3px)} }
+@keyframes shimmerslide { 0%,100%{opacity:0.5} 50%{opacity:1} }
+@keyframes featuredshimmer { 0%,100%{box-shadow:0 0 0 rgba(218,165,32,0)} 50%{box-shadow:0 4px 20px rgba(218,165,32,0.15)} }
+        *{box-sizing:border-box;margin:0;padding:0}
+        select:focus,input:focus{border-color:#2563EB!important}
+      `}</style>
+
+      {/* NAV */}
+      <nav style={{position:'sticky',top:0,zIndex:100,background:'#fff',borderBottom:'1px solid #EBEBEB'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
+          <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
+            <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>HAGERHUB</div>
+            <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
+          </a>
+          <div style={{flex:1,maxWidth:'480px',position:'relative'}}>
+            <input value={search} onChange={e=>setSearch(e.target.value)}
+              placeholder={t('nav.search')}
+              style={{width:'100%',padding:'9px 14px 9px 38px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',outline:'none',fontFamily:'inherit'}}/>
+            <span style={{position:'absolute',left:'12px',top:'50%',transform:'translateY(-50%)',color:'#9CA3AF',fontSize:'14px'}}>⌕</span>
+          </div>
+          <button style={{padding:'9px 18px',background:'#111',color:'white',border:'none',borderRadius:'8px',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',flexShrink:0}}>
+            {t('nav.searchBtn')}
+          </button>
+          <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+            <AuthButton/>
+            <a href={`/${locale}/post`} style={{fontSize:'13px',fontWeight:600,padding:'9px 18px',background:'#111',color:'white',borderRadius:'8px',textDecoration:'none',border:'none',whiteSpace:'nowrap'}}>
+              {t('nav.post')}
+            </a>
+            <LanguageSwitcher/>
+            <AIAssistant/>
+          </div>
+        </div>
+
+      </nav>
+
+      {/* GOLDEN HERO */}
+      <section style={{position:'relative',backgroundImage:'linear-gradient(160deg,rgba(60,40,10,0.55),rgba(20,12,2,0.65)),url(https://images.unsplash.com/photo-1668003312597-2fc136bc56e0?w=1600&q=80)',backgroundSize:'cover',backgroundPosition:'center',padding:'48px 20px 56px'}}>
+        <div style={{maxWidth:'700px',margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center'}}>
+          <div style={{textAlign:'center',marginBottom:'22px'}}>
+            <h1 style={{fontSize:'30px',fontWeight:900,color:'#fff',textShadow:'0 2px 12px rgba(0,0,0,0.4)',letterSpacing:'-0.5px',margin:0}}>Find anything in Ethiopia</h1>
+            <p style={{fontSize:'14px',color:'rgba(255,255,255,0.9)',marginTop:'6px',textShadow:'0 1px 6px rgba(0,0,0,0.4)'}}>Properties · Vehicles · Machinery · Jobs · and more</p>
+          </div>
+
+          {/* Category tabs */}
+          <div style={{display:'flex',gap:'4px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'wrap',justifyContent:'center'}}>
+            {TABS.filter(tab=>tab.name!=='All').map(tab=>{
+              const on = activeCat===tab.name
+              return (
+                <button key={tab.key} onClick={()=>setActiveCat(tab.name)}
+                  style={{fontSize:'12px',fontWeight:on?700:600,color:on?'#111':'#fff',background:on?'#fff':'transparent',
+                    padding:'8px 16px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'all .15s'}}>
+                  {t('cats.' + tab.key)}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Search panel */}
+          <div style={{width:'560px',maxWidth:'100%',background:'#fff',borderRadius:'16px',padding:'16px',boxShadow:'0 12px 40px rgba(0,0,0,0.25)'}}>
+            {/* Adaptive top row */}
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px',marginBottom:'10px'}}>
+              {(activeCat==='Properties' || activeCat==='All') && <>
+                <div><label style={heroLbl}>Purpose</label>
+                  <select value={filterPurpose} onChange={e=>setFilterPurpose(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{HERO_PURPOSE.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Bedrooms</label>
+                  <select value={filterBeds} onChange={e=>setFilterBeds(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{['1','2','3','4','5'].map(o=><option key={o} value={o}>{o}+</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Max price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+              </>}
+              {activeCat==='Vehicles' && <>
+                <div style={{gridColumn:'span 2'}}><label style={heroLbl}>Make</label>
+                  <select value={filterMake} onChange={e=>setFilterMake(e.target.value)} style={heroField}>
+                    <option value="">All makes</option>{HERO_MAKES.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Max price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+              </>}
+              {activeCat==='Jobs' && <>
+                <div style={{gridColumn:'span 2'}}><label style={heroLbl}>Field</label>
+                  <select value={filterField} onChange={e=>setFilterField(e.target.value)} style={heroField}>
+                    <option value="">All fields</option>{HERO_FIELDS.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Min salary</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+              </>}
+              {(activeCat==='Machinery' || activeCat==='Classifieds') && <>
+                <div style={{gridColumn:'span 2'}}><label style={heroLbl}>Type</label>
+                  <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
+                    <option value="">All types</option>{(SUBCATS[activeCat]||[]).map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Max price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+              </>}
+            </div>
+            {/* Universal row */}
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1.4fr auto',gap:'10px',alignItems:'end'}}>
+              <div><label style={heroLbl}>City</label>
+                <select value={filterCity} onChange={e=>setFilterCity(e.target.value)} style={heroField}>
+                  <option value="">All cities</option>{CITIES.map(c=><option key={c} value={c}>{c}</option>)}
+                </select></div>
+              <div><label style={heroLbl}>Keyword</label>
+                <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('nav.search')} style={heroField}/></div>
+              <button onClick={()=>{const el=document.getElementById('results');if(el)el.scrollIntoView({behavior:'smooth'})}}
+                style={{height:'44px',background:'#111',color:'#fff',border:'none',borderRadius:'10px',padding:'0 22px',fontSize:'14px',fontWeight:700,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+                ⌕ {t('nav.searchBtn')}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* MAIN */}
+
+      {/* DISCOVER ETHIOPIA BANNER */}
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 8px'}}>
+        <a href={`/${locale}/discover`} style={{textDecoration:'none',display:'block'}}>
+          <div style={{background:'linear-gradient(135deg,#1a1a2e,#0f3460)',borderRadius:'16px',padding:'24px 28px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'16px',position:'relative',overflow:'hidden'}}>
+            <div style={{position:'absolute',right:0,top:0,bottom:0,width:'40%',backgroundImage:'url(https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=60)',backgroundSize:'cover',backgroundPosition:'center',opacity:0.3,borderRadius:'0 16px 16px 0'}}/>
+            <div style={{position:'relative'}}>
+              <div style={{fontSize:'11px',fontWeight:700,letterSpacing:'3px',color:'#FCD34D',marginBottom:'6px'}}>🇪🇹 NEW</div>
+              <div style={{fontSize:'20px',fontWeight:900,color:'white',marginBottom:'4px'}}>Discover Ethiopia</div>
+              <div style={{fontSize:'13px',color:'rgba(255,255,255,0.75)'}}>UNESCO sites · National Parks · Festivals · Tribal Cultures · More</div>
+            </div>
+            <div style={{position:'relative',background:'#FCD34D',color:'#111',padding:'10px 20px',borderRadius:'10px',fontSize:'13px',fontWeight:800,whiteSpace:'nowrap'}}>
+              Explore now →
+            </div>
+          </div>
+        </a>
+      </div>
+      <div id="results" style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 280px' : '200px 1fr 280px',gap:'24px',alignItems:'start',scrollMarginTop:'70px'}}>
+
+        {/* FILTER PANEL — only when category is active */}
+        {activeCat !== 'All' && <FilterPanel/>}
+
+        <div>
+          {/* POPULAR CATEGORIES GRID — only on All */}
+          {activeCat==='All' && (
+            <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px 24px',marginBottom:'24px'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>
+                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111'}}>{t('home.browse')}</h2>
+                <span style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'16px'}}>
+                {POPULAR.map(cat=>(
+                  <div key={cat.key} onClick={()=>setActiveCat(cat.name)} style={{cursor:'pointer'}}>
+                    <div style={{fontSize:'12px',fontWeight:700,color:'#111',marginBottom:'6px'}}>
+                      {t('cats.' + cat.key)}
+                    </div>
+                    {cat.items.map(item=>(
+                      <div key={item} style={{fontSize:'11px',color:'#6B7280',marginBottom:'4px'}}>{item}</div>
+                    ))}
+                    <div style={{fontSize:'11px',color:'#2563EB',fontWeight:600,marginTop:'8px'}}>
+                      {t('home.viewAll')} →
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Results count when filtering */}
+          {activeCat !== 'All' && (
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
+              <div>
+                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0,display:'inline'}}>{t('cats.' + TABS.find(tab=>tab.name===activeCat)?.key || 'all')}</h2>
+                <span style={{fontSize:'12px',color:'#9CA3AF',marginLeft:'8px'}}>{filtered.length} {t('home.available')}</span>
+              </div>
+              <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit'}}>← Back</button>
+            </div>
+          )}
+
+          {loading ? (
+            <div style={{textAlign:'center',padding:'60px',color:'#9CA3AF',background:'#fff',borderRadius:'12px'}}>{t('home.loading')}</div>
+          ) : filtered.length===0 ? (
+            <div style={{textAlign:'center',padding:'60px',color:'#9CA3AF',background:'#fff',borderRadius:'12px'}}>{t('home.none')}</div>
+          ) : activeCat==='All' ? (
+            POPULAR.map(cat=>{
+              const items=filtered.filter(l=>l.category===cat.name)
+              if(items.length===0) return null
+              return (
+                <div key={cat.key} style={{marginBottom:'24px'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}}>
+                    <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0}}>
+                      Popular in {t('cats.' + cat.key)}
+                    </h2>
+                    <span onClick={()=>setActiveCat(cat.name)} style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
+                  </div>
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+                    {items.slice(0,4).map(l=><Card key={l.id} l={l}/>)}
+                  </div>
+                </div>
+              )
+            })
+          ) : (
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
+              {filtered.map(l=><Card key={l.id} l={l}/>)}
+            </div>
+          )}
+        </div>
+
+        <div style={{position:'sticky',top:'120px',alignSelf:'start',display:'flex',flexDirection:'column',gap:'14px',width:'100%'}}>
+
+          {/* Featured listings — shown when boosted listings exist */}
+          {featuredListings.length > 0 && (
+            <div>
+              <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'8px',fontWeight:600}}>Featured listings</div>
+              {featuredListings.slice(0,2).map(l=><FeaturedCard key={l.id} l={l} locale={locale}/>)}
+            </div>
+          )}
+
+          {/* ALL — Ethiopian Airlines hero + CBE + Telebirr */}
+          {activeCat==='All' && <>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#004d00 60%,#003300 100%)" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide. Africa's largest airline." cta="Book Now" tag="Premium Partner" delay="0s" height={200} accent="rgba(255,255,255,0.2)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Finance your dream. Up to ETB 5,000,000 at the lowest rates." cta="Apply Now" tag="Financial Partner" delay="1.2s" height={160} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Send money, pay bills and shop across Ethiopia instantly." cta="Get the App" tag="Payment Partner" delay="2.4s" height={140} accent="rgba(255,255,255,0.18)"/>
+          </>}
+
+          {/* PROPERTIES */}
+          {activeCat==='Properties' && <>
+            <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Real Estate" sub="Premium residential and commercial properties across Ethiopia." cta="View Properties" tag="Property Partner" delay="0s" height={220} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Up to ETB 5,000,000 · Low interest · Fast approval." cta="Apply for a Loan" tag="Financial Partner" delay="1.5s" height={160} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Sunshine Construction" sub="Build your dream home with Ethiopia's trusted builders." cta="Get a Quote" tag="Construction Partner" delay="2.5s" height={130} accent="rgba(255,255,255,0.12)"/>
+          </>}
+
+          {/* VEHICLES */}
+          {activeCat==='Vehicles' && <>
+            <AdCard bg="linear-gradient(160deg,#1a1a2e 0%,#0d0d1a 100%)" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance at the best rates in Ethiopia." cta="Get a Quote" tag="Insurance Partner" delay="0s" height={200} accent="rgba(255,255,255,0.14)"/>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines Cargo" sub="Ship anything across Ethiopia and beyond. Fast and reliable." cta="Ship Now" tag="Logistics Partner" delay="1.5s" height={150} accent="rgba(255,255,255,0.18)"/>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for your vehicle purchase securely with Telebirr." cta="Pay with Telebirr" tag="Payment Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.18)"/>
+          </>}
+
+          {/* MACHINERY */}
+          {activeCat==='Machinery' && <>
+            <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Midroc Construction" sub="Leading construction equipment supplier across Ethiopia." cta="Learn More" tag="Machinery Partner" delay="0s" height={210} accent="rgba(255,255,255,0.12)"/>
+            <AdCard bg="linear-gradient(160deg,#166534 0%,#0a3a1c 100%)" name="Ethiopian Agri-Business" sub="Farm equipment financing and leasing. Apply across Ethiopia." cta="Apply Now" tag="Agricultural Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.14)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Business Loans" sub="Finance your machinery purchase with Ethiopia's trusted bank." cta="Apply Now" tag="Financial Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
+          </>}
+
+          {/* CLASSIFIEDS */}
+          {activeCat==='Classifieds' && <>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for anything across Ethiopia. Send and receive money instantly." cta="Get the App" tag="Payment Partner" delay="0s" height={200} accent="rgba(255,255,255,0.18)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Digital Banking" sub="Instant transfers, mobile banking, zero fees for first year." cta="Open an Account" tag="Banking Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#4c1d95 0%,#2e1065 100%)" name="Safaricom Ethiopia" sub="Stay connected. Ethiopia's fastest growing mobile network." cta="Learn More" tag="Telecom Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.16)"/>
+          </>}
+
+          {/* JOBS */}
+          {activeCat==='Jobs' && <>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines" sub="Join Africa's largest airline. 130+ destinations. Apply today." cta="View Jobs" tag="Top Employer" delay="0s" height={210} accent="rgba(255,255,255,0.2)"/>
+            <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Group" sub="Career opportunities across construction, mining and real estate." cta="Apply Now" tag="Top Employer" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE" sub="Join Ethiopia's largest bank. Over 50 open positions." cta="View Openings" tag="Top Employer" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
+          </>}
+
+          {/* BoostCTA — at the bottom, not competing with ads */}
+          <BoostCTA locale={locale}/>
+        </div>
+      </div>
+
+      <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto'}}>
+          <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px',marginBottom:'4px'}}>HAGERHUB</div>
+          <div style={{fontSize:'11px',color:'#9CA3AF',letterSpacing:'1.5px',marginBottom:'24px'}}>ETHIOPIA'S #1 MARKETPLACE · የኢትዮጵያ ቁጥር 1 ገበያ</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'24px',marginBottom:'28px'}}>
+            {[
+              {title:t('footer.company'), links:['About Us','Careers','Advertise with Us','Legal Hub']},
+              {title:t('footer.ethiopia'),links:['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa']},
+              {title:t('footer.support'), links:['Help Center','Contact Us','Safety Tips','Report Listing']},
+              {title:t('footer.follow'),  links:['Facebook','Telegram','Instagram','TikTok']},
+              {title:'Languages',         links:['English','አማርኛ']},
+            ].map(col=>(
+              <div key={col.title}>
+                <div style={{fontSize:'10px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1.5px',color:'#9CA3AF',marginBottom:'10px'}}>{col.title}</div>
+                {col.links.map(l=><div key={l} style={{fontSize:'13px',color:'#6B7280',marginBottom:'7px',cursor:'pointer'}}>{l}</div>)}
+              </div>
+            ))}
+          </div>
+          <div style={{borderTop:'1px solid #EBEBEB',paddingTop:'16px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'8px'}}>
+            <span style={{color:'#9CA3AF',fontSize:'12px'}}>© 2025 HagerHub · Jiksi Michael</span>
+            <div style={{display:'flex',gap:'8px'}}>
+              <button style={{background:'#111',color:'white',fontSize:'11px',fontWeight:700,padding:'5px 14px',borderRadius:'7px',cursor:'pointer',border:'none',fontFamily:'inherit'}}>App Store</button>
+              <button style={{background:'#374151',color:'white',fontSize:'11px',fontWeight:700,padding:'5px 14px',borderRadius:'7px',cursor:'pointer',border:'none',fontFamily:'inherit'}}>Google Play</button>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+  )
+}
