@@ -464,13 +464,13 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           </div>
 
           {/* Category tabs */}
-          <div style={{display:'flex',gap:'4px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'wrap',justifyContent:'flex-start'}}>
+          <div style={{display:'flex',gap:'3px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'nowrap',justifyContent:'flex-start',width:'fit-content',maxWidth:'100%'}}>
             {TABS.map(tab=>{
               const on = activeCat===tab.name
               return (
                 <button key={tab.key} onClick={()=>setActiveCat(tab.name)}
                   style={{fontSize:'12px',fontWeight:on?700:600,color:on?'#111':'#fff',background:on?'#fff':'transparent',
-                    padding:'8px 16px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'all .15s'}}>
+                    padding:'8px 11px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'all .15s'}}>
                   {(tab as any).label || tab.name}
                 </button>
               )
