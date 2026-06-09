@@ -422,6 +422,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
 @keyframes featuredshimmer { 0%,100%{box-shadow:0 0 0 rgba(218,165,32,0)} 50%{box-shadow:0 4px 20px rgba(218,165,32,0.15)} }
         *{box-sizing:border-box;margin:0;padding:0}
         select:focus,input:focus{border-color:#2563EB!important}
+        .hero-tabs::-webkit-scrollbar{display:none}
       `}</style>
 
       {/* NAV */}
@@ -464,13 +465,13 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           </div>
 
           {/* Category tabs */}
-          <div style={{display:'flex',gap:'3px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'nowrap',justifyContent:'flex-start',width:'fit-content',maxWidth:'100%'}}>
+          <div className="hero-tabs" style={{display:'flex',gap:'3px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'nowrap',justifyContent:'flex-start',maxWidth:'100%',overflowX:'auto',WebkitOverflowScrolling:'touch',scrollbarWidth:'none',msOverflowStyle:'none'}}>
             {TABS.map(tab=>{
               const on = activeCat===tab.name
               return (
-                <button key={tab.key} onClick={()=>setActiveCat(tab.name)}
+                <button key={tab.key} onClick={()=>setActiveCat(tab.name)} className="hero-tab"
                   style={{fontSize:'12px',fontWeight:on?700:600,color:on?'#111':'#fff',background:on?'#fff':'transparent',
-                    padding:'8px 11px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'all .15s'}}>
+                    padding:'8px 11px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',flexShrink:0,transition:'all .15s'}}>
                   {(tab as any).label || tab.name}
                 </button>
               )
