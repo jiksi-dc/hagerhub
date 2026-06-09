@@ -453,12 +453,14 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
       </nav>
 
       {/* GOLDEN HERO */}
-      <section style={{position:'relative',backgroundImage:'linear-gradient(180deg,rgba(0,0,0,0.28) 0%,rgba(0,0,0,0.06) 38%,rgba(0,0,0,0.30) 100%),url(https://images.pexels.com/photos/30177512/pexels-photo-30177512.jpeg?auto=compress&cs=tinysrgb&w=1600)',backgroundSize:'cover',backgroundPosition:'right center',padding:'48px 20px 56px'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',width:'100%'}}>
+      <section style={{position:'relative',width:'100%',minHeight:'440px',overflow:'hidden'}}>
+        <img src="https://images.pexels.com/photos/30177512/pexels-photo-30177512.jpeg" alt="Addis Ababa skyline at sunset" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%'}}/>
+        <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.32) 40%,rgba(0,0,0,0.04) 64%,rgba(0,0,0,0) 100%)'}}/>
+        <div style={{position:'relative',maxWidth:'1280px',margin:'0 auto',width:'100%',padding:'56px 20px'}}>
         <div style={{maxWidth:'600px',marginRight:'auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
           <div style={{textAlign:'left',marginBottom:'22px'}}>
-            <h1 style={{fontSize:'30px',fontWeight:900,color:'#fff',textShadow:'0 2px 12px rgba(0,0,0,0.55)',letterSpacing:'-0.5px',margin:0}}>Find anything in Ethiopia</h1>
-            <p style={{fontSize:'14px',color:'rgba(255,255,255,0.92)',marginTop:'6px',textShadow:'0 1px 6px rgba(0,0,0,0.55)'}}>Properties · Vehicles · Machinery · Jobs · and more</p>
+            <h1 style={{fontSize:'32px',fontWeight:900,color:'#fff',textShadow:'0 2px 14px rgba(0,0,0,0.6)',letterSpacing:'-0.5px',margin:0}}>Find anything in Ethiopia</h1>
+            <p style={{fontSize:'14px',color:'rgba(255,255,255,0.95)',marginTop:'6px',textShadow:'0 1px 8px rgba(0,0,0,0.6)'}}>Properties · Vehicles · Machinery · Jobs · and more</p>
           </div>
 
           {/* Category tabs */}
