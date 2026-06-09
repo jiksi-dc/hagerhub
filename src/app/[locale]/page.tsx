@@ -333,7 +333,28 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         </div>
         <div style={{padding:'10px 12px 12px'}}>
           <div style={{fontSize:'13px',fontWeight:600,color:'#111',marginBottom:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l.title}</div>
-          <div style={{fontSize:'11px',color:'#6B7280'}}>{l.neighbourhood}, {l.city}</div>
+          <div style={{fontSize:'11px',color:'#6B7280',marginBottom:'8px'}}>{l.neighbourhood}, {l.city}</div>
+          {(() => {
+            const beds=(l as any).bedrooms, baths=(l as any).bathrooms, area=(l as any).area_sqm
+            if(!beds && !baths && !area) return null
+            return (
+              <div style={{display:'flex',alignItems:'center',gap:'12px',fontSize:'11px',color:'#6B7280',borderTop:'1px solid #F3F4F6',paddingTop:'8px',marginBottom:'8px'}}>
+                {beds ? <span style={{display:'flex',alignItems:'center',gap:'4px'}}>🛏 {beds}</span> : null}
+                {baths ? <span style={{display:'flex',alignItems:'center',gap:'4px'}}>🛁 {baths}</span> : null}
+                {area ? <span style={{display:'flex',alignItems:'center',gap:'4px'}}>⛶ {area}m²</span> : null}
+              </div>
+            )
+          })()}
+          {(() => {
+            const phone=(l as any).contact_phone || (l as any).phone
+            if(!phone) return null
+            return (
+              <a href={`tel:${phone}`} onClick={(e)=>e.stopPropagation()}
+                style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'6px',width:'100%',background:'#2563EB',color:'#fff',fontSize:'12px',fontWeight:700,padding:'8px',borderRadius:'8px',textDecoration:'none',fontFamily:'inherit'}}>
+                📞 Call
+              </a>
+            )
+          })()}
         </div>
       </div>
     )
@@ -423,6 +444,10 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         *{box-sizing:border-box;margin:0;padding:0}
         select:focus,input:focus{border-color:#2563EB!important}
         .hero-tabs::-webkit-scrollbar{display:none}
+        .cat-row::-webkit-scrollbar{display:none}
+        @keyframes catmarquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        .cat-track-anim{animation:catmarquee 40s linear infinite}
+        .cat-row:hover .cat-track-anim{animation-play-state:paused}
       `}</style>
 
       {/* NAV */}
@@ -603,8 +628,12 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                     </h2>
                     <span onClick={()=>setActiveCat(cat.name)} style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
                   </div>
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
-                    {items.slice(0,4).map(l=><Card key={l.id} l={l}/>)}
+                  <div className="cat-row" style={{overflowX:'auto',scrollbarWidth:'none',msOverflowStyle:'none'}}>
+                    {(()=>{const row=items.slice(0,10); const animate=row.length>3; const loop=animate?[...row,...row]:row; return (
+                      <div className={animate?'cat-track cat-track-anim':'cat-track'} style={{display:'flex',gap:'12px',width:'max-content'}}>
+                        {loop.map((l,i)=><div key={l.id+'-'+i} style={{width:'240px',flexShrink:0}}><Card l={l}/></div>)}
+                      </div>
+                    )})()}
                   </div>
                 </div>
               )
