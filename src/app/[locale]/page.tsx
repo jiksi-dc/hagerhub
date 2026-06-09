@@ -203,12 +203,12 @@ const [featuredListings, setFeaturedListings] = useState<any[]>([])
 
   const TABS = [
     { key:'all',        name:'All' },
-    { key:'discover',   name:'Discover' },
     { key:'properties', name:'Properties' },
     { key:'vehicles',   name:'Vehicles' },
     { key:'machinery',  name:'Machinery' },
     { key:'classifieds',name:'Classifieds' },
     { key:'jobs',       name:'Jobs' },
+    { key:'discover',   name:'Discover', label:'Discover Ethiopia' },
   ]
 
   useEffect(()=>{
@@ -471,7 +471,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                 <button key={tab.key} onClick={()=>setActiveCat(tab.name)}
                   style={{fontSize:'12px',fontWeight:on?700:600,color:on?'#111':'#fff',background:on?'#fff':'transparent',
                     padding:'8px 16px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'all .15s'}}>
-                  {tab.name}
+                  {(tab as any).label || tab.name}
                 </button>
               )
             })}
@@ -579,7 +579,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           {activeCat !== 'All' && (
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
               <div>
-                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0,display:'inline'}}>{activeCat}</h2>
+                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0,display:'inline'}}>{(TABS.find(x=>x.name===activeCat) as any)?.label || activeCat}</h2>
                 <span style={{fontSize:'12px',color:'#9CA3AF',marginLeft:'8px'}}>{filtered.length} {t('home.available')}</span>
               </div>
               <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit'}}>← Back</button>
