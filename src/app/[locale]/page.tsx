@@ -203,6 +203,7 @@ const [featuredListings, setFeaturedListings] = useState<any[]>([])
 
   const TABS = [
     { key:'all',        name:'All' },
+    { key:'discover',   name:'Discover' },
     { key:'properties', name:'Properties' },
     { key:'vehicles',   name:'Vehicles' },
     { key:'machinery',  name:'Machinery' },
@@ -452,22 +453,23 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
       </nav>
 
       {/* GOLDEN HERO */}
-      <section style={{position:'relative',backgroundImage:'linear-gradient(160deg,rgba(60,40,10,0.55),rgba(20,12,2,0.65)),url(https://images.unsplash.com/photo-1668003312597-2fc136bc56e0?w=1600&q=80)',backgroundSize:'cover',backgroundPosition:'center',padding:'48px 20px 56px'}}>
-        <div style={{maxWidth:'700px',margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center'}}>
-          <div style={{textAlign:'center',marginBottom:'22px'}}>
-            <h1 style={{fontSize:'30px',fontWeight:900,color:'#fff',textShadow:'0 2px 12px rgba(0,0,0,0.4)',letterSpacing:'-0.5px',margin:0}}>Find anything in Ethiopia</h1>
-            <p style={{fontSize:'14px',color:'rgba(255,255,255,0.9)',marginTop:'6px',textShadow:'0 1px 6px rgba(0,0,0,0.4)'}}>Properties · Vehicles · Machinery · Jobs · and more</p>
+      <section style={{position:'relative',backgroundImage:'linear-gradient(180deg,rgba(0,0,0,0.28) 0%,rgba(0,0,0,0.06) 38%,rgba(0,0,0,0.30) 100%),url(https://images.pexels.com/photos/30177512/pexels-photo-30177512.jpeg?auto=compress&cs=tinysrgb&w=1600)',backgroundSize:'cover',backgroundPosition:'right center',padding:'48px 20px 56px'}}>
+        <div style={{maxWidth:'1280px',margin:'0 auto',width:'100%'}}>
+        <div style={{maxWidth:'600px',marginRight:'auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
+          <div style={{textAlign:'left',marginBottom:'22px'}}>
+            <h1 style={{fontSize:'30px',fontWeight:900,color:'#fff',textShadow:'0 2px 12px rgba(0,0,0,0.55)',letterSpacing:'-0.5px',margin:0}}>Find anything in Ethiopia</h1>
+            <p style={{fontSize:'14px',color:'rgba(255,255,255,0.92)',marginTop:'6px',textShadow:'0 1px 6px rgba(0,0,0,0.55)'}}>Properties · Vehicles · Machinery · Jobs · and more</p>
           </div>
 
           {/* Category tabs */}
-          <div style={{display:'flex',gap:'4px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'wrap',justifyContent:'center'}}>
-            {TABS.filter(tab=>tab.name!=='All').map(tab=>{
+          <div style={{display:'flex',gap:'4px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'wrap',justifyContent:'flex-start'}}>
+            {TABS.map(tab=>{
               const on = activeCat===tab.name
               return (
                 <button key={tab.key} onClick={()=>setActiveCat(tab.name)}
                   style={{fontSize:'12px',fontWeight:on?700:600,color:on?'#111':'#fff',background:on?'#fff':'transparent',
                     padding:'8px 16px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'all .15s'}}>
-                  {t('cats.' + tab.key)}
+                  {tab.name}
                 </button>
               )
             })}
@@ -505,6 +507,12 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                 <div><label style={heroLbl}>Min salary</label>
                   <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
               </>}
+              {activeCat==='Discover' && <>
+                <div style={{gridColumn:'span 3'}}><label style={heroLbl}>Type</label>
+                  <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
+                    <option value="">All experiences</option>{(SUBCATS['Discover']||[]).map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+              </>}
               {(activeCat==='Machinery' || activeCat==='Classifieds') && <>
                 <div style={{gridColumn:'span 2'}}><label style={heroLbl}>Type</label>
                   <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
@@ -529,26 +537,11 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             </div>
           </div>
         </div>
+        </div>
       </section>
 
       {/* MAIN */}
 
-      {/* DISCOVER ETHIOPIA BANNER */}
-      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 8px'}}>
-        <a href={`/${locale}/discover`} style={{textDecoration:'none',display:'block'}}>
-          <div style={{background:'linear-gradient(135deg,#1a1a2e,#0f3460)',borderRadius:'16px',padding:'24px 28px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'16px',position:'relative',overflow:'hidden'}}>
-            <div style={{position:'absolute',right:0,top:0,bottom:0,width:'40%',backgroundImage:'url(https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=60)',backgroundSize:'cover',backgroundPosition:'center',opacity:0.3,borderRadius:'0 16px 16px 0'}}/>
-            <div style={{position:'relative'}}>
-              <div style={{fontSize:'11px',fontWeight:700,letterSpacing:'3px',color:'#FCD34D',marginBottom:'6px'}}>🇪🇹 NEW</div>
-              <div style={{fontSize:'20px',fontWeight:900,color:'white',marginBottom:'4px'}}>Discover Ethiopia</div>
-              <div style={{fontSize:'13px',color:'rgba(255,255,255,0.75)'}}>UNESCO sites · National Parks · Festivals · Tribal Cultures · More</div>
-            </div>
-            <div style={{position:'relative',background:'#FCD34D',color:'#111',padding:'10px 20px',borderRadius:'10px',fontSize:'13px',fontWeight:800,whiteSpace:'nowrap'}}>
-              Explore now →
-            </div>
-          </div>
-        </a>
-      </div>
       <div id="results" style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 280px' : '200px 1fr 280px',gap:'24px',alignItems:'start',scrollMarginTop:'70px'}}>
 
         {/* FILTER PANEL — only when category is active */}
@@ -584,7 +577,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           {activeCat !== 'All' && (
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
               <div>
-                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0,display:'inline'}}>{t('cats.' + TABS.find(tab=>tab.name===activeCat)?.key || 'all')}</h2>
+                <h2 style={{fontSize:'15px',fontWeight:700,color:'#111',margin:0,display:'inline'}}>{activeCat}</h2>
                 <span style={{fontSize:'12px',color:'#9CA3AF',marginLeft:'8px'}}>{filtered.length} {t('home.available')}</span>
               </div>
               <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit'}}>← Back</button>
@@ -613,6 +606,10 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                 </div>
               )
             })
+          ) : activeCat==='Discover' ? (
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))',gap:'12px'}}>
+              {filtered.map(l=><DiscoverCard key={l.id} l={l} locale={locale}/>)}
+            </div>
           ) : (
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'12px'}}>
               {filtered.map(l=><Card key={l.id} l={l}/>)}
