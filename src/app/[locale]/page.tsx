@@ -575,7 +575,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         {/* FILTER PANEL — only when category is active */}
         {activeCat !== 'All' && <FilterPanel/>}
 
-        <div>
+        <div style={{minWidth:0}}>
           {/* POPULAR CATEGORIES GRID — only on All */}
           {activeCat==='All' && (
             <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px 24px',marginBottom:'24px'}}>
@@ -628,7 +628,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                     </h2>
                     <span onClick={()=>setActiveCat(cat.name)} style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
                   </div>
-                  <div className="cat-row" style={{overflowX:'auto',scrollbarWidth:'none',msOverflowStyle:'none'}}>
+                  <div className="cat-row" style={{overflowX:'auto',maxWidth:'100%',scrollbarWidth:'none',msOverflowStyle:'none'}}>
                     {(()=>{const row=items.slice(0,10); const animate=row.length>3; const loop=animate?[...row,...row]:row; return (
                       <div className={animate?'cat-track cat-track-anim':'cat-track'} style={{display:'flex',gap:'12px',width:'max-content'}}>
                         {loop.map((l,i)=><div key={l.id+'-'+i} style={{width:'240px',flexShrink:0}}><Card l={l}/></div>)}
