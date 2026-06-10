@@ -70,7 +70,7 @@ export default function BoostPage() {
       <style>{'*{box-sizing:border-box;margin:0;padding:0} @keyframes goldglow{0%,100%{box-shadow:0 0 0 rgba(218,165,32,0)}50%{box-shadow:0 6px 28px rgba(218,165,32,0.18)}}'}</style>
 
       <nav style={{background:'#fff',borderBottom:'1px solid #EBEBEB',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
-        <a href={`/${locale}`} style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px',textDecoration:'none'}}>HAGERHUB</a>
+        <a href={`/${locale}`} style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px',textDecoration:'none'}}>GOHBAY</a>
         <span style={{color:'#E5E7EB'}}>›</span>
         <span style={{fontSize:'13px',color:'#6B7280',fontWeight:600}}>Boost listing</span>
         <div style={{marginLeft:'auto'}}><AuthButton/></div>
