@@ -138,6 +138,11 @@ const filterInput:React.CSSProperties = {width:'100%',padding:'8px 10px',border:
 const HERO_MAKES = ['Toyota','Suzuki','Hyundai','Kia','Nissan','Mitsubishi','Volkswagen','Ford','Honda','Mercedes-Benz','BMW','Lexus','Tesla','Isuzu','Mahindra','Other']
 const HERO_FIELDS = ['Accounting & Finance','Engineering','IT & Technology','Healthcare','Education','Sales & Marketing','Administration','Hospitality']
 const HERO_PURPOSE = ['For Sale','For Rent']
+const HERO_FUEL = ['Petrol','Diesel','Hybrid','Electric','Plug-in Hybrid']
+const HERO_TRANSMISSION = ['Automatic','Manual']
+const HERO_CONDITION = ['New','Used','Refurbished','For Parts']
+const HERO_EMPLOYMENT = ['Full-time','Part-time','Contract','Internship','Temporary']
+const HERO_YEARS = (()=>{const y=new Date().getFullYear();const a=[];for(let v=y;v>=y-25;v--)a.push(String(v));return a})()
 const heroLbl:React.CSSProperties = {fontSize:'10px',fontWeight:700,letterSpacing:'0.4px',textTransform:'uppercase',color:'#9CA3AF',marginBottom:'4px',display:'block'}
 const heroField:React.CSSProperties = {width:'100%',height:'44px',padding:'0 12px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'14px',outline:'none',fontFamily:'inherit',background:'#fff',color:'#111'}
 
@@ -198,7 +203,14 @@ const [featuredListings, setFeaturedListings] = useState<any[]>([])
   const [filterSort, setFilterSort] = useState('newest')
   const [filterPurpose, setFilterPurpose] = useState('')
   const [filterBeds, setFilterBeds] = useState('')
+  const [filterBaths, setFilterBaths] = useState('')
+  const [filterFurnished, setFilterFurnished] = useState('')
   const [filterMake, setFilterMake] = useState('')
+  const [filterFuel, setFilterFuel] = useState('')
+  const [filterTransmission, setFilterTransmission] = useState('')
+  const [filterMinYear, setFilterMinYear] = useState('')
+  const [filterCondition, setFilterCondition] = useState('')
+  const [filterEmployment, setFilterEmployment] = useState('')
   const [filterField, setFilterField] = useState('')
 
   const TABS = [
@@ -229,7 +241,14 @@ const [featuredListings, setFeaturedListings] = useState<any[]>([])
     setFilterSort('newest')
     setFilterPurpose('')
     setFilterBeds('')
+    setFilterBaths('')
+    setFilterFurnished('')
     setFilterMake('')
+    setFilterFuel('')
+    setFilterTransmission('')
+    setFilterMinYear('')
+    setFilterCondition('')
+    setFilterEmployment('')
     setFilterField('')
   },[activeCat])
 
@@ -283,12 +302,19 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
     setFilterSort('newest')
     setFilterPurpose('')
     setFilterBeds('')
+    setFilterBaths('')
+    setFilterFurnished('')
     setFilterMake('')
+    setFilterFuel('')
+    setFilterTransmission('')
+    setFilterMinYear('')
+    setFilterCondition('')
+    setFilterEmployment('')
     setFilterField('')
     setSearch('')
   }
 
-  const hasActiveFilters = filterCity || filterSubcat || filterMinPrice || filterMaxPrice || search
+  const hasActiveFilters = filterCity || filterSubcat || filterMinPrice || filterMaxPrice || filterPurpose || filterBeds || filterBaths || filterFurnished || filterMake || filterFuel || filterTransmission || filterMinYear || filterCondition || filterEmployment || filterField || search
 
   // Apply all filters client-side
   let filtered = listings.filter(l => {
@@ -299,7 +325,14 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
     if (filterMaxPrice && Number(l.price_label?.replace(/[^0-9]/g,'')) > Number(filterMaxPrice)) return false
     if (filterPurpose && !(l.subcategory||'').toLowerCase().includes(filterPurpose.toLowerCase())) return false
     if (filterBeds && String((l as any).bedrooms||'') !== filterBeds) return false
+    if (filterBaths && String((l as any).bathrooms||'') !== filterBaths) return false
+    if (filterFurnished && String((l as any).furnished||'') !== filterFurnished) return false
     if (filterMake && (l as any).make !== filterMake) return false
+    if (filterFuel && (l as any).fuel_type !== filterFuel) return false
+    if (filterTransmission && (l as any).transmission !== filterTransmission) return false
+    if (filterMinYear && Number((l as any).year||0) < Number(filterMinYear)) return false
+    if (filterCondition && (l as any).condition !== filterCondition) return false
+    if (filterEmployment && (l as any).employment_type !== filterEmployment) return false
     if (filterField && l.subcategory !== filterField) return false
     return true
   })
@@ -507,30 +540,102 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           <div style={{width:'560px',maxWidth:'100%',background:'#fff',borderRadius:'16px',padding:'16px',boxShadow:'0 12px 40px rgba(0,0,0,0.25)'}}>
             {/* Adaptive top row */}
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px',marginBottom:'10px'}}>
-              {(activeCat==='Properties' || activeCat==='All') && <>
+              {activeCat==='All' && <>
+                <div><label style={heroLbl}>Category</label>
+                  <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
+                    <option value="">All categories</option>{['Properties','Vehicles','Machinery','Classifieds','Jobs'].map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Min price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+                <div><label style={heroLbl}>Max price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+              </>}
+              {activeCat==='Properties' && <>
                 <div><label style={heroLbl}>Purpose</label>
                   <select value={filterPurpose} onChange={e=>setFilterPurpose(e.target.value)} style={heroField}>
                     <option value="">Any</option>{HERO_PURPOSE.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Type</label>
+                  <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
+                    <option value="">All types</option>{(SUBCATS['Properties']||[]).map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Furnishing</label>
+                  <select value={filterFurnished} onChange={e=>setFilterFurnished(e.target.value)} style={heroField}>
+                    <option value="">Any</option><option value="Furnished">Furnished</option><option value="Unfurnished">Unfurnished</option>
                   </select></div>
                 <div><label style={heroLbl}>Bedrooms</label>
                   <select value={filterBeds} onChange={e=>setFilterBeds(e.target.value)} style={heroField}>
                     <option value="">Any</option>{['1','2','3','4','5'].map(o=><option key={o} value={o}>{o}+</option>)}
                   </select></div>
-                <div><label style={heroLbl}>Max price</label>
-                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
-              </>}
-              {activeCat==='Vehicles' && <>
-                <div style={{gridColumn:'span 2'}}><label style={heroLbl}>Make</label>
-                  <select value={filterMake} onChange={e=>setFilterMake(e.target.value)} style={heroField}>
-                    <option value="">All makes</option>{HERO_MAKES.map(o=><option key={o} value={o}>{o}</option>)}
+                <div><label style={heroLbl}>Bathrooms</label>
+                  <select value={filterBaths} onChange={e=>setFilterBaths(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{['1','2','3','4'].map(o=><option key={o} value={o}>{o}+</option>)}
                   </select></div>
                 <div><label style={heroLbl}>Max price</label>
                   <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
               </>}
+              {activeCat==='Vehicles' && <>
+                <div><label style={heroLbl}>Make</label>
+                  <select value={filterMake} onChange={e=>setFilterMake(e.target.value)} style={heroField}>
+                    <option value="">All makes</option>{HERO_MAKES.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Fuel</label>
+                  <select value={filterFuel} onChange={e=>setFilterFuel(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{HERO_FUEL.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Transmission</label>
+                  <select value={filterTransmission} onChange={e=>setFilterTransmission(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{HERO_TRANSMISSION.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Min year</label>
+                  <select value={filterMinYear} onChange={e=>setFilterMinYear(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{HERO_YEARS.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Min price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+                <div><label style={heroLbl}>Max price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+              </>}
+              {activeCat==='Machinery' && <>
+                <div><label style={heroLbl}>Type</label>
+                  <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
+                    <option value="">All types</option>{(SUBCATS['Machinery']||[]).map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Condition</label>
+                  <select value={filterCondition} onChange={e=>setFilterCondition(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{HERO_CONDITION.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Min year</label>
+                  <select value={filterMinYear} onChange={e=>setFilterMinYear(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{HERO_YEARS.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Min price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+                <div style={{gridColumn:'span 2'}}><label style={heroLbl}>Max price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+              </>}
+              {activeCat==='Classifieds' && <>
+                <div><label style={heroLbl}>Type</label>
+                  <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
+                    <option value="">All types</option>{(SUBCATS['Classifieds']||[]).map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Condition</label>
+                  <select value={filterCondition} onChange={e=>setFilterCondition(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{HERO_CONDITION.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Min price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+                <div style={{gridColumn:'span 3'}}><label style={heroLbl}>Max price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+              </>}
               {activeCat==='Jobs' && <>
-                <div style={{gridColumn:'span 2'}}><label style={heroLbl}>Field</label>
+                <div><label style={heroLbl}>Field</label>
                   <select value={filterField} onChange={e=>setFilterField(e.target.value)} style={heroField}>
                     <option value="">All fields</option>{HERO_FIELDS.map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
+                <div><label style={heroLbl}>Employment</label>
+                  <select value={filterEmployment} onChange={e=>setFilterEmployment(e.target.value)} style={heroField}>
+                    <option value="">Any</option>{HERO_EMPLOYMENT.map(o=><option key={o} value={o}>{o}</option>)}
                   </select></div>
                 <div><label style={heroLbl}>Min salary</label>
                   <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
@@ -540,14 +645,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                   <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
                     <option value="">All experiences</option>{(SUBCATS['Discover']||[]).map(o=><option key={o} value={o}>{o}</option>)}
                   </select></div>
-              </>}
-              {(activeCat==='Machinery' || activeCat==='Classifieds') && <>
-                <div style={{gridColumn:'span 2'}}><label style={heroLbl}>Type</label>
-                  <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
-                    <option value="">All types</option>{(SUBCATS[activeCat]||[]).map(o=><option key={o} value={o}>{o}</option>)}
-                  </select></div>
-                <div><label style={heroLbl}>Max price</label>
-                  <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
               </>}
             </div>
             {/* Universal row */}
