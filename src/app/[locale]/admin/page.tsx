@@ -1,285 +1,387 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 import { createClient } from '@/lib/supabase'
-import AuthButton from '@/components/AuthButton'
-import AIAssistant from '@/components/AIAssistant'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
 
-// Admin email — change this to your actual admin email
-const ADMIN_EMAIL = 'jiksi.dc@gmail.com'
+// Only this Supabase account can open the dashboard.
+const OWNER_ID = 'f4e58c4a-8753-4967-a60b-fb89b0094807'
 
 interface Listing {
-  id: string; title: string; price_label: string; city: string; category: string
-  subcategory: string; status: string; created_at: string; user_id: string
-  image_urls?: string[]; description: string
-}
-interface User { id: string; email: string; created_at: string; full_name?: string }
-interface Report {
-  id: string; listing_id: string; reason: string; details: string
-  created_at: string; reporter_id: string
-  listings?: { title: string; city: string }
+  id: string; title: string; price_label: string; category: string; subcategory: string
+  city: string; status: string | null; views: number | null; created_at: string
+  user_id: string; is_featured: boolean | null; is_top: boolean | null
+  boost_expires_at: string | null; contact_name: string | null; contact_phone: string | null
 }
 
-const TAB = (active: boolean) => ({
-  padding: '10px 22px', fontSize: '13px', fontWeight: active ? 700 : 400,
-  color: active ? '#111' : '#6B7280', background: 'none', border: 'none',
-  borderBottom: active ? '2px solid #111' : '2px solid transparent',
-  cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' as const
-})
+type Tab = 'overview' | 'listings' | 'sellers' | 'reports' | 'revenue'
 
-const badge = (color: string, bg: string, text: string) => (
-  <span style={{background:bg,color,fontSize:'10px',fontWeight:700,padding:'2px 8px',borderRadius:'20px'}}>{text}</span>
-)
+const fmt = (n: number) => n.toLocaleString()
+const money = (n: number) => 'ETB ' + n.toLocaleString()
 
-export default function AdminDashboard() {
-  const params = useParams()
-  const router = useRouter()
-  const locale = params.locale as string
-
-  const [authorized, setAuthorized] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<'listings'|'users'|'reports'>('listings')
-
+export default function Admin() {
+  const locale = useLocale()
+  const [authState, setAuthState] = useState<'checking' | 'denied' | 'ok'>('checking')
+  const [tab, setTab] = useState<Tab>('overview')
   const [listings, setListings] = useState<Listing[]>([])
-  const [users, setUsers] = useState<User[]>([])
-  const [reports, setReports] = useState<Report[]>([])
-  const [search, setSearch] = useState('')
-  const [catFilter, setCatFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-
-  const loadData = async () => {
-    const supabase = createClient()
-    const [{ data: l }, { data: r }] = await Promise.all([
-      supabase.from('listings').select('*').order('created_at', { ascending: false }),
-      supabase.from('reports').select('*, listings(title, city)').order('created_at', { ascending: false })
-    ])
-    setListings(l || [])
-    setReports(r || [])
-  }
+  const [boosts, setBoosts] = useState<any[]>([])
+  const [reports, setReports] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [busyId, setBusyId] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<Listing | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user || data.user.email !== ADMIN_EMAIL) {
-        router.push(`/${locale}`)
-        return
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user && data.user.id === OWNER_ID) {
+        setAuthState('ok')
+        loadAll()
+      } else {
+        setAuthState('denied')
       }
-      setAuthorized(true)
-      await loadData()
-      setLoading(false)
     })
   }, [])
 
-  const deleteListing = async (id: string) => {
-    if (!confirm('Permanently delete this listing?')) return
+  async function loadAll() {
+    setLoading(true)
     const supabase = createClient()
-    const { error } = await supabase.from('listings').delete().eq('id', id)
-    if (error) { alert('Delete failed: ' + error.message); return }
-    await loadData()
+    const [l, b, r] = await Promise.all([
+      supabase.from('listings').select('*').order('created_at', { ascending: false }).limit(1000),
+      supabase.from('boost_payments').select('*').order('created_at', { ascending: false }).limit(500),
+      supabase.from('reports').select('*').order('created_at', { ascending: false }).limit(500),
+    ])
+    setListings((l.data as Listing[]) || [])
+    setBoosts(b.data || [])
+    setReports(r.data || [])
+    setLoading(false)
   }
 
-  const setStatus = async (id: string, status: string) => {
+  async function toggleFeatured(l: Listing) {
+    setBusyId(l.id)
     const supabase = createClient()
-    const { error } = await supabase.from('listings').update({ status }).eq('id', id)
-    if (error) { alert('Update failed: ' + error.message); return }
-    await loadData()
+    await supabase.from('listings').update({ is_featured: !l.is_featured }).eq('id', l.id)
+    setListings(prev => prev.map(x => x.id === l.id ? { ...x, is_featured: !l.is_featured } : x))
+    setBusyId(null)
   }
 
-  const dismissReport = async (id: string) => {
+  async function setStatus(l: Listing, status: string) {
+    setBusyId(l.id)
     const supabase = createClient()
-    const { error } = await supabase.from('reports').delete().eq('id', id)
-    if (error) { alert('Dismiss failed: ' + error.message); return }
-    await loadData()
+    await supabase.from('listings').update({ status }).eq('id', l.id)
+    setListings(prev => prev.map(x => x.id === l.id ? { ...x, status } : x))
+    setBusyId(null)
   }
 
-  const filteredListings = listings.filter(l => {
-    if (search && !l.title.toLowerCase().includes(search.toLowerCase()) && !l.city.toLowerCase().includes(search.toLowerCase())) return false
-    if (catFilter && l.category !== catFilter) return false
-    if (statusFilter && l.status !== statusFilter) return false
-    return true
-  })
-
-  const stats = {
-    total: listings.length,
-    active: listings.filter(l => l.status === 'active').length,
-    sold: listings.filter(l => l.status === 'sold').length,
-    reports: reports.length,
+  async function doDelete(l: Listing) {
+    setBusyId(l.id)
+    const supabase = createClient()
+    await supabase.from('listings').delete().eq('id', l.id)
+    setListings(prev => prev.filter(x => x.id !== l.id))
+    setBusyId(null)
+    setConfirmDelete(null)
   }
 
-  if (loading) return (
-    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'-apple-system,sans-serif',color:'#9CA3AF'}}>
-      {authorized ? 'Loading admin dashboard...' : 'Checking access...'}
+  // ---- Derived stats ----
+  const total = listings.length
+  const active = listings.filter(l => (l.status || 'active') === 'active').length
+  const hidden = listings.filter(l => l.status === 'hidden').length
+  const featured = listings.filter(l => l.is_featured).length
+  const boostedLive = listings.filter(l => l.boost_expires_at && new Date(l.boost_expires_at) > new Date()).length
+  const totalViews = listings.reduce((s, l) => s + (l.views || 0), 0)
+  const byCategory = listings.reduce((m: Record<string, number>, l) => { m[l.category] = (m[l.category] || 0) + 1; return m }, {})
+  const revenue = boosts.reduce((s, b) => s + (Number(b.amount) || Number(b.amount_etb) || 0), 0)
+
+  // sellers derived from listings (real user accounts live in Supabase Auth)
+  const sellers = Object.values(listings.reduce((m: Record<string, any>, l) => {
+    const k = l.user_id || 'unknown'
+    if (!m[k]) m[k] = { user_id: k, name: l.contact_name || '—', phone: l.contact_phone || '—', count: 0, views: 0 }
+    m[k].count++; m[k].views += (l.views || 0)
+    if (l.contact_name && m[k].name === '—') m[k].name = l.contact_name
+    if (l.contact_phone && m[k].phone === '—') m[k].phone = l.contact_phone
+    return m
+  }, {})) as any[]
+
+  // ---- Styles ----
+  const GREEN = '#078754'
+  const shell: React.CSSProperties = { minHeight: '100vh', background: '#F6F7F9', fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif', display: 'flex' }
+  const card: React.CSSProperties = { background: '#fff', border: '1px solid #ECECEC', borderRadius: '14px' }
+  const th: React.CSSProperties = { textAlign: 'left', fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', color: '#9CA3AF', padding: '10px 14px', borderBottom: '1px solid #F0F0F0', whiteSpace: 'nowrap' }
+  const td: React.CSSProperties = { fontSize: '13px', color: '#222', padding: '12px 14px', borderBottom: '1px solid #F5F5F5', verticalAlign: 'middle' }
+  const pill = (bg: string, c: string): React.CSSProperties => ({ fontSize: '11px', fontWeight: 700, background: bg, color: c, padding: '2px 9px', borderRadius: '20px', whiteSpace: 'nowrap' })
+  const btn = (bg: string, c = '#fff'): React.CSSProperties => ({ fontSize: '12px', fontWeight: 600, background: bg, color: c, border: 'none', borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' })
+
+  // ---- Guard states ----
+  if (authState === 'checking') {
+    return <div style={{ ...shell, alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ color: '#9CA3AF', fontSize: '14px' }}>Checking access…</div>
+    </div>
+  }
+  if (authState === 'denied') {
+    return <div style={{ ...shell, alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '14px', textAlign: 'center', padding: '20px' }}>
+      <div style={{ fontSize: '40px' }}>🔒</div>
+      <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#111', margin: 0 }}>Admin access only</h1>
+      <p style={{ fontSize: '14px', color: '#6B7280', maxWidth: '360px', margin: 0 }}>
+        This area is restricted to the Gohbay owner account. Sign in with the owner account to continue.
+      </p>
+      <a href={`/${locale}/login`} style={{ ...btn(GREEN), padding: '10px 20px', textDecoration: 'none', fontSize: '13px' }}>Go to login</a>
+    </div>
+  }
+
+  const NAV: { key: Tab; label: string; icon: string }[] = [
+    { key: 'overview', label: 'Overview', icon: '▦' },
+    { key: 'listings', label: 'Listings', icon: '▤' },
+    { key: 'sellers', label: 'Sellers', icon: '◍' },
+    { key: 'reports', label: 'Reports', icon: '⚑' },
+    { key: 'revenue', label: 'Boosts & Revenue', icon: '◆' },
+  ]
+
+  const Stat = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
+    <div style={{ ...card, padding: '16px 18px', flex: '1 1 150px', minWidth: 0 }}>
+      <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', color: '#9CA3AF', marginBottom: '8px' }}>{label}</div>
+      <div style={{ fontSize: '26px', fontWeight: 800, color: '#111', lineHeight: 1 }}>{value}</div>
+      {sub && <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>{sub}</div>}
     </div>
   )
 
   return (
-    <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
-      <style>{'*{box-sizing:border-box;margin:0;padding:0}'}</style>
-
-      <nav style={{position:'sticky',top:0,zIndex:100,background:'#111',borderBottom:'1px solid #222'}}>
-        <div style={{maxWidth:'1400px',margin:'0 auto',padding:'0 20px',height:'52px',display:'flex',alignItems:'center',gap:'12px'}}>
-          <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
-            <div style={{fontSize:'14px',fontWeight:900,color:'#fff',letterSpacing:'2px'}}>GOHBAY</div>
-          </a>
-          <span style={{background:'#DC2626',color:'white',fontSize:'10px',fontWeight:700,padding:'2px 8px',borderRadius:'4px',letterSpacing:'1px'}}>ADMIN</span>
-          <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px'}}>
-            <AuthButton/>
-            <LanguageSwitcher/>
-            <AIAssistant/>
-          </div>
+    <div style={shell}>
+      {/* Sidebar */}
+      <aside style={{ width: '220px', background: '#0F1115', color: '#fff', padding: '20px 14px', display: 'flex', flexDirection: 'column', gap: '4px', position: 'sticky', top: 0, height: '100vh', flexShrink: 0 }}>
+        <div style={{ padding: '4px 10px 18px' }}>
+          <div style={{ fontSize: '16px', fontWeight: 900, letterSpacing: '2px' }}>GOHBAY</div>
+          <div style={{ fontSize: '9px', color: '#6B7280', letterSpacing: '1.5px', marginTop: '2px' }}>ADMIN CONSOLE</div>
         </div>
-      </nav>
+        {NAV.map(n => (
+          <button key={n.key} onClick={() => setTab(n.key)}
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', textAlign: 'left', background: tab === n.key ? '#1C1F26' : 'transparent', color: tab === n.key ? '#fff' : '#9CA3AF', border: 'none', borderRadius: '9px', padding: '10px 12px', cursor: 'pointer', fontFamily: 'inherit', fontSize: '13px', fontWeight: tab === n.key ? 700 : 500 }}>
+            <span style={{ width: '16px', textAlign: 'center' }}>{n.icon}</span>{n.label}
+          </button>
+        ))}
+        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button onClick={loadAll} style={{ ...btn('#1C1F26'), padding: '9px', textAlign: 'center' }}>↻ Refresh data</button>
+          <a href={`/${locale}`} style={{ fontSize: '12px', color: '#6B7280', textDecoration: 'none', textAlign: 'center', padding: '4px' }}>← Back to site</a>
+        </div>
+      </aside>
 
-      <div style={{maxWidth:'1400px',margin:'0 auto',padding:'28px 20px'}}>
+      {/* Main */}
+      <main style={{ flex: 1, padding: '24px 28px', minWidth: 0, overflowX: 'auto' }}>
+        <h1 style={{ fontSize: '22px', fontWeight: 800, color: '#111', margin: '0 0 4px' }}>
+          {NAV.find(n => n.key === tab)!.label}
+        </h1>
+        <p style={{ fontSize: '13px', color: '#9CA3AF', margin: '0 0 22px' }}>
+          {loading ? 'Loading live data…' : `Live from your database · ${fmt(total)} listings`}
+        </p>
 
-        {/* STATS ROW */}
-        <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'16px',marginBottom:'24px'}}>
-          {[
-            {label:'Total Listings',value:stats.total,color:'#2563EB',bg:'#EFF6FF'},
-            {label:'Active',value:stats.active,color:'#059669',bg:'#ECFDF5'},
-            {label:'Sold',value:stats.sold,color:'#6B7280',bg:'#F9FAFB'},
-            {label:'Open Reports',value:stats.reports,color:'#DC2626',bg:'#FEF2F2'},
-          ].map(s => (
-            <div key={s.label} style={{background:'#fff',borderRadius:'12px',border:'1px solid #F3F4F6',padding:'20px'}}>
-              <div style={{fontSize:'28px',fontWeight:800,color:s.color}}>{s.value}</div>
-              <div style={{fontSize:'12px',color:'#9CA3AF',marginTop:'4px'}}>{s.label}</div>
+        {/* OVERVIEW */}
+        {tab === 'overview' && (
+          <>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', marginBottom: '22px' }}>
+              <Stat label="Total listings" value={fmt(total)} sub={`${fmt(active)} active · ${fmt(hidden)} hidden`} />
+              <Stat label="Featured" value={fmt(featured)} sub={`${fmt(boostedLive)} boost live`} />
+              <Stat label="Total views" value={fmt(totalViews)} />
+              <Stat label="Sellers" value={fmt(sellers.length)} sub="with at least 1 listing" />
+              <Stat label="Open reports" value={fmt(reports.length)} sub={reports.length ? 'needs review' : 'all clear'} />
+              <Stat label="Boost revenue" value={money(revenue)} sub={boosts.length ? `${boosts.length} payments` : 'No payments yet'} />
             </div>
-          ))}
-        </div>
+            <div style={{ ...card, padding: '18px 20px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#111', marginBottom: '14px' }}>Listings by category</div>
+              {Object.keys(byCategory).length === 0 ? (
+                <div style={{ fontSize: '13px', color: '#9CA3AF' }}>No listings yet.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {Object.entries(byCategory).sort((a, b) => b[1] - a[1]).map(([cat, n]) => {
+                    const pct = total ? Math.round((n / total) * 100) : 0
+                    return (
+                      <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '120px', fontSize: '13px', color: '#444', flexShrink: 0 }}>{cat}</div>
+                        <div style={{ flex: 1, background: '#F0F2F4', borderRadius: '6px', height: '10px', overflow: 'hidden' }}>
+                          <div style={{ width: `${pct}%`, background: GREEN, height: '100%' }} />
+                        </div>
+                        <div style={{ width: '54px', textAlign: 'right', fontSize: '13px', fontWeight: 700, color: '#111' }}>{fmt(n)}</div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
-        {/* TABS */}
-        <div style={{background:'#fff',borderRadius:'12px',border:'1px solid #F3F4F6',marginBottom:'20px',display:'flex'}}>
-          {(['listings','reports'] as const).map(t => (
-            <button key={t} onClick={() => setTab(t)} style={TAB(tab === t)}>
-              {t === 'listings' ? `Listings (${listings.length})` : `Reports (${reports.length})`}
-            </button>
-          ))}
-        </div>
-
-        {/* LISTINGS TAB */}
+        {/* LISTINGS */}
         {tab === 'listings' && (
-          <div>
-            {/* Filters */}
-            <div style={{display:'flex',gap:'10px',marginBottom:'16px',flexWrap:'wrap'}}>
-              <input
-                value={search} onChange={e => setSearch(e.target.value)}
-                placeholder="Search by title or city..."
-                style={{padding:'9px 14px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',fontFamily:'inherit',outline:'none',flex:1,minWidth:'200px'}}
-              />
-              <select value={catFilter} onChange={e => setCatFilter(e.target.value)}
-                style={{padding:'9px 12px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',fontFamily:'inherit',outline:'none',background:'#fff'}}>
-                <option value="">All categories</option>
-                {['Properties','Vehicles','Machinery','Classifieds','Jobs'].map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-              <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-                style={{padding:'9px 12px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',fontFamily:'inherit',outline:'none',background:'#fff'}}>
-                <option value="">All statuses</option>
-                <option value="active">Active</option>
-                <option value="sold">Sold</option>
-                <option value="pending">Pending</option>
-              </select>
-            </div>
-            <div style={{fontSize:'12px',color:'#9CA3AF',marginBottom:'12px'}}>{filteredListings.length} listings</div>
-
-            {/* Table */}
-            <div style={{background:'#fff',borderRadius:'12px',border:'1px solid #F3F4F6',overflow:'hidden'}}>
-              <div style={{overflowX:'auto'}}>
-                <table style={{width:'100%',borderCollapse:'collapse',fontSize:'13px'}}>
-                  <thead>
-                    <tr style={{borderBottom:'1px solid #F3F4F6',background:'#FAFAFA'}}>
-                      {['Title','Category','City','Price','Status','Posted','Actions'].map(h => (
-                        <th key={h} style={{padding:'12px 16px',textAlign:'left',fontSize:'11px',fontWeight:700,color:'#9CA3AF',textTransform:'uppercase',letterSpacing:'0.5px',whiteSpace:'nowrap'}}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredListings.map(l => (
-                      <tr key={l.id} style={{borderBottom:'1px solid #F9FAFB'}}>
-                        <td style={{padding:'12px 16px',maxWidth:'240px'}}>
-                          <a href={`/${locale}/listing/${l.id}`} target="_blank" rel="noopener noreferrer"
-                            style={{color:'#111',fontWeight:600,textDecoration:'none',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',display:'block'}}
-                            title={l.title}>{l.title}</a>
+          <div style={{ ...card, overflow: 'hidden' }}>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '820px' }}>
+                <thead><tr>
+                  <th style={th}>Listing</th><th style={th}>Category</th><th style={th}>City</th>
+                  <th style={th}>Price</th><th style={th}>Status</th><th style={th}>Views</th><th style={th}>Actions</th>
+                </tr></thead>
+                <tbody>
+                  {listings.length === 0 && !loading && (
+                    <tr><td style={{ ...td, textAlign: 'center', color: '#9CA3AF', padding: '40px' }} colSpan={7}>No listings yet.</td></tr>
+                  )}
+                  {listings.map(l => {
+                    const st = l.status || 'active'
+                    return (
+                      <tr key={l.id}>
+                        <td style={td}>
+                          <div style={{ fontWeight: 600, maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.title}</div>
+                          {l.is_featured && <span style={{ ...pill('#FFF7E6', '#B7791F'), marginTop: '4px', display: 'inline-block' }}>★ Featured</span>}
                         </td>
-                        <td style={{padding:'12px 16px',whiteSpace:'nowrap'}}>
-                          <span style={{fontSize:'11px',background:'#F3F4F6',padding:'2px 8px',borderRadius:'20px',color:'#374151'}}>{l.subcategory || l.category}</span>
+                        <td style={td}>{l.category}</td>
+                        <td style={td}>{l.city}</td>
+                        <td style={td}>{l.price_label}</td>
+                        <td style={td}>
+                          <span style={st === 'active' ? pill('#ECFDF3', '#067647') : pill('#FEF3F2', '#B42318')}>{st}</span>
                         </td>
-                        <td style={{padding:'12px 16px',color:'#6B7280',whiteSpace:'nowrap'}}>{l.city}</td>
-                        <td style={{padding:'12px 16px',fontWeight:600,whiteSpace:'nowrap'}}>{l.price_label}</td>
-                        <td style={{padding:'12px 16px'}}>
-                          {l.status === 'active' ? badge('#059669','#ECFDF5','Active') :
-                           l.status === 'sold' ? badge('#6B7280','#F3F4F6','Sold') :
-                           badge('#D97706','#FFFBEB',l.status)}
-                        </td>
-                        <td style={{padding:'12px 16px',color:'#9CA3AF',whiteSpace:'nowrap'}}>{new Date(l.created_at).toLocaleDateString()}</td>
-                        <td style={{padding:'12px 16px'}}>
-                          <div style={{display:'flex',gap:'6px'}}>
-                            <a href={`/${locale}/listing/${l.id}`} target="_blank" rel="noopener noreferrer"
-                              style={{fontSize:'11px',padding:'4px 10px',borderRadius:'6px',border:'1px solid #E5E7EB',color:'#374151',textDecoration:'none',whiteSpace:'nowrap'}}>
-                              View
-                            </a>
-                            {l.status !== 'active' && (
-                              <button onClick={() => setStatus(l.id, 'active')}
-                                style={{fontSize:'11px',padding:'4px 10px',borderRadius:'6px',border:'1px solid #D1FAE5',background:'#ECFDF5',color:'#059669',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
-                                Activate
-                              </button>
-                            )}
-                            <button onClick={() => deleteListing(l.id)}
-                              style={{fontSize:'11px',padding:'4px 10px',borderRadius:'6px',border:'1px solid #FEE2E2',background:'#FEF2F2',color:'#DC2626',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
-                              Delete
-                            </button>
+                        <td style={td}>{fmt(l.views || 0)}</td>
+                        <td style={td}>
+                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                            <button disabled={busyId === l.id} onClick={() => toggleFeatured(l)} style={btn(l.is_featured ? '#6B7280' : '#FBBF24', l.is_featured ? '#fff' : '#111')}>{l.is_featured ? 'Unfeature' : 'Feature'}</button>
+                            {st === 'active'
+                              ? <button disabled={busyId === l.id} onClick={() => setStatus(l, 'hidden')} style={btn('#374151')}>Hide</button>
+                              : <button disabled={busyId === l.id} onClick={() => setStatus(l, 'active')} style={btn(GREEN)}>Activate</button>}
+                            <button disabled={busyId === l.id} onClick={() => setConfirmDelete(l)} style={btn('#FEE4E2', '#B42318')}>Delete</button>
                           </div>
                         </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* SELLERS */}
+        {tab === 'sellers' && (
+          <>
+            <div style={{ ...card, padding: '12px 16px', marginBottom: '14px', fontSize: '12px', color: '#6B7280', background: '#FBFBFC' }}>
+              Sellers below are derived from people who have posted listings. Full account management (ban, reset, delete) lives in your Supabase dashboard → Authentication → Users, which can't be exposed safely in the browser.
+            </div>
+            <div style={{ ...card, overflow: 'hidden' }}>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+                  <thead><tr>
+                    <th style={th}>Name</th><th style={th}>Phone</th><th style={th}>Listings</th><th style={th}>Total views</th>
+                  </tr></thead>
+                  <tbody>
+                    {sellers.length === 0 && !loading && (
+                      <tr><td style={{ ...td, textAlign: 'center', color: '#9CA3AF', padding: '40px' }} colSpan={4}>No sellers yet.</td></tr>
+                    )}
+                    {sellers.sort((a, b) => b.count - a.count).map(s => (
+                      <tr key={s.user_id}>
+                        <td style={td}>{s.name}</td>
+                        <td style={td}>{s.phone}</td>
+                        <td style={td}>{fmt(s.count)}</td>
+                        <td style={td}>{fmt(s.views)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-          </div>
+          </>
         )}
 
-        {/* REPORTS TAB */}
+        {/* REPORTS */}
         {tab === 'reports' && (
-          <div>
+          <>
+            <div style={{ ...card, padding: '12px 16px', marginBottom: '14px', fontSize: '12px', color: '#6B7280', background: '#FBFBFC' }}>
+              Listings reported by users for review. Open the listing to inspect it, then hide or delete it from the Listings tab if needed.
+            </div>
             {reports.length === 0 ? (
-              <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'60px',textAlign:'center',color:'#9CA3AF',fontSize:'14px'}}>
-                No open reports.
+              <div style={{ ...card, padding: '40px', textAlign: 'center' }}>
+                <div style={{ fontSize: '32px', marginBottom: '10px' }}>⚑</div>
+                <div style={{ fontSize: '15px', fontWeight: 700, color: '#111', marginBottom: '6px' }}>No reports</div>
+                <div style={{ fontSize: '13px', color: '#6B7280' }}>When a user reports a listing, it shows up here for review.</div>
               </div>
             ) : (
-              <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
-                {reports.map(r => (
-                  <div key={r.id} style={{background:'#fff',borderRadius:'12px',border:'1px solid #F3F4F6',padding:'20px',display:'flex',alignItems:'flex-start',gap:'16px'}}>
-                    <div style={{flex:1}}>
-                      <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'6px'}}>
-                        <span style={{background:'#FEE2E2',color:'#DC2626',fontSize:'11px',fontWeight:700,padding:'2px 10px',borderRadius:'20px'}}>{r.reason}</span>
-                        <span style={{fontSize:'11px',color:'#9CA3AF'}}>{new Date(r.created_at).toLocaleDateString()}</span>
-                      </div>
-                      {r.listings && (
-                        <div style={{fontSize:'13px',fontWeight:600,color:'#111',marginBottom:'4px'}}>
-                          Listing: <a href={`/${locale}/listing/${r.listing_id}`} target="_blank" rel="noopener noreferrer" style={{color:'#2563EB',textDecoration:'none'}}>{r.listings.title}</a>
-                          <span style={{color:'#9CA3AF',fontWeight:400}}> · {r.listings.city}</span>
-                        </div>
-                      )}
-                      {r.details && <div style={{fontSize:'12px',color:'#6B7280',marginTop:'4px'}}>{r.details}</div>}
-                    </div>
-                    <div style={{display:'flex',gap:'8px',flexShrink:0}}>
-                      <button onClick={() => deleteListing(r.listing_id)}
-                        style={{fontSize:'12px',padding:'6px 14px',borderRadius:'8px',border:'1px solid #FEE2E2',background:'#FEF2F2',color:'#DC2626',cursor:'pointer',fontFamily:'inherit'}}>
-                        Delete listing
-                      </button>
-                      <button onClick={() => dismissReport(r.id)}
-                        style={{fontSize:'12px',padding:'6px 14px',borderRadius:'8px',border:'1px solid #E5E7EB',background:'#fff',color:'#6B7280',cursor:'pointer',fontFamily:'inherit'}}>
-                        Dismiss
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ ...card, overflow: 'hidden' }}>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '640px' }}>
+                    <thead><tr>
+                      <th style={th}>Date</th><th style={th}>Listing</th><th style={th}>Reason</th><th style={th}>Details</th><th style={th}>Action</th>
+                    </tr></thead>
+                    <tbody>
+                      {reports.map((r, i) => {
+                        const l = listings.find(x => x.id === r.listing_id)
+                        return (
+                          <tr key={r.id || i}>
+                            <td style={td}>{r.created_at ? new Date(r.created_at).toLocaleDateString() : '—'}</td>
+                            <td style={td}>{l ? l.title : (r.listing_id || '—')}</td>
+                            <td style={td}><span style={pill('#FEF3F2', '#B42318')}>{r.reason || '—'}</span></td>
+                            <td style={{ ...td, maxWidth: '260px', whiteSpace: 'normal' }}>{r.details || '—'}</td>
+                            <td style={td}>
+                              {l
+                                ? <button onClick={() => { setTab('listings') }} style={btn('#374151')}>Review in Listings</button>
+                                : <span style={{ fontSize: '12px', color: '#9CA3AF' }}>Listing removed</span>}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
-          </div>
+          </>
         )}
-      </div>
-    </main>
+
+        {/* REVENUE */}
+        {tab === 'revenue' && (
+          <>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', marginBottom: '22px' }}>
+              <Stat label="Boost revenue" value={money(revenue)} sub={`${boosts.length} payments`} />
+              <Stat label="Live boosts" value={fmt(boostedLive)} sub="active right now" />
+              <Stat label="Featured listings" value={fmt(featured)} />
+            </div>
+            {boosts.length === 0 ? (
+              <div style={{ ...card, padding: '40px', textAlign: 'center' }}>
+                <div style={{ fontSize: '32px', marginBottom: '10px' }}>◆</div>
+                <div style={{ fontSize: '15px', fontWeight: 700, color: '#111', marginBottom: '6px' }}>No boost payments yet</div>
+                <div style={{ fontSize: '13px', color: '#6B7280', maxWidth: '420px', margin: '0 auto' }}>
+                  When sellers pay to boost listings, each payment appears here. Connect Stripe to start accepting boost payments.
+                </div>
+              </div>
+            ) : (
+              <div style={{ ...card, overflow: 'hidden' }}>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+                    <thead><tr>
+                      <th style={th}>Date</th><th style={th}>Listing</th><th style={th}>Amount</th><th style={th}>Status</th>
+                    </tr></thead>
+                    <tbody>
+                      {boosts.map((b, i) => (
+                        <tr key={b.id || i}>
+                          <td style={td}>{b.created_at ? new Date(b.created_at).toLocaleDateString() : '—'}</td>
+                          <td style={td}>{b.listing_id || '—'}</td>
+                          <td style={td}>{money(Number(b.amount) || Number(b.amount_etb) || 0)}</td>
+                          <td style={td}>{b.status || '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </main>
+
+      {/* Delete confirm */}
+      {confirmDelete && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: '20px' }}>
+          <div style={{ ...card, padding: '24px', maxWidth: '380px', width: '100%' }}>
+            <div style={{ fontSize: '16px', fontWeight: 800, color: '#111', marginBottom: '8px' }}>Delete this listing?</div>
+            <div style={{ fontSize: '13px', color: '#6B7280', marginBottom: '4px' }}>{confirmDelete.title}</div>
+            <div style={{ fontSize: '12px', color: '#B42318', marginBottom: '20px' }}>This permanently removes it from the database and can’t be undone.</div>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <button onClick={() => setConfirmDelete(null)} style={btn('#F0F2F4', '#111')}>Cancel</button>
+              <button disabled={busyId === confirmDelete.id} onClick={() => doDelete(confirmDelete)} style={btn('#D92D20')}>Delete permanently</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
