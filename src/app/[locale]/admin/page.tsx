@@ -120,7 +120,7 @@ export default function AdminDashboard() {
       <nav style={{position:'sticky',top:0,zIndex:100,background:'#111',borderBottom:'1px solid #222'}}>
         <div style={{maxWidth:'1400px',margin:'0 auto',padding:'0 20px',height:'52px',display:'flex',alignItems:'center',gap:'12px'}}>
           <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
-            <div style={{fontSize:'14px',fontWeight:900,color:'#fff',letterSpacing:'2px'}}>HAGERHUB</div>
+            <div style={{fontSize:'14px',fontWeight:900,color:'#fff',letterSpacing:'2px'}}>GOHBAY</div>
           </a>
           <span style={{background:'#DC2626',color:'white',fontSize:'10px',fontWeight:700,padding:'2px 8px',borderRadius:'4px',letterSpacing:'1px'}}>ADMIN</span>
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px'}}>
