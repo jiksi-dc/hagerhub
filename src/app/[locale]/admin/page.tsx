@@ -13,7 +13,7 @@ interface Listing {
   boost_expires_at: string | null; contact_name: string | null; contact_phone: string | null
 }
 
-type Tab = 'overview' | 'listings' | 'sellers' | 'reports' | 'revenue'
+type Tab = 'overview' | 'listings' | 'sellers' | 'reports' | 'revenue' | 'access'
 
 const fmt = (n: number) => n.toLocaleString()
 const money = (n: number) => 'ETB ' + n.toLocaleString()
@@ -28,6 +28,12 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [busyId, setBusyId] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<Listing | null>(null)
+  // Site Access (gate credentials)
+  const [gateUser, setGateUser] = useState('')
+  const [gatePwd, setGatePwd] = useState('')
+  const [gateLoaded, setGateLoaded] = useState(false)
+  const [gateSaving, setGateSaving] = useState(false)
+  const [gateMsg, setGateMsg] = useState('')
 
   useEffect(() => {
     const supabase = createClient()
@@ -53,6 +59,24 @@ export default function Admin() {
     setBoosts(b.data || [])
     setReports(r.data || [])
     setLoading(false)
+    // load gate credentials
+    const g = await supabase.from('site_settings').select('gate_user,gate_pwd').eq('id', 1).single()
+    if (g.data) {
+      setGateUser(g.data.gate_user || '')
+      setGatePwd(g.data.gate_pwd || '')
+    }
+    setGateLoaded(true)
+  }
+
+  async function saveGate() {
+    setGateSaving(true)
+    setGateMsg('')
+    const supabase = createClient()
+    const { error } = await supabase.from('site_settings')
+      .update({ gate_user: gateUser, gate_pwd: gatePwd, updated_at: new Date().toISOString() })
+      .eq('id', 1)
+    setGateSaving(false)
+    setGateMsg(error ? ('Could not save: ' + error.message) : 'Saved. New credentials are live within ~30 seconds.')
   }
 
   async function toggleFeatured(l: Listing) {
@@ -132,6 +156,7 @@ export default function Admin() {
     { key: 'sellers', label: 'Sellers', icon: '◍' },
     { key: 'reports', label: 'Reports', icon: '⚑' },
     { key: 'revenue', label: 'Boosts & Revenue', icon: '◆' },
+    { key: 'access', label: 'Site Access', icon: '🔑' },
   ]
 
   const Stat = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
@@ -364,6 +389,43 @@ export default function Admin() {
                 </div>
               </div>
             )}
+          </>
+        )}
+
+        {/* SITE ACCESS */}
+        {tab === 'access' && (
+          <>
+            <div style={{ ...card, padding: '12px 16px', marginBottom: '14px', fontSize: '12px', color: '#6B7280', background: '#FBFBFC' }}>
+              This is the shared username and password testers type to open the whole site. Changing it here updates it everywhere within about 30 seconds — share the new values with your testers.
+            </div>
+            <div style={{ ...card, padding: '22px', maxWidth: '440px' }}>
+              {!gateLoaded ? (
+                <div style={{ fontSize: '13px', color: '#9CA3AF' }}>Loading current credentials…</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#444', display: 'block', marginBottom: '6px' }}>Username</label>
+                    <input value={gateUser} onChange={e => setGateUser(e.target.value)}
+                      style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #E5E7EB', borderRadius: '9px', fontSize: '14px', fontFamily: 'inherit', outline: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#444', display: 'block', marginBottom: '6px' }}>Password</label>
+                    <input value={gatePwd} onChange={e => setGatePwd(e.target.value)}
+                      style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #E5E7EB', borderRadius: '9px', fontSize: '14px', fontFamily: 'inherit', outline: 'none' }} />
+                  </div>
+                  <button disabled={gateSaving || !gateUser || !gatePwd} onClick={saveGate}
+                    style={{ ...btn(GREEN), padding: '11px', fontSize: '14px', opacity: (gateSaving || !gateUser || !gatePwd) ? 0.6 : 1 }}>
+                    {gateSaving ? 'Saving…' : 'Save credentials'}
+                  </button>
+                  {gateMsg && (
+                    <div style={{ fontSize: '13px', color: gateMsg.startsWith('Saved') ? '#067647' : '#B42318' }}>{gateMsg}</div>
+                  )}
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: 1.5, borderTop: '1px solid #F0F0F0', paddingTop: '12px' }}>
+                    Testers will be prompted for these when they open the site. They take effect on the next page load after saving.
+                  </div>
+                </div>
+              )}
+            </div>
           </>
         )}
       </main>
