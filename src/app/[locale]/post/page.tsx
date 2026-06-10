@@ -207,7 +207,7 @@ const [currency, setCurrency] = useState<'ETB'|'USD'>('ETB')
   return (
     <main style={{fontFamily:'system-ui,-apple-system,sans-serif',background:'#F7F7F7',minHeight:'100vh'}}>
       <header style={{background:'#fff',borderBottom:'1px solid #EBEBEB',padding:'14px 20px',display:'flex',alignItems:'center',gap:'16px'}}>
-        <a href="/" style={{fontSize:'18px',fontWeight:900,color:'#111',letterSpacing:'2px',textDecoration:'none'}}>HAGERHUB</a>
+        <a href="/" style={{fontSize:'18px',fontWeight:900,color:'#111',letterSpacing:'2px',textDecoration:'none'}}>GOHBAY</a>
         <div style={{width:'1px',height:'20px',background:'#E5E7EB'}}></div>
         <span style={{fontSize:'15px',fontWeight:700,color:'#374151'}}>{editId ? 'Edit listing' : 'Post your ad — FREE'}</span>
       </header>
