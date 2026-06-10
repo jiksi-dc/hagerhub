@@ -571,10 +571,16 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                   <select value={filterBaths} onChange={e=>setFilterBaths(e.target.value)} style={heroField}>
                     <option value="">Any</option>{['1','2','3','4'].map(o=><option key={o} value={o}>{o}+</option>)}
                   </select></div>
-                <div><label style={heroLbl}>Max price</label>
+                <div><label style={heroLbl}>Min price</label>
+                  <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
+                <div style={{gridColumn:'span 3'}}><label style={heroLbl}>Max price</label>
                   <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
               </>}
               {activeCat==='Vehicles' && <>
+                <div><label style={heroLbl}>Type</label>
+                  <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
+                    <option value="">All types</option>{(SUBCATS['Vehicles']||[]).map(o=><option key={o} value={o}>{o}</option>)}
+                  </select></div>
                 <div><label style={heroLbl}>Make</label>
                   <select value={filterMake} onChange={e=>setFilterMake(e.target.value)} style={heroField}>
                     <option value="">All makes</option>{HERO_MAKES.map(o=><option key={o} value={o}>{o}</option>)}
@@ -593,7 +599,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                   </select></div>
                 <div><label style={heroLbl}>Min price</label>
                   <input inputMode="numeric" placeholder="ETB" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
-                <div><label style={heroLbl}>Max price</label>
+                <div style={{gridColumn:'span 3'}}><label style={heroLbl}>Max price</label>
                   <input inputMode="numeric" placeholder="ETB" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={heroField}/></div>
               </>}
               {activeCat==='Machinery' && <>
