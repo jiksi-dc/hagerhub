@@ -49,7 +49,6 @@ const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=180,logo,accent='rgba(255
       position:'relative',cursor:'pointer',
       transition:'transform 0.2s ease, box-shadow 0.2s ease',
     }}>
-      {/* Ad image/colour area */}
       <div style={{
         height:`${height}px`,
         background:bg,
@@ -59,20 +58,17 @@ const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=180,logo,accent='rgba(255
         padding:'16px',
         overflow:'hidden',
       }}>
-        {/* Shimmer overlay */}
         <div style={{
           position:'absolute',top:0,left:0,right:0,bottom:0,
           background:'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.06) 100%)',
           animation:`shimmerslide 3s ease-in-out infinite ${delay}`,
           pointerEvents:'none',
         }}/>
-        {/* Gradient blend to footer */}
         <div style={{
           position:'absolute',bottom:0,left:0,right:0,height:'60%',
           background:'linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%)',
           pointerEvents:'none',
         }}/>
-        {/* Content */}
         <div style={{position:'relative',zIndex:1}}>
           <div style={{fontSize:'15px',fontWeight:800,color:'white',marginBottom:'4px',textShadow:'0 1px 4px rgba(0,0,0,0.3)'}}>{name}</div>
           <div style={{fontSize:'11px',color:'rgba(255,255,255,0.88)',lineHeight:1.5,marginBottom:'10px'}}>{sub}</div>
@@ -93,7 +89,6 @@ const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=180,logo,accent='rgba(255
   </div>
 )
 
-// FeaturedCard — blends with page, subtle gold shimmer, shown in sidebar
 const FeaturedCard = ({l, locale}: {l:any, locale:string}) => {
   const imgs = l.image_urls?.length ? l.image_urls : IMGS[l.category]||[]
   const img = imgs[0]||''
@@ -118,7 +113,6 @@ const FeaturedCard = ({l, locale}: {l:any, locale:string}) => {
   )
 }
 
-// BoostCTA — prompts sellers to boost their listing
 const BoostCTA = ({locale}: {locale:string}) => (
   <a href={`/${locale}/boost`} style={{textDecoration:'none',display:'block',marginBottom:'10px'}}>
     <div style={{background:'#fff',borderRadius:'14px',border:'1.5px dashed #E5E7EB',padding:'16px',textAlign:'center'}}>
@@ -134,7 +128,6 @@ const filterLabel:React.CSSProperties = {fontSize:'11px',fontWeight:700,textTran
 const filterSelect:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',background:'#fff',fontFamily:'inherit',outline:'none',cursor:'pointer'}
 const filterInput:React.CSSProperties = {width:'100%',padding:'8px 10px',border:'1.5px solid #E5E7EB',borderRadius:'8px',fontSize:'13px',color:'#111',fontFamily:'inherit',outline:'none'}
 
-// ---- GOLDEN HERO data + styles ----
 const HERO_MAKES = ['Toyota','Suzuki','Hyundai','Kia','Nissan','Mitsubishi','Volkswagen','Ford','Honda','Mercedes-Benz','BMW','Lexus','Tesla','Isuzu','Mahindra','Other']
 const HERO_FIELDS = ['Accounting & Finance','Engineering','IT & Technology','Healthcare','Education','Sales & Marketing','Administration','Hospitality']
 const HERO_PURPOSE = ['For Sale','For Rent']
@@ -156,14 +149,12 @@ const month = dateObj ? dateObj.toLocaleString('en-ET',{month:'short'}) : null
 return (
 <div onClick={()=>window.location.href=`/${locale}/listing/${l.id}`}
 style={{background:'#fff',borderRadius:'14px',overflow:'hidden',border:'1px solid #F3F4F6',cursor:'pointer',display:'flex',gap:'0',minHeight:'100px',transition:'box-shadow .15s'}}>
-{/* Date block */}
 {dateObj && (
 <div style={{width:'72px',minWidth:'72px',background:isUpcoming?'#0f3460':'#F3F4F6',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'12px 8px'}}>
 <div style={{fontSize:'22px',fontWeight:900,color:isUpcoming?'white':'#6B7280',lineHeight:1}}>{day}</div>
 <div style={{fontSize:'11px',fontWeight:700,color:isUpcoming?'rgba(255,255,255,0.8)':'#9CA3AF',textTransform:'uppercase',letterSpacing:'1px'}}>{month}</div>
 </div>
 )}
-{/* Content */}
 <div style={{flex:1,padding:'12px 14px',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
 <div>
 <div style={{display:'flex',alignItems:'center',gap:'6px',marginBottom:'4px',flexWrap:'wrap'}}>
@@ -195,7 +186,6 @@ export default function Home() {
   const [user, setUser] = useState<any>(null)
 const [featuredListings, setFeaturedListings] = useState<any[]>([])
 
-  // Filter state
   const [filterCity, setFilterCity] = useState('')
   const [filterSubcat, setFilterSubcat] = useState('')
   const [filterMinPrice, setFilterMinPrice] = useState('')
@@ -232,7 +222,6 @@ const [featuredListings, setFeaturedListings] = useState<any[]>([])
     })
   },[activeCat])
 
-  // Reset filters when category changes
   useEffect(()=>{
     setFilterCity('')
     setFilterSubcat('')
@@ -316,7 +305,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
 
   const hasActiveFilters = filterCity || filterSubcat || filterMinPrice || filterMaxPrice || filterPurpose || filterBeds || filterBaths || filterFurnished || filterMake || filterFuel || filterTransmission || filterMinYear || filterCondition || filterEmployment || filterField || search
 
-  // Apply all filters client-side
   let filtered = listings.filter(l => {
     if (search && !l.title?.toLowerCase().includes(search.toLowerCase())) return false
     if (filterCity && l.city !== filterCity) return false
@@ -401,8 +389,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           <button onClick={clearFilters} style={{fontSize:'11px',color:'#2563EB',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontWeight:600}}>Clear all</button>
         )}
       </div>
-
-      {/* Sort */}
       <div>
         <label style={filterLabel}>Sort by</label>
         <select value={filterSort} onChange={e=>setFilterSort(e.target.value)} style={filterSelect}>
@@ -411,8 +397,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           <option value="price_desc">Price: High to Low</option>
         </select>
       </div>
-
-      {/* Location */}
       <div>
         <label style={filterLabel}>City</label>
         <select value={filterCity} onChange={e=>setFilterCity(e.target.value)} style={filterSelect}>
@@ -420,8 +404,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           {CITIES.map(c=><option key={c} value={c}>{c}</option>)}
         </select>
       </div>
-
-      {/* Subcategory */}
       {SUBCATS[activeCat] && (
         <div>
           <label style={filterLabel}>Type</label>
@@ -431,32 +413,14 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           </select>
         </div>
       )}
-
-      {/* Price range */}
       <div>
         <label style={filterLabel}>Price (ETB)</label>
         <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="Min"
-            value={filterMinPrice}
-            onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))}
-            style={{...filterInput,width:'50%'}}
-          />
+          <input type="text" inputMode="numeric" placeholder="Min" value={filterMinPrice} onChange={e=>setFilterMinPrice(e.target.value.replace(/[^0-9]/g,''))} style={{...filterInput,width:'50%'}} />
           <span style={{color:'#9CA3AF',fontSize:'12px'}}>—</span>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="Max"
-            value={filterMaxPrice}
-            onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))}
-            style={{...filterInput,width:'50%'}}
-          />
+          <input type="text" inputMode="numeric" placeholder="Max" value={filterMaxPrice} onChange={e=>setFilterMaxPrice(e.target.value.replace(/[^0-9]/g,''))} style={{...filterInput,width:'50%'}} />
         </div>
       </div>
-
-      {/* Active filter chips */}
       {hasActiveFilters && (
         <div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>
           {filterCity && <span style={{fontSize:'11px',background:'#EFF6FF',color:'#2563EB',padding:'3px 8px',borderRadius:'20px',fontWeight:500}}>{filterCity} ×</span>}
@@ -471,11 +435,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{`
         @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.94} }
-@media (max-width:768px){
-  #results{grid-template-columns:1fr !important;}
-  nav > div{flex-wrap:wrap !important;height:auto !important;padding-top:8px !important;padding-bottom:8px !important;row-gap:8px !important;}
-  nav > div > div:nth-child(2){flex:1 1 100% !important;max-width:100% !important;order:3 !important;}
-}
 @keyframes adblend { 0%,100%{box-shadow:0 2px 16px rgba(0,0,0,0.10);transform:translateY(0)} 50%{box-shadow:0 8px 32px rgba(0,0,0,0.22);transform:translateY(-3px)} }
 @keyframes shimmerslide { 0%,100%{opacity:0.5} 50%{opacity:1} }
 @keyframes featuredshimmer { 0%,100%{box-shadow:0 0 0 rgba(218,165,32,0)} 50%{box-shadow:0 4px 20px rgba(218,165,32,0.15)} }
@@ -488,7 +447,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         .cat-row:hover .cat-track-anim{animation-play-state:paused}
       `}</style>
 
-      {/* NAV */}
       <nav style={{position:'sticky',top:0,zIndex:100,background:'#fff',borderBottom:'1px solid #EBEBEB'}}>
         <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
           <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
@@ -513,10 +471,8 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             <AIAssistant/>
           </div>
         </div>
-
       </nav>
 
-      {/* GOLDEN HERO */}
       <section style={{position:'relative',width:'100%',minHeight:'440px',overflow:'hidden'}}>
         <img src="https://images.pexels.com/photos/30177512/pexels-photo-30177512.jpeg" alt="Addis Ababa skyline at sunset" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%'}}/>
         <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.32) 40%,rgba(0,0,0,0.04) 64%,rgba(0,0,0,0) 100%)'}}/>
@@ -526,8 +482,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             <h1 style={{fontSize:'32px',fontWeight:900,color:'#fff',textShadow:'0 2px 14px rgba(0,0,0,0.6)',letterSpacing:'-0.5px',margin:0}}>Find anything in Ethiopia</h1>
             <p style={{fontSize:'14px',color:'rgba(255,255,255,0.95)',marginTop:'6px',textShadow:'0 1px 8px rgba(0,0,0,0.6)'}}>Properties · Vehicles · Machinery · Jobs · and more</p>
           </div>
-
-          {/* Category tabs */}
           <div className="hero-tabs" style={{display:'flex',gap:'3px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'nowrap',justifyContent:'flex-start',maxWidth:'100%',overflowX:'auto',WebkitOverflowScrolling:'touch',scrollbarWidth:'none',msOverflowStyle:'none'}}>
             {TABS.map(tab=>{
               const on = activeCat===tab.name
@@ -540,10 +494,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               )
             })}
           </div>
-
-          {/* Search panel */}
           <div style={{width:'560px',maxWidth:'100%',background:'#fff',borderRadius:'16px',padding:'16px',boxShadow:'0 12px 40px rgba(0,0,0,0.25)'}}>
-            {/* Adaptive top row */}
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px',marginBottom:'10px'}}>
               {activeCat==='All' && <>
                 <div><label style={heroLbl}>Category</label>
@@ -658,7 +609,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                   </select></div>
               </>}
             </div>
-            {/* Universal row */}
             <div style={{display:'grid',gridTemplateColumns:'1fr 1.4fr auto',gap:'10px',alignItems:'end'}}>
               <div><label style={heroLbl}>City</label>
                 <select value={filterCity} onChange={e=>setFilterCity(e.target.value)} style={heroField}>
@@ -676,15 +626,9 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         </div>
       </section>
 
-      {/* MAIN */}
-
       <div id="results" style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 280px' : '200px 1fr 280px',gap:'24px',alignItems:'start',scrollMarginTop:'70px'}}>
-
-        {/* FILTER PANEL — only when category is active */}
         {activeCat !== 'All' && <FilterPanel/>}
-
         <div style={{minWidth:0}}>
-          {/* POPULAR CATEGORIES GRID — only on All */}
           {activeCat==='All' && (
             <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px 24px',marginBottom:'24px'}}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>
@@ -708,8 +652,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               </div>
             </div>
           )}
-
-          {/* Results count when filtering */}
           {activeCat !== 'All' && (
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
               <div>
@@ -719,7 +661,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               <button onClick={()=>setActiveCat('All')} style={{fontSize:'12px',color:'#6B7280',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit'}}>← Back</button>
             </div>
           )}
-
           {loading ? (
             <div style={{textAlign:'center',padding:'60px',color:'#9CA3AF',background:'#fff',borderRadius:'12px'}}>{t('home.loading')}</div>
           ) : filtered.length===0 ? (
@@ -756,60 +697,43 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             </div>
           )}
         </div>
-
         <div style={{position:'sticky',top:'120px',alignSelf:'start',display:'flex',flexDirection:'column',gap:'14px',width:'100%'}}>
-
-          {/* Featured listings — shown when boosted listings exist */}
           {featuredListings.length > 0 && (
             <div>
               <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'8px',fontWeight:600}}>Featured listings</div>
               {featuredListings.slice(0,2).map(l=><FeaturedCard key={l.id} l={l} locale={locale}/>)}
             </div>
           )}
-
-          {/* ALL — Ethiopian Airlines hero + CBE + Telebirr */}
           {activeCat==='All' && <>
             <AdCard bg="linear-gradient(160deg,#006400 0%,#004d00 60%,#003300 100%)" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide. Africa's largest airline." cta="Book Now" tag="Premium Partner" delay="0s" height={200} accent="rgba(255,255,255,0.2)"/>
             <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Finance your dream. Up to ETB 5,000,000 at the lowest rates." cta="Apply Now" tag="Financial Partner" delay="1.2s" height={160} accent="rgba(255,255,255,0.15)"/>
             <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Send money, pay bills and shop across Ethiopia instantly." cta="Get the App" tag="Payment Partner" delay="2.4s" height={140} accent="rgba(255,255,255,0.18)"/>
           </>}
-
-          {/* PROPERTIES */}
           {activeCat==='Properties' && <>
             <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Real Estate" sub="Premium residential and commercial properties across Ethiopia." cta="View Properties" tag="Property Partner" delay="0s" height={220} accent="rgba(255,255,255,0.15)"/>
             <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Up to ETB 5,000,000 · Low interest · Fast approval." cta="Apply for a Loan" tag="Financial Partner" delay="1.5s" height={160} accent="rgba(255,255,255,0.15)"/>
             <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Sunshine Construction" sub="Build your dream home with Ethiopia's trusted builders." cta="Get a Quote" tag="Construction Partner" delay="2.5s" height={130} accent="rgba(255,255,255,0.12)"/>
           </>}
-
-          {/* VEHICLES */}
           {activeCat==='Vehicles' && <>
             <AdCard bg="linear-gradient(160deg,#1a1a2e 0%,#0d0d1a 100%)" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance at the best rates in Ethiopia." cta="Get a Quote" tag="Insurance Partner" delay="0s" height={200} accent="rgba(255,255,255,0.14)"/>
             <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines Cargo" sub="Ship anything across Ethiopia and beyond. Fast and reliable." cta="Ship Now" tag="Logistics Partner" delay="1.5s" height={150} accent="rgba(255,255,255,0.18)"/>
             <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for your vehicle purchase securely with Telebirr." cta="Pay with Telebirr" tag="Payment Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.18)"/>
           </>}
-
-          {/* MACHINERY */}
           {activeCat==='Machinery' && <>
             <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Midroc Construction" sub="Leading construction equipment supplier across Ethiopia." cta="Learn More" tag="Machinery Partner" delay="0s" height={210} accent="rgba(255,255,255,0.12)"/>
             <AdCard bg="linear-gradient(160deg,#166534 0%,#0a3a1c 100%)" name="Ethiopian Agri-Business" sub="Farm equipment financing and leasing. Apply across Ethiopia." cta="Apply Now" tag="Agricultural Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.14)"/>
             <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Business Loans" sub="Finance your machinery purchase with Ethiopia's trusted bank." cta="Apply Now" tag="Financial Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
           </>}
-
-          {/* CLASSIFIEDS */}
           {activeCat==='Classifieds' && <>
             <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for anything across Ethiopia. Send and receive money instantly." cta="Get the App" tag="Payment Partner" delay="0s" height={200} accent="rgba(255,255,255,0.18)"/>
             <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Digital Banking" sub="Instant transfers, mobile banking, zero fees for first year." cta="Open an Account" tag="Banking Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
             <AdCard bg="linear-gradient(160deg,#4c1d95 0%,#2e1065 100%)" name="Safaricom Ethiopia" sub="Stay connected. Ethiopia's fastest growing mobile network." cta="Learn More" tag="Telecom Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.16)"/>
           </>}
-
-          {/* JOBS */}
           {activeCat==='Jobs' && <>
             <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines" sub="Join Africa's largest airline. 130+ destinations. Apply today." cta="View Jobs" tag="Top Employer" delay="0s" height={210} accent="rgba(255,255,255,0.2)"/>
             <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Group" sub="Career opportunities across construction, mining and real estate." cta="Apply Now" tag="Top Employer" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
             <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE" sub="Join Ethiopia's largest bank. Over 50 open positions." cta="View Openings" tag="Top Employer" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
           </>}
-
-          {/* BoostCTA — at the bottom, not competing with ads */}
           <BoostCTA locale={locale}/>
         </div>
       </div>
