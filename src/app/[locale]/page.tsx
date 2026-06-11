@@ -471,6 +471,11 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{`
         @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.94} }
+@media (max-width:768px){
+  #results{grid-template-columns:1fr !important;}
+  nav > div{flex-wrap:wrap !important;height:auto !important;padding-top:8px !important;padding-bottom:8px !important;row-gap:8px !important;}
+  nav > div > div:nth-child(2){flex:1 1 100% !important;max-width:100% !important;order:3 !important;}
+}
 @keyframes adblend { 0%,100%{box-shadow:0 2px 16px rgba(0,0,0,0.10);transform:translateY(0)} 50%{box-shadow:0 8px 32px rgba(0,0,0,0.22);transform:translateY(-3px)} }
 @keyframes shimmerslide { 0%,100%{opacity:0.5} 50%{opacity:1} }
 @keyframes featuredshimmer { 0%,100%{box-shadow:0 0 0 rgba(218,165,32,0)} 50%{box-shadow:0 4px 20px rgba(218,165,32,0.15)} }
