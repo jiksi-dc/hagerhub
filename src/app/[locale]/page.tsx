@@ -481,16 +481,32 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         @keyframes catmarquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
         .cat-track-anim{animation:catmarquee 40s linear infinite}
         .cat-row:hover .cat-track-anim{animation-play-state:paused}
+        @media (max-width: 768px) {
+          .gh-nav-row { flex-wrap: wrap; height: auto !important; padding-top: 8px !important; padding-bottom: 8px !important; row-gap: 8px; }
+          .gh-nav-search { order: 3; flex: 1 1 100% !important; max-width: 100% !important; }
+          .gh-search-grid { grid-template-columns: 1fr 1fr !important; }
+          .gh-universal-grid { grid-template-columns: 1fr !important; }
+          .gh-universal-grid > button { width: 100% !important; }
+          .gh-results-grid { grid-template-columns: 1fr !important; }
+          .gh-browse-grid { grid-template-columns: 1fr 1fr !important; }
+          .gh-footer-grid { grid-template-columns: 1fr 1fr !important; }
+          .gh-hero-section { min-height: 0 !important; }
+          .gh-hero-inner { padding: 28px 16px !important; }
+          .gh-search-panel { width: 100% !important; }
+        }
+        @media (max-width: 420px) {
+          .gh-search-grid { grid-template-columns: 1fr !important; }
+        }
       `}</style>
 
       {/* NAV */}
       <nav style={{position:'sticky',top:0,zIndex:100,background:'#fff',borderBottom:'1px solid #EBEBEB'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
+        <div className="gh-nav-row" style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
           <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
-            <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>GOHBAY</div>
+            <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>HAGERHUB</div>
             <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
           </a>
-          <div style={{flex:1,maxWidth:'480px',position:'relative'}}>
+          <div className="gh-nav-search" style={{flex:1,maxWidth:'480px',position:'relative'}}>
             <input value={search} onChange={e=>setSearch(e.target.value)}
               placeholder={t('nav.search')}
               style={{width:'100%',padding:'9px 14px 9px 38px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',outline:'none',fontFamily:'inherit'}}/>
@@ -512,10 +528,10 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
       </nav>
 
       {/* GOLDEN HERO */}
-      <section style={{position:'relative',width:'100%',minHeight:'440px',overflow:'hidden'}}>
+      <section className="gh-hero-section" style={{position:'relative',width:'100%',minHeight:'440px',overflow:'hidden'}}>
         <img src="https://images.pexels.com/photos/30177512/pexels-photo-30177512.jpeg" alt="Addis Ababa skyline at sunset" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%'}}/>
         <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.32) 40%,rgba(0,0,0,0.04) 64%,rgba(0,0,0,0) 100%)'}}/>
-        <div style={{position:'relative',maxWidth:'1280px',margin:'0 auto',width:'100%',padding:'56px 20px'}}>
+        <div className="gh-hero-inner" style={{position:'relative',maxWidth:'1280px',margin:'0 auto',width:'100%',padding:'56px 20px'}}>
         <div style={{maxWidth:'600px',marginRight:'auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
           <div style={{textAlign:'left',marginBottom:'22px'}}>
             <h1 style={{fontSize:'32px',fontWeight:900,color:'#fff',textShadow:'0 2px 14px rgba(0,0,0,0.6)',letterSpacing:'-0.5px',margin:0}}>Find anything in Ethiopia</h1>
@@ -537,9 +553,9 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           </div>
 
           {/* Search panel */}
-          <div style={{width:'560px',maxWidth:'100%',background:'#fff',borderRadius:'16px',padding:'16px',boxShadow:'0 12px 40px rgba(0,0,0,0.25)'}}>
+          <div className="gh-search-panel" style={{width:'560px',maxWidth:'100%',background:'#fff',borderRadius:'16px',padding:'16px',boxShadow:'0 12px 40px rgba(0,0,0,0.25)'}}>
             {/* Adaptive top row */}
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px',marginBottom:'10px'}}>
+            <div className="gh-search-grid" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px',marginBottom:'10px'}}>
               {activeCat==='All' && <>
                 <div><label style={heroLbl}>Category</label>
                   <select value={filterSubcat} onChange={e=>setFilterSubcat(e.target.value)} style={heroField}>
@@ -654,7 +670,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               </>}
             </div>
             {/* Universal row */}
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1.4fr auto',gap:'10px',alignItems:'end'}}>
+            <div className="gh-universal-grid" style={{display:'grid',gridTemplateColumns:'1fr 1.4fr auto',gap:'10px',alignItems:'end'}}>
               <div><label style={heroLbl}>City</label>
                 <select value={filterCity} onChange={e=>setFilterCity(e.target.value)} style={heroField}>
                   <option value="">All cities</option>{CITIES.map(c=><option key={c} value={c}>{c}</option>)}
@@ -673,7 +689,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
 
       {/* MAIN */}
 
-      <div id="results" style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 280px' : '200px 1fr 280px',gap:'24px',alignItems:'start',scrollMarginTop:'70px'}}>
+      <div id="results" className="gh-results-grid" style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 280px' : '200px 1fr 280px',gap:'24px',alignItems:'start',scrollMarginTop:'70px'}}>
 
         {/* FILTER PANEL — only when category is active */}
         {activeCat !== 'All' && <FilterPanel/>}
@@ -686,7 +702,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
                 <h2 style={{fontSize:'15px',fontWeight:700,color:'#111'}}>{t('home.browse')}</h2>
                 <span style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
               </div>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'16px'}}>
+              <div className="gh-browse-grid" style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'16px'}}>
                 {POPULAR.map(cat=>(
                   <div key={cat.key} onClick={()=>setActiveCat(cat.name)} style={{cursor:'pointer'}}>
                     <div style={{fontSize:'12px',fontWeight:700,color:'#111',marginBottom:'6px'}}>
@@ -811,9 +827,9 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
 
       <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
         <div style={{maxWidth:'1280px',margin:'0 auto'}}>
-          <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px',marginBottom:'4px'}}>GOHBAY</div>
+          <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px',marginBottom:'4px'}}>HAGERHUB</div>
           <div style={{fontSize:'11px',color:'#9CA3AF',letterSpacing:'1.5px',marginBottom:'24px'}}>ETHIOPIA'S #1 MARKETPLACE · የኢትዮጵያ ቁጥር 1 ገበያ</div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'24px',marginBottom:'28px'}}>
+          <div className="gh-footer-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'24px',marginBottom:'28px'}}>
             {[
               {title:t('footer.company'), links:['About Us','Careers','Advertise with Us','Legal Hub']},
               {title:t('footer.ethiopia'),links:['Addis Ababa','Hawassa','Bahir Dar','Dire Dawa']},
@@ -828,7 +844,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             ))}
           </div>
           <div style={{borderTop:'1px solid #EBEBEB',paddingTop:'16px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'8px'}}>
-            <span style={{color:'#9CA3AF',fontSize:'12px'}}>© 2025 Gohbay · Jiksi Michael</span>
+            <span style={{color:'#9CA3AF',fontSize:'12px'}}>© 2025 HagerHub · Jiksi Michael</span>
             <div style={{display:'flex',gap:'8px'}}>
               <button style={{background:'#111',color:'white',fontSize:'11px',fontWeight:700,padding:'5px 14px',borderRadius:'7px',cursor:'pointer',border:'none',fontFamily:'inherit'}}>App Store</button>
               <button style={{background:'#374151',color:'white',fontSize:'11px',fontWeight:700,padding:'5px 14px',borderRadius:'7px',cursor:'pointer',border:'none',fontFamily:'inherit'}}>Google Play</button>
