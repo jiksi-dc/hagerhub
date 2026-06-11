@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
+export const viewport = {
+  width: 1280,
+  initialScale: 0.3,
+  maximumScale: 5,
+  userScalable: true,
+}
+
 export default async function LocaleLayout({children, params}: {children: React.ReactNode, params: Promise<{locale: string}>}) {
   const {locale} = await params
   const messages = await getMessages()
