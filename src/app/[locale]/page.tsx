@@ -38,7 +38,6 @@ interface Listing {
   neighbourhood:string; category:string; subcategory:string; created_at:string; user_id:string; verified?:boolean
 }
 
-// Premium AdCard — blending animated ad units
 const AdCard = ({bg,name,sub,cta,tag,delay='0s',height=180,logo,accent='rgba(255,255,255,0.12)'}:{bg:string,name:string,sub:string,cta:string,tag:string,delay?:string,height?:number,logo?:string,accent?:string}) => (
   <div style={{marginBottom:'0'}}>
     <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'4px',fontWeight:600}}>{tag}</div>
@@ -450,7 +449,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
       <nav style={{position:'sticky',top:0,zIndex:100,background:'#fff',borderBottom:'1px solid #EBEBEB'}}>
         <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
           <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
-            <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>HAGERHUB</div>
+            <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>GOHBAY</div>
             <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
           </a>
           <div style={{flex:1,maxWidth:'480px',position:'relative'}}>
@@ -740,7 +739,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
 
       <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
         <div style={{maxWidth:'1280px',margin:'0 auto'}}>
-          <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px',marginBottom:'4px'}}>HAGERHUB</div>
+          <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px',marginBottom:'4px'}}>GOHBAY</div>
           <div style={{fontSize:'11px',color:'#9CA3AF',letterSpacing:'1.5px',marginBottom:'24px'}}>ETHIOPIA'S #1 MARKETPLACE · የኢትዮጵያ ቁጥር 1 ገበያ</div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'24px',marginBottom:'28px'}}>
             {[
@@ -757,7 +756,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             ))}
           </div>
           <div style={{borderTop:'1px solid #EBEBEB',paddingTop:'16px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'8px'}}>
-            <span style={{color:'#9CA3AF',fontSize:'12px'}}>© 2025 HagerHub · Jiksi Michael</span>
+            <span style={{color:'#9CA3AF',fontSize:'12px'}}>© 2025 Gohbay · Jiksi Michael</span>
             <div style={{display:'flex',gap:'8px'}}>
               <button style={{background:'#111',color:'white',fontSize:'11px',fontWeight:700,padding:'5px 14px',borderRadius:'7px',cursor:'pointer',border:'none',fontFamily:'inherit'}}>App Store</button>
               <button style={{background:'#374151',color:'white',fontSize:'11px',fontWeight:700,padding:'5px 14px',borderRadius:'7px',cursor:'pointer',border:'none',fontFamily:'inherit'}}>Google Play</button>
