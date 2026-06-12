@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
-import AIAssistant from '@/components/AIAssistant'
 
 const SUBCATS = ['All','Tourist Attraction','National Park','Festival & Cultural Event','Concert & Entertainment','Food & Dining Experience','Museum & Heritage','Tour Package','Sports Event','Other Experience']
 const REGIONS = ['All Regions','Addis Ababa','Amhara','Oromia','Tigray','SNNP','Afar','Somali','Sidama','South Ethiopia']
@@ -51,7 +50,7 @@ export default function DiscoverPage() {
       <style>{'*{box-sizing:border-box;margin:0;padding:0}'}</style>
 
       <nav style={{position:'sticky',top:0,zIndex:100,background:'#fff',borderBottom:'1px solid #EBEBEB'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
+        <div className="gb-navbar" style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
           <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
             <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>GOHBAY</div>
             <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>{"ETHIOPIA'S #1 MARKETPLACE"}</div>
@@ -60,7 +59,6 @@ export default function DiscoverPage() {
             <AuthButton/>
             <a href={`/${locale}/post`} style={{fontSize:'13px',fontWeight:600,padding:'9px 18px',background:'#0f3460',color:'white',borderRadius:'8px',textDecoration:'none',whiteSpace:'nowrap'}}>+ Add Experience</a>
             <LanguageSwitcher/>
-            <AIAssistant/>
           </div>
         </div>
       </nav>
@@ -85,7 +83,7 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns:'1fr 280px',gap:'24px',alignItems:'start'}}>
+      <div className="gb-2col" style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns:'1fr 280px',gap:'24px',alignItems:'start'}}>
         <div>
           <div style={{display:'flex',gap:'0',marginBottom:'20px',borderBottom:'1px solid #F3F4F6'}}>
             {(['upcoming','all'] as const).map(t => (

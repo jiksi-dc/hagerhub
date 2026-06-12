@@ -24,8 +24,8 @@ robots: { index: true, follow: true },
 }
 
 export const viewport = {
-width: 1280,
-initialScale: 0.3,
+width: 'device-width',
+initialScale: 1,
 maximumScale: 5,
 userScalable: true,
 }

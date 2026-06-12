@@ -32,16 +32,14 @@ export default function AIAssistant() {
     setLoading(false)
   }
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
-
   return (
     <>
-      {/* Trigger button — always top right, fixed */}
+      {/* Trigger button — floating action button, bottom right */}
       <button
         onClick={() => setOpen(!open)}
         style={{
-          position:'fixed', top:'12px', right:'12px', zIndex:10000,
-          width:'40px', height:'40px', borderRadius:'50%',
+          position:'fixed', bottom:'16px', right:'16px', zIndex:10000,
+          width:'48px', height:'48px', borderRadius:'50%',
           background:'#2563EB', border:'none', cursor:'pointer',
           display:'flex', alignItems:'center', justifyContent:'center',
           fontSize:'18px', color:'white', fontWeight:700,
@@ -58,11 +56,11 @@ export default function AIAssistant() {
       {open && (
         <div style={{
           position:'fixed',
-          top:'60px',
+          bottom:'76px',
           right:'12px',
           zIndex:9999,
           width:'min(320px, calc(100vw - 24px))',
-          height:'min(480px, calc(100vh - 80px))',
+          height:'min(480px, calc(100vh - 100px))',
           background:'white',
           borderRadius:'20px',
           boxShadow:'0 8px 40px rgba(0,0,0,0.2)',
@@ -74,7 +72,7 @@ export default function AIAssistant() {
           <div style={{background:'linear-gradient(135deg,#9CA3AF,#05613d)',padding:'16px',display:'flex',alignItems:'center',gap:'10px'}}>
             <div style={{width:'36px',height:'36px',background:'rgba(255,255,255,0.2)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px'}}>✦</div>
             <div>
-              <div style={{color:'white',fontWeight:800,fontSize:'14px'}}>HagerHub AI</div>
+              <div style={{color:'white',fontWeight:800,fontSize:'14px'}}>Gohbay AI</div>
               <div style={{color:'rgba(255,255,255,0.7)',fontSize:'11px'}}>Ethiopia's Marketplace Assistant</div>
             </div>
           </div>

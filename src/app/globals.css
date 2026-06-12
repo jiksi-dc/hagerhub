@@ -4,11 +4,23 @@
   padding: 0;
 }
 
-body {
+html, body {
   background: #ffffff;
   color: #111111;
   font-family: 'Montserrat', sans-serif;
   -webkit-text-size-adjust: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+img, video, svg { max-width: 100%; }
+
+/* Shared mobile guards for pages beyond the home feed (all use fixed 1280px
+   inline layouts that need to reflow now that the viewport is device-width). */
+@media (max-width: 768px) {
+  .gb-navbar { flex-wrap: wrap !important; height: auto !important; min-height: 52px !important; padding: 8px 12px !important; row-gap: 8px !important; }
+  .gb-navbar > div:last-child { flex-wrap: wrap !important; justify-content: flex-end !important; row-gap: 6px !important; }
+  .gb-2col { grid-template-columns: 1fr !important; }
 }
 
 /* Mobile nav categories - horizontal scroll */

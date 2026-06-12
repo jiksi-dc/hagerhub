@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
-import AIAssistant from '@/components/AIAssistant'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 interface Listing {
@@ -316,7 +315,7 @@ const markAsSold = async () => {
 
       {/* NAV */}
       <nav style={{position:'sticky',top:0,zIndex:100,background:'#fff',borderBottom:'1px solid #EBEBEB'}}>
-        <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
+        <div className="gb-navbar" style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'56px',display:'flex',alignItems:'center',gap:'12px'}}>
           <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
             <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>GOHBAY</div>
             <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
@@ -325,7 +324,6 @@ const markAsSold = async () => {
             <AuthButton/>
             <a href={`/${locale}/post`} style={{fontSize:'13px',fontWeight:600,padding:'9px 18px',background:'#111',color:'white',borderRadius:'8px',textDecoration:'none',whiteSpace:'nowrap'}}>+ Post Ad</a>
             <LanguageSwitcher/>
-            <AIAssistant/>
           </div>
         </div>
       </nav>
