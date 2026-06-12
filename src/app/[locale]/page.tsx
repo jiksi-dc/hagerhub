@@ -625,7 +625,39 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         </div>
       </section>
 
-      <div id="results" style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr 280px' : '200px 1fr 280px',gap:'24px',alignItems:'start',scrollMarginTop:'70px'}}>
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'18px 20px 0',display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',gap:'14px'}}>
+          {activeCat==='All' && <>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#004d00 60%,#003300 100%)" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide. Africa's largest airline." cta="Book Now" tag="Premium Partner" delay="0s" height={200} accent="rgba(255,255,255,0.2)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Finance your dream. Up to ETB 5,000,000 at the lowest rates." cta="Apply Now" tag="Financial Partner" delay="1.2s" height={160} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Send money, pay bills and shop across Ethiopia instantly." cta="Get the App" tag="Payment Partner" delay="2.4s" height={140} accent="rgba(255,255,255,0.18)"/>
+          </>}
+          {activeCat==='Properties' && <>
+            <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Real Estate" sub="Premium residential and commercial properties across Ethiopia." cta="View Properties" tag="Property Partner" delay="0s" height={220} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Up to ETB 5,000,000 · Low interest · Fast approval." cta="Apply for a Loan" tag="Financial Partner" delay="1.5s" height={160} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Sunshine Construction" sub="Build your dream home with Ethiopia's trusted builders." cta="Get a Quote" tag="Construction Partner" delay="2.5s" height={130} accent="rgba(255,255,255,0.12)"/>
+          </>}
+          {activeCat==='Vehicles' && <>
+            <AdCard bg="linear-gradient(160deg,#1a1a2e 0%,#0d0d1a 100%)" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance at the best rates in Ethiopia." cta="Get a Quote" tag="Insurance Partner" delay="0s" height={200} accent="rgba(255,255,255,0.14)"/>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines Cargo" sub="Ship anything across Ethiopia and beyond. Fast and reliable." cta="Ship Now" tag="Logistics Partner" delay="1.5s" height={150} accent="rgba(255,255,255,0.18)"/>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for your vehicle purchase securely with Telebirr." cta="Pay with Telebirr" tag="Payment Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.18)"/>
+          </>}
+          {activeCat==='Machinery' && <>
+            <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Midroc Construction" sub="Leading construction equipment supplier across Ethiopia." cta="Learn More" tag="Machinery Partner" delay="0s" height={210} accent="rgba(255,255,255,0.12)"/>
+            <AdCard bg="linear-gradient(160deg,#166534 0%,#0a3a1c 100%)" name="Ethiopian Agri-Business" sub="Farm equipment financing and leasing. Apply across Ethiopia." cta="Apply Now" tag="Agricultural Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.14)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Business Loans" sub="Finance your machinery purchase with Ethiopia's trusted bank." cta="Apply Now" tag="Financial Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
+          </>}
+          {activeCat==='Classifieds' && <>
+            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for anything across Ethiopia. Send and receive money instantly." cta="Get the App" tag="Payment Partner" delay="0s" height={200} accent="rgba(255,255,255,0.18)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Digital Banking" sub="Instant transfers, mobile banking, zero fees for first year." cta="Open an Account" tag="Banking Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#4c1d95 0%,#2e1065 100%)" name="Safaricom Ethiopia" sub="Stay connected. Ethiopia's fastest growing mobile network." cta="Learn More" tag="Telecom Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.16)"/>
+          </>}
+          {activeCat==='Jobs' && <>
+            <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines" sub="Join Africa's largest airline. 130+ destinations. Apply today." cta="View Jobs" tag="Top Employer" delay="0s" height={210} accent="rgba(255,255,255,0.2)"/>
+            <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Group" sub="Career opportunities across construction, mining and real estate." cta="Apply Now" tag="Top Employer" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
+            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE" sub="Join Ethiopia's largest bank. Over 50 open positions." cta="View Openings" tag="Top Employer" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
+          </>}
+      </div>
+      <div id="results" style={{maxWidth:'1280px',margin:'0 auto',padding:'24px 20px',display:'grid',gridTemplateColumns: activeCat==='All' ? '1fr' : '200px 1fr',gap:'24px',alignItems:'start',scrollMarginTop:'70px'}}>
         {activeCat !== 'All' && <FilterPanel/>}
         <div style={{minWidth:0}}>
           {activeCat==='All' && (
@@ -696,45 +728,15 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             </div>
           )}
         </div>
-        <div style={{position:'sticky',top:'120px',alignSelf:'start',display:'flex',flexDirection:'column',gap:'14px',width:'100%'}}>
+      </div>
+      <div style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px 8px',display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:'14px',alignItems:'start'}}>
           {featuredListings.length > 0 && (
             <div>
               <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'8px',fontWeight:600}}>Featured listings</div>
               {featuredListings.slice(0,2).map(l=><FeaturedCard key={l.id} l={l} locale={locale}/>)}
             </div>
           )}
-          {activeCat==='All' && <>
-            <AdCard bg="linear-gradient(160deg,#006400 0%,#004d00 60%,#003300 100%)" name="Ethiopian Airlines" sub="Fly to 130+ destinations worldwide. Africa's largest airline." cta="Book Now" tag="Premium Partner" delay="0s" height={200} accent="rgba(255,255,255,0.2)"/>
-            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Finance your dream. Up to ETB 5,000,000 at the lowest rates." cta="Apply Now" tag="Financial Partner" delay="1.2s" height={160} accent="rgba(255,255,255,0.15)"/>
-            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Send money, pay bills and shop across Ethiopia instantly." cta="Get the App" tag="Payment Partner" delay="2.4s" height={140} accent="rgba(255,255,255,0.18)"/>
-          </>}
-          {activeCat==='Properties' && <>
-            <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Real Estate" sub="Premium residential and commercial properties across Ethiopia." cta="View Properties" tag="Property Partner" delay="0s" height={220} accent="rgba(255,255,255,0.15)"/>
-            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Home Loans" sub="Up to ETB 5,000,000 · Low interest · Fast approval." cta="Apply for a Loan" tag="Financial Partner" delay="1.5s" height={160} accent="rgba(255,255,255,0.15)"/>
-            <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Sunshine Construction" sub="Build your dream home with Ethiopia's trusted builders." cta="Get a Quote" tag="Construction Partner" delay="2.5s" height={130} accent="rgba(255,255,255,0.12)"/>
-          </>}
-          {activeCat==='Vehicles' && <>
-            <AdCard bg="linear-gradient(160deg,#1a1a2e 0%,#0d0d1a 100%)" name="Ethiopian Insurance" sub="Comprehensive vehicle insurance at the best rates in Ethiopia." cta="Get a Quote" tag="Insurance Partner" delay="0s" height={200} accent="rgba(255,255,255,0.14)"/>
-            <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines Cargo" sub="Ship anything across Ethiopia and beyond. Fast and reliable." cta="Ship Now" tag="Logistics Partner" delay="1.5s" height={150} accent="rgba(255,255,255,0.18)"/>
-            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for your vehicle purchase securely with Telebirr." cta="Pay with Telebirr" tag="Payment Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.18)"/>
-          </>}
-          {activeCat==='Machinery' && <>
-            <AdCard bg="linear-gradient(160deg,#78350F 0%,#431d07 100%)" name="Midroc Construction" sub="Leading construction equipment supplier across Ethiopia." cta="Learn More" tag="Machinery Partner" delay="0s" height={210} accent="rgba(255,255,255,0.12)"/>
-            <AdCard bg="linear-gradient(160deg,#166534 0%,#0a3a1c 100%)" name="Ethiopian Agri-Business" sub="Farm equipment financing and leasing. Apply across Ethiopia." cta="Apply Now" tag="Agricultural Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.14)"/>
-            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Business Loans" sub="Finance your machinery purchase with Ethiopia's trusted bank." cta="Apply Now" tag="Financial Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
-          </>}
-          {activeCat==='Classifieds' && <>
-            <AdCard bg="linear-gradient(160deg,#CC3700 0%,#FF6B00 100%)" name="Telebirr" sub="Pay for anything across Ethiopia. Send and receive money instantly." cta="Get the App" tag="Payment Partner" delay="0s" height={200} accent="rgba(255,255,255,0.18)"/>
-            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE Digital Banking" sub="Instant transfers, mobile banking, zero fees for first year." cta="Open an Account" tag="Banking Partner" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
-            <AdCard bg="linear-gradient(160deg,#4c1d95 0%,#2e1065 100%)" name="Safaricom Ethiopia" sub="Stay connected. Ethiopia's fastest growing mobile network." cta="Learn More" tag="Telecom Partner" delay="2.5s" height={120} accent="rgba(255,255,255,0.16)"/>
-          </>}
-          {activeCat==='Jobs' && <>
-            <AdCard bg="linear-gradient(160deg,#006400 0%,#003300 100%)" name="Ethiopian Airlines" sub="Join Africa's largest airline. 130+ destinations. Apply today." cta="View Jobs" tag="Top Employer" delay="0s" height={210} accent="rgba(255,255,255,0.2)"/>
-            <AdCard bg="linear-gradient(160deg,#1a3a5c 0%,#0d2238 100%)" name="Midroc Group" sub="Career opportunities across construction, mining and real estate." cta="Apply Now" tag="Top Employer" delay="1.5s" height={155} accent="rgba(255,255,255,0.15)"/>
-            <AdCard bg="linear-gradient(160deg,#003087 0%,#001f5e 100%)" name="CBE" sub="Join Ethiopia's largest bank. Over 50 open positions." cta="View Openings" tag="Top Employer" delay="2.5s" height={120} accent="rgba(255,255,255,0.15)"/>
-          </>}
           <BoostCTA locale={locale}/>
-        </div>
       </div>
 
       <footer style={{background:'#fff',borderTop:'1px solid #EBEBEB',padding:'32px 20px 24px',marginTop:'16px'}}>
