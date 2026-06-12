@@ -424,6 +424,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           .nav-inner { padding: 0 12px !important; gap: 8px !important; height: 52px !important; }
           .nav-search, .nav-searchbtn, .nav-lang { display: none !important; }
           .hero-section { min-height: 430px !important; }
+          .hero-section img { top: -40% !important; height: 140% !important; }
           .hero-inner { padding: 30px 16px !important; }
           .hero-panel { width: 100% !important; padding: 14px !important; }
           .hero-filtergrid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
