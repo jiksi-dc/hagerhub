@@ -455,7 +455,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               style={{width:'100%',padding:'9px 14px 9px 38px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',outline:'none',fontFamily:'inherit'}}/>
             <span style={{position:'absolute',left:'12px',top:'50%',transform:'translateY(-50%)',color:'#9CA3AF',fontSize:'14px'}}>⌕</span>
           </div>
-          <button className="nav-searchbtn" style={{padding:'9px 18px',background:'#111',color:'#2563EB',border:'none',borderRadius:'8px',fontSize:'13px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',flexShrink:0}}>
+          <button className="nav-searchbtn" style={{padding:'6px 12px',background:'#2563EB',color:'white',border:'none',borderRadius:'8px',fontSize:'12px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',flexShrink:0}}>
             {t('nav.searchBtn')}
           </button>
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
@@ -612,7 +612,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               <div><label style={heroLbl}>Keyword</label>
                 <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('nav.search')} style={heroField}/></div>
               <button onClick={()=>{const el=document.getElementById('results');if(el)el.scrollIntoView({behavior:'smooth'})}}
-                style={{height:'44px',background:'#111',color:'#2563EB',border:'none',borderRadius:'10px',padding:'0 22px',fontSize:'14px',fontWeight:700,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+                style={{height:'30px',background:'#2563EB',color:'white',border:'none',borderRadius:'8px',padding:'0 14px',fontSize:'13px',fontWeight:700,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
                 ⌕ {t('nav.searchBtn')}
               </button>
             </div>
