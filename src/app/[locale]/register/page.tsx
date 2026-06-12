@@ -43,7 +43,7 @@ export default function RegisterPage() {
       <div style={{background:'white',borderRadius:'16px',padding:'32px',maxWidth:'360px',width:'100%',boxShadow:'0 1px 3px rgba(0,0,0,0.1)'}}>
         <div style={{height:'4px',borderRadius:'4px',marginBottom:'24px',background:'linear-gradient(90deg,#22c55e,#facc15,#ef4444)'}}/>
         <h1 style={{fontSize:'24px',fontWeight:700,marginBottom:'4px'}}>Create account</h1>
-        <p style={{fontSize:'14px',color:'#6b7280',marginBottom:'24px'}}>Join HagerHub</p>
+        <p style={{fontSize:'14px',color:'#6b7280',marginBottom:'24px'}}>Join Gohbay</p>
         {error && <div style={{marginBottom:'16px',padding:'12px',background:'#fef2f2',color:'#b91c1c',fontSize:'14px',borderRadius:'8px'}}>{error}</div>}
         <form onSubmit={handleRegister}>
           <div style={{display:'flex',gap:'8px',marginBottom:'16px'}}>
