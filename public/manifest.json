@@ -1,0 +1,19 @@
+{
+  "name": "Gohbay — Ethiopia's #1 Marketplace",
+  "short_name": "Gohbay",
+  "description": "Buy and sell properties, vehicles, machinery, jobs and more across Ethiopia.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F9FAFB",
+  "theme_color": "#111111",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
