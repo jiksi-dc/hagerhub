@@ -11,6 +11,7 @@ title: { default: "Gohbay — Ethiopia's #1 Marketplace", template: "%s | Gohbay
 description: "Buy and sell properties, vehicles, machinery, jobs and more in Ethiopia. Gohbay is Ethiopia's largest online marketplace.",
 keywords: ['Ethiopia marketplace', 'buy sell Ethiopia', 'properties Ethiopia', 'jobs Ethiopia', 'Gohbay'],
 manifest: '/manifest.json',
+appleWebApp: { capable: true, statusBarStyle: 'black', title: 'Gohbay' },
 openGraph: {
 siteName: 'Gohbay',
 type: 'website',
