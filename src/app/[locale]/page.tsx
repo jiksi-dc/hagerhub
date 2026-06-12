@@ -79,15 +79,14 @@ const PartnerBanner = ({bg,name,sub,cta,tag,accent='rgba(255,255,255,0.22)'}:{bg
       position:'relative',width:'100%',borderRadius:'18px',overflow:'hidden',background:bg,
       boxShadow:'0 4px 24px rgba(0,0,0,0.14)',display:'flex',alignItems:'center',
       justifyContent:'space-between',gap:'20px',padding:'30px 34px',minHeight:'150px',
-      cursor:'pointer',animation:'adblend 6s ease-in-out infinite',
+      cursor:'pointer',
     }}>
-      <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 45%, rgba(255,255,255,0.06) 100%)',animation:'shimmerslide 3.5s ease-in-out infinite',pointerEvents:'none'}}/>
       <div style={{position:'absolute',bottom:0,left:0,right:0,height:'55%',background:'linear-gradient(to top, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 100%)',pointerEvents:'none'}}/>
       <div style={{position:'relative',zIndex:1,maxWidth:'72%'}}>
         <div style={{fontSize:'25px',fontWeight:900,color:'#fff',marginBottom:'8px',textShadow:'0 1px 6px rgba(0,0,0,0.35)',lineHeight:1.1}}>{name}</div>
         <div style={{fontSize:'14px',color:'rgba(255,255,255,0.92)',lineHeight:1.5}}>{sub}</div>
       </div>
-      <button className="partner-cta" style={{position:'relative',zIndex:1,flexShrink:0,background:accent,backdropFilter:'blur(8px)',color:'#fff',fontSize:'14px',fontWeight:800,padding:'13px 26px',borderRadius:'26px',border:'1px solid rgba(255,255,255,0.4)',cursor:'pointer',whiteSpace:'nowrap',letterSpacing:'0.3px'}}>{cta} →</button>
+      <button className="partner-cta" style={{position:'relative',zIndex:1,flexShrink:0,background:accent,color:'#fff',fontSize:'14px',fontWeight:800,padding:'13px 26px',borderRadius:'26px',border:'1px solid rgba(255,255,255,0.4)',cursor:'pointer',whiteSpace:'nowrap',letterSpacing:'0.3px'}}>{cta} →</button>
     </div>
   </div>
 )
@@ -412,8 +411,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{`
         @keyframes adpulse { 0%,100%{opacity:1} 50%{opacity:.94} }
-@keyframes adblend { 0%,100%{box-shadow:0 2px 16px rgba(0,0,0,0.10);transform:translateY(0)} 50%{box-shadow:0 8px 32px rgba(0,0,0,0.22);transform:translateY(-3px)} }
-@keyframes shimmerslide { 0%,100%{opacity:0.5} 50%{opacity:1} }
 @keyframes featuredshimmer { 0%,100%{box-shadow:0 0 0 rgba(218,165,32,0)} 50%{box-shadow:0 4px 20px rgba(218,165,32,0.15)} }
         *{box-sizing:border-box;margin:0;padding:0}
         select:focus,input:focus{border-color:#2563EB!important}
