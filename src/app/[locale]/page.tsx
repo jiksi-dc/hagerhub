@@ -473,7 +473,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
       </nav>
 
       <section style={{position:'relative',width:'100%',minHeight:'440px',overflow:'hidden'}}>
-        <img src="/Addis 2.jpg" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%'}}/>
+        <img src="/Addis 2.jpg" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 30%'}}/>
         <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.32) 40%,rgba(0,0,0,0.04) 64%,rgba(0,0,0,0) 100%)'}}/>
         <div style={{position:'relative',maxWidth:'1280px',margin:'0 auto',width:'100%',padding:'56px 20px'}}>
         <div style={{maxWidth:'600px',marginRight:'auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
