@@ -432,6 +432,13 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         .cat-row-off .cat-track-anim{animation-play-state:paused}
         .cat-row:hover .cat-track-anim{animation-play-state:paused}
 
+        @media (min-width: 769px) {
+          .hero-section { min-height: 0 !important; background: #E8EAED !important; }
+          .hero-section img { top: 0 !important; bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; object-position: center !important; }
+          .hero-section > div:first-of-type { bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.12) 50%, rgba(0,0,0,0.25) 100%) !important; }
+          .hero-panel { margin-top: calc(66.667vw - 175px) !important; }
+          .hero-tabs { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(0,0,0,0.35) !important; }
+        }
         @media (max-width: 768px) {
           .nav-inner { padding: 0 12px !important; gap: 8px !important; height: 52px !important; }
           .nav-search, .nav-searchbtn, .nav-lang { display: none !important; }
