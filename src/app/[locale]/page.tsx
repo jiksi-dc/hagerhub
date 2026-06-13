@@ -432,9 +432,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         .cat-row-off .cat-track-anim{animation-play-state:paused}
         .cat-row:hover .cat-track-anim{animation-play-state:paused}
 
-        @media (min-width: 769px) {
-          .hero-section img { object-fit: cover !important; object-position: center top !important; }
-        }
         @media (max-width: 768px) {
           .nav-inner { padding: 0 12px !important; gap: 8px !important; height: 52px !important; }
           .nav-search, .nav-searchbtn, .nav-lang { display: none !important; }
