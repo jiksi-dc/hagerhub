@@ -433,11 +433,8 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         .cat-row:hover .cat-track-anim{animation-play-state:paused}
 
         @media (min-width: 769px) {
-          .hero-section { min-height: 0 !important; height: 640px !important; background: #E8EAED !important; }
-          .hero-section img { top: 0 !important; bottom: auto !important; height: 100% !important; width: auto !important; aspect-ratio: 3/2 !important; left: 50% !important; right: auto !important; transform: translateX(-50%) !important; max-width: 100% !important; object-fit: cover !important; object-position: center !important; }
-          .hero-section > div:first-of-type { top: 0 !important; bottom: auto !important; left: 50% !important; right: auto !important; transform: translateX(-50%) !important; width: 960px !important; max-width: 100% !important; height: 640px !important; background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.12) 50%, rgba(0,0,0,0.28) 100%) !important; }
-          .hero-inner { max-width: 960px !important; padding: 40px 24px !important; }
-          .hero-tabs { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(0,0,0,0.35) !important; }
+          .hero-section { background: #E8EAED !important; }
+          .hero-section img { object-fit: contain !important; object-position: left center !important; }
         }
         @media (max-width: 768px) {
           .nav-inner { padding: 0 12px !important; gap: 8px !important; height: 52px !important; }
