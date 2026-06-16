@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import BackHomeBar from '@/components/BackHomeBar'
 
 interface Listing {
   id: string; title: string; description: string; price_label: string
@@ -328,6 +329,7 @@ const markAsSold = async () => {
         </div>
       </nav>
 
+      <BackHomeBar />
       {/* BREADCRUMB */}
       <div style={{maxWidth:'1280px',margin:'0 auto',padding:'14px 20px',fontSize:'12px',color:'#6B7280'}}>
         <a href={`/${locale}`} style={{color:'#6B7280',textDecoration:'none'}}>Home</a>
