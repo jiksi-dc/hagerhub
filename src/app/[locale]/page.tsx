@@ -5,6 +5,30 @@ import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
+function renderAiMarkdown(src: string){
+  let s = src.replace(/[<>]/g, c => (c === '<' ? '&lt;' : '&gt;'))
+  s = s.replace(/(?:^\|.*\|[ \t]*\n?)+/gm, block => {
+    const rows = block.trim().split('\n').map(r => r.trim()).filter(Boolean)
+    const cells = rows.map(r => r.replace(/^\||\|$/g, '').split('|').map(c => c.trim()))
+    const body = cells.filter(row => !row.every(c => /^-+$/.test(c)))
+    if (body.length === 0) return ''
+    const head = body[0]; const rest = body.slice(1)
+    const th = head.map(c => '<th style="text-align:left;padding:4px 8px;border-bottom:1px solid #ddd;font-weight:600;">'+c+'</th>').join('')
+    const trs = rest.map(row => '<tr>' + row.map(c => '<td style="padding:4px 8px;border-bottom:1px solid #f0f0f0;">'+c+'</td>').join('') + '</tr>').join('')
+    return '<table style="border-collapse:collapse;width:100%;margin:6px 0;font-size:12px;"><thead><tr>'+th+'</tr></thead><tbody>'+trs+'</tbody></table>'
+  })
+  s = s.replace(/^#{2,3}\s?(.*)$/gm, '<div style="font-weight:700;margin:8px 0 4px;">$1</div>')
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  s = s.replace(/^\s*---\s*$/gm, '<hr style="border:none;border-top:1px solid #eee;margin:8px 0;">')
+  s = s.replace(/^\s*[-\u2022]\s+(.*)$/gm, '<li style="margin:2px 0;">$1</li>')
+  s = s.replace(/(<li[\s\S]*?<\/li>)/g, '<ul style="margin:4px 0;padding-left:18px;">$1</ul>')
+  s = s.replace(/<\/ul>\s*<ul[^>]*>/g, '')
+  s = s.replace(/\n/g, '<br>')
+  s = s.replace(/<br>\s*(<div|<hr|<ul|<table)/g, '$1')
+  s = s.replace(/(<\/div>|<hr[^>]*>|<\/ul>|<\/table>)\s*<br>/g, '$1')
+  return s
+}
+
 const POPULAR = [
   { key:'properties', name:'Properties', items:['Residential for Rent','Residential for Sale','Commercial','Land & Plots'] },
   { key:'vehicles',   name:'Vehicles',   items:['Used Cars','New Cars','Trucks & LGVs','Motorcycles'] },
@@ -156,6 +180,10 @@ export default function Home() {
   const locale = useLocale()
   const [activeCat, setActiveCat] = useState('All')
   const [search, setSearch] = useState('')
+  const [aiOpen, setAiOpen] = useState(false)
+  const [aiMessages, setAiMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([])
+  const [aiInput, setAiInput] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState<Set<string>>(new Set())
@@ -418,6 +446,23 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
     </div>
   )
 
+
+  const askAI = async (text: string) => {
+    const t = (text || '').trim()
+    if (!t || aiLoading) return
+    setAiOpen(true)
+    setAiMessages(prev => [...prev, { role: 'user', content: t }])
+    setAiLoading(true)
+    try {
+      const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: t }) })
+      const data = await res.json()
+      setAiMessages(prev => [...prev, { role: 'assistant', content: data.reply || 'Sorry, I could not respond.' }])
+    } catch {
+      setAiMessages(prev => [...prev, { role: 'assistant', content: 'Something went wrong. Please try again.' }])
+    }
+    setAiLoading(false)
+  }
+
   return (
     <main style={{minHeight:'100vh',background:'#F9FAFB',fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <style>{`
@@ -464,12 +509,39 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>GOHBAY</div>
             <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
           </a>
+          <button onClick={() => { if (search.trim()) askAI(search); else setAiOpen(o => !o) }} style={{ display:'inline-flex', alignItems:'center', gap:'6px', height:'38px', padding:'0 12px', borderRadius:'8px', background:'#fff', border:'1.5px solid #C7C4F5', color:'#4F46E5', fontSize:'12px', fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', flexShrink:0 }}>
+            <span style={{ fontSize:'15px', lineHeight:0 }}>✦</span> AI Assistant
+          </button>
           <div className="nav-search" style={{flex:1,maxWidth:'480px',position:'relative'}}>
             <input value={search} onChange={e=>setSearch(e.target.value)}
               placeholder={t('nav.search')}
               style={{width:'100%',padding:'9px 14px 9px 38px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',outline:'none',fontFamily:'inherit'}}/>
             <span style={{position:'absolute',left:'12px',top:'50%',transform:'translateY(-50%)',color:'#9CA3AF',fontSize:'14px'}}>⌕</span>
-          </div>
+          
+            {aiOpen && (
+              <div style={{ position:'absolute', top:'calc(100% + 6px)', left:0, right:0, background:'#fff', border:'1px solid #C7C4F5', borderRadius:'12px', boxShadow:'0 10px 32px rgba(0,0,0,0.14)', zIndex:9999, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', borderBottom:'1px solid #eee', background:'#F7F7FB' }}>
+                  <span style={{ display:'inline-flex', alignItems:'center', gap:'7px', fontSize:'13px', fontWeight:600, color:'#111' }}><span style={{ color:'#4F46E5', fontSize:'15px' }}>✦</span> Gohbay AI</span>
+                  <span onClick={() => setAiOpen(false)} style={{ cursor:'pointer', color:'#999', fontSize:'18px', lineHeight:1 }}>×</span>
+                </div>
+                <div style={{ overflowY:'auto', padding:'14px', display:'flex', flexDirection:'column', gap:'10px', minHeight:'90px', maxHeight:'360px' }}>
+                  {aiMessages.length === 0 && (<div style={{ textAlign:'center', color:'#9CA3AF', fontSize:'13px', padding:'20px 0' }}>Type in the search box, then tap AI Assistant…</div>)}
+                  {aiMessages.map((m, i) => (
+                    <div key={i} style={{ display:'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
+                      {m.role === 'user'
+                        ? <div style={{ maxWidth:'82%', padding:'9px 13px', borderRadius:'16px 16px 4px 16px', background:'#2563EB', color:'#fff', fontSize:'13px', lineHeight:1.5 }}>{m.content}</div>
+                        : <div style={{ maxWidth:'90%', padding:'10px 13px', borderRadius:'16px 16px 16px 4px', background:'#F0F2F5', color:'#111', fontSize:'13px', lineHeight:1.55 }} dangerouslySetInnerHTML={{ __html: renderAiMarkdown(m.content) }} />}
+                    </div>
+                  ))}
+                  {aiLoading && (<div style={{ display:'flex', justifyContent:'flex-start' }}><div style={{ padding:'10px 14px', borderRadius:'16px 16px 16px 4px', background:'#F0F2F5', color:'#999', fontSize:'13px' }}>typing…</div></div>)}
+                </div>
+                <div style={{ display:'flex', gap:'8px', padding:'12px 14px', borderTop:'1px solid #eee', background:'#F7F7FB' }}>
+                  <input value={aiInput} onChange={e => setAiInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { askAI(aiInput); setAiInput('') } }} placeholder="Ask a follow-up…" style={{ flex:1, height:'38px', border:'1.5px solid #e5e7eb', borderRadius:'20px', padding:'0 14px', fontSize:'13px', outline:'none', fontFamily:'inherit' }} />
+                  <button onClick={() => { askAI(aiInput); setAiInput('') }} disabled={aiLoading} style={{ width:'38px', height:'38px', borderRadius:'50%', background:'#4F46E5', border:'none', color:'#fff', cursor:'pointer', fontSize:'16px', flexShrink:0 }}>↑</button>
+                </div>
+              </div>
+            )}
+            </div>
           <button className="nav-searchbtn" style={{padding:'6px 12px',background:'#2563EB',color:'white',border:'none',borderRadius:'8px',fontSize:'12px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',flexShrink:0}}>
             {t('nav.searchBtn')}
           </button>
