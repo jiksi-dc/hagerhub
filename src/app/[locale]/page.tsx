@@ -555,7 +555,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         </div>
       </nav>
 
-      <section className="hero-section" style={{position:'relative',width:'100%',aspectRatio:'16 / 6',maxHeight:'460px',overflow:'hidden'}}>
+      <section className="hero-section" style={{position:'relative',width:'100%',minHeight:'560px',aspectRatio:'2.722 / 1',overflow:'hidden'}}>
         <img className="hero-img-desktop" src="/Addis-desktop.png" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center'}}/>
           <img className="hero-img-mobile" src="/Addis-mobile.png" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center',display:'none'}}/>
         <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.32) 40%,rgba(0,0,0,0.04) 64%,rgba(0,0,0,0) 100%)'}}/>
