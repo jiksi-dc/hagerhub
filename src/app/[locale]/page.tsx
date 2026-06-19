@@ -479,7 +479,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
 
         @media (max-width: 768px) {
           .nav-inner { padding: 0 12px !important; gap: 8px !important; height: 52px !important; }
-          .nav-search, .nav-searchbtn, .nav-lang { display: none !important; }
+          .nav-search, .nav-searchbtn, .nav-lang, .nav-ai-pill { display: none !important; }
           .hero-section { min-height: 0 !important; background: #E8EAED !important; }
           .hero-section img { top: 0 !important; bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; object-position: center !important; }
           .hero-section > div:first-of-type { bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.3) 100%) !important; }
@@ -509,7 +509,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>GOHBAY</div>
             <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
           </a>
-          <button onClick={() => { if (search.trim()) askAI(search); else setAiOpen(o => !o) }} style={{ display:'inline-flex', alignItems:'center', gap:'6px', height:'38px', padding:'0 12px', borderRadius:'8px', background:'#fff', border:'1.5px solid #C7C4F5', color:'#4F46E5', fontSize:'12px', fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', flexShrink:0 }}>
+          <button className="nav-ai-pill" onClick={() => { if (search.trim()) askAI(search); else setAiOpen(o => !o) }} style={{ display:'inline-flex', alignItems:'center', gap:'6px', height:'38px', padding:'0 12px', borderRadius:'8px', background:'#fff', border:'1.5px solid #C7C4F5', color:'#4F46E5', fontSize:'12px', fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', flexShrink:0 }}>
             <span style={{ fontSize:'15px', lineHeight:0 }}>✦</span> AI Assistant
           </button>
           <div className="nav-search" style={{flex:1,maxWidth:'480px',position:'relative'}}>
@@ -555,8 +555,8 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         </div>
       </nav>
 
-      <section className="hero-section" style={{position:'relative',width:'100%',aspectRatio:'16 / 6',maxHeight:'460px',overflow:'hidden'}}>
-        <img src="/Addis 2.jpg" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 42%'}}/>
+      <section className="hero-section" style={{position:'relative',width:'100%',minHeight:'560px',overflow:'hidden'}}>
+        <img src="/Addis 2.jpg" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 30%'}}/>
         <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.32) 40%,rgba(0,0,0,0.04) 64%,rgba(0,0,0,0) 100%)'}}/>
         <div className="hero-inner" style={{position:'relative',maxWidth:'1280px',margin:'0 auto',width:'100%',padding:'56px 20px'}}>
         <div style={{maxWidth:'600px',marginRight:'auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
