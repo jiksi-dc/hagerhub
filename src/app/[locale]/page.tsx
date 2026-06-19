@@ -481,7 +481,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           .nav-inner { padding: 0 12px !important; gap: 8px !important; height: 52px !important; }
           .nav-search, .nav-searchbtn, .nav-lang, .nav-ai-pill { display: none !important; }
           .hero-section { min-height: 0 !important; background: #E8EAED !important; }
-          .hero-section img { top: 0 !important; bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; object-position: center !important; } .hero-section .hero-img-desktop { display: none !important; } .hero-section .hero-img-mobile { display: block !important; }
+          .hero-section img { top: 0 !important; bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; } .hero-section .hero-img-desktop { display: none !important; } .hero-section .hero-img-mobile { display: block !important; }
           .hero-section > div:first-of-type { bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.3) 100%) !important; }
           .hero-tabs { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(0,0,0,0.35) !important; }
           .hero-inner { padding: 30px 16px !important; }
@@ -557,7 +557,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
 
       <section className="hero-section" style={{position:'relative',width:'100%',minHeight:'560px',aspectRatio:'2.722 / 1',overflow:'hidden'}}>
         <img className="hero-img-desktop" src="/Addis-desktop.png" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center'}}/>
-          <img className="hero-img-mobile" src="/Addis 2.jpg" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center',display:'none'}}/>
+          <img className="hero-img-mobile" src="/Addis 2.jpg" alt="Addis Ababa skyline" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 30%',display:'none'}}/>
         <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.32) 40%,rgba(0,0,0,0.04) 64%,rgba(0,0,0,0) 100%)'}}/>
         <div className="hero-inner" style={{position:'relative',maxWidth:'1280px',margin:'0 auto',width:'100%',padding:'56px 20px'}}>
         <div style={{maxWidth:'600px',marginRight:'auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
