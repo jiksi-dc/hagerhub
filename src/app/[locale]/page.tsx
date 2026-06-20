@@ -557,8 +557,8 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         <div className="hero-inner" style={{position:'relative',maxWidth:'1280px',margin:'0 auto',width:'100%',padding:'56px 20px'}}>
         <div style={{maxWidth:'600px',marginRight:'auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
           <div style={{textAlign:'left',marginBottom:'22px'}}>
-            <h1 style={{fontSize:'32px',fontWeight:900,color:'#fff',textShadow:'0 2px 14px rgba(0,0,0,0.6)',letterSpacing:'-0.5px',margin:0}}>Find anything in Ethiopia</h1>
-            <p style={{fontSize:'14px',color:'rgba(255,255,255,0.95)',marginTop:'6px',textShadow:'0 1px 8px rgba(0,0,0,0.6)'}}>Properties · Vehicles · Machinery · Jobs · and more</p>
+            <h1 style={{fontSize:'32px',fontWeight:900,color:'#fff',textShadow:'0 2px 14px rgba(0,0,0,0.6)',letterSpacing:'-0.5px',margin:0}}>Discover Ethiopia</h1>
+            <p style={{fontSize:'14px',color:'rgba(255,255,255,0.95)',marginTop:'6px',textShadow:'0 1px 8px rgba(0,0,0,0.6)'}}>Buy. Sell. Rent/Lease. Hire/Work. Explore Ethiopia.</p>
           </div>
           <div className="hero-tabs" style={{display:'flex',gap:'3px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'nowrap',justifyContent:'flex-start',maxWidth:'100%',overflowX:'auto',WebkitOverflowScrolling:'touch',scrollbarWidth:'none',msOverflowStyle:'none'}}>
             {TABS.map(tab=>{
