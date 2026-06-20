@@ -509,10 +509,10 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             <div style={{fontSize:'15px',fontWeight:900,color:'#111',letterSpacing:'2px'}}>GOHBAY</div>
             <div style={{fontSize:'8px',color:'#9CA3AF',letterSpacing:'1.5px',marginTop:'1px'}}>ETHIOPIA'S #1 MARKETPLACE</div>
           </a>
-          <button className="nav-ai-pill" onClick={() => { if (search.trim()) askAI(search); else setAiOpen(o => !o) }} style={{ display:'inline-flex', alignItems:'center', gap:'6px', height:'38px', padding:'0 12px', borderRadius:'8px', background:'#fff', border:'1.5px solid #C7C4F5', color:'#4F46E5', fontSize:'12px', fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', flexShrink:0 }}>
+          <button className="nav-ai-pill" onClick={() => { if (search.trim()) askAI(search); else setAiOpen(o => !o) }} style={{ display:'inline-flex', alignItems:'center', gap:'6px', height:'38px', padding:'0 12px', borderRadius:'8px', background:'#2563EB', border:'1.5px solid #2563EB', color:'#fff', fontSize:'12px', fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', flexShrink:0 }}>
             <span style={{ fontSize:'15px', lineHeight:0 }}>✦</span> AI Assistant
           </button>
-          <div className="nav-search" style={{flex:1,maxWidth:'480px',position:'relative'}}>
+          <div className="nav-search" style={{flex:1,maxWidth:'640px',position:'relative'}}>
             <input value={search} onChange={e=>setSearch(e.target.value)}
               placeholder={t('nav.search')}
               style={{width:'100%',padding:'9px 14px 9px 38px',border:'1.5px solid #E5E7EB',borderRadius:'10px',fontSize:'13px',outline:'none',fontFamily:'inherit'}}/>
