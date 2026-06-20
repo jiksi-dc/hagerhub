@@ -542,9 +542,6 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               </div>
             )}
             </div>
-          <button className="nav-searchbtn" style={{padding:'6px 12px',background:'#2563EB',color:'white',border:'none',borderRadius:'8px',fontSize:'12px',fontWeight:600,cursor:'pointer',fontFamily:'inherit',flexShrink:0}}>
-            {t('nav.searchBtn')}
-          </button>
           <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
             <AuthButton/>
             <a href={`/${locale}/post`} style={{fontSize:'13px',fontWeight:600,padding:'9px 18px',background:'#111',color:'white',borderRadius:'8px',textDecoration:'none',border:'none',whiteSpace:'nowrap'}}>
