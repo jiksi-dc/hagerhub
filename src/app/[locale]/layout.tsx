@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import {NextIntlClientProvider} from 'next-intl'
 import {getMessages} from 'next-intl/server'
-import AIAssistant from '@/components/AIAssistant'
 import InstallButton from '@/components/InstallButton'
 import '../globals.css'
 import '../desktop.css'
@@ -38,7 +37,6 @@ return (
 <body>
 <NextIntlClientProvider messages={messages}>
 {children}
-<AIAssistant/>
 <InstallButton/>
 </NextIntlClientProvider>
 </body>
