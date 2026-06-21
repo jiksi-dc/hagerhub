@@ -565,7 +565,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               const on = activeCat===tab.name
               return (
                 <button key={tab.key} onClick={()=>setActiveCat(tab.name)} className="hero-tab"
-                  style={{fontSize:'12px',fontWeight:on?700:600,color:on?'#111':'#fff',background:on?'#fff':'transparent',
+                  style={{fontSize:'12px',fontWeight:on?700:600,color:on?'#111':'#555',background:on?'#fff':'transparent',
                     padding:'8px 11px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',flexShrink:0,transition:'all .15s'}}>
                   {(tab as any).label || tab.name}
                 </button>
