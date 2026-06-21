@@ -552,15 +552,15 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         </div>
       </nav>
 
-      <section className="hero-section" style={{position:'relative',width:'100%',minHeight:'340px',background:'#1f2933',overflow:'hidden'}}>
-        <div style={{position:'absolute',inset:0,background:'linear-gradient(90deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.32) 40%,rgba(0,0,0,0.04) 64%,rgba(0,0,0,0) 100%)'}}/>
-        <div className="hero-inner" style={{position:'relative',maxWidth:'1280px',margin:'0 auto',width:'100%',padding:'56px 20px'}}>
-        <div style={{maxWidth:'600px',marginRight:'auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
+      <section className="hero-section" style={{position:'relative',width:'100%',minHeight:'340px',background:'#f9fafb',overflow:'hidden'}}>
+        <div style={{position:'absolute',inset:0,background:'none'}}/>
+        <div className="hero-inner" style={{position:'relative',maxWidth:'1180px',margin:'0 auto',width:'100%',padding:'56px 20px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'48px'}}>
+        <div style={{maxWidth:'480px',flex:'0 0 auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
           <div style={{textAlign:'left',marginBottom:'22px'}}>
-            <h1 style={{fontSize:'32px',fontWeight:900,color:'#fff',textShadow:'0 2px 14px rgba(0,0,0,0.6)',letterSpacing:'-0.5px',margin:0}}>Discover Ethiopia</h1>
-            <p style={{fontSize:'14px',color:'rgba(255,255,255,0.95)',marginTop:'6px',textShadow:'0 1px 8px rgba(0,0,0,0.6)'}}>Buy. Sell. Rent/Lease. Hire/Work. Explore Ethiopia.</p>
+            <h1 style={{fontSize:'48px',fontWeight:900,color:'#000',letterSpacing:'-0.5px',margin:0,lineHeight:1.1}}>Discover Ethiopia</h1>
+            <p style={{fontSize:'20px',color:'#000',marginTop:'8px'}}>Buy. Sell. Rent/Lease. Hire/Work. Explore Ethiopia.</p>
           </div>
-          <div className="hero-tabs" style={{display:'flex',gap:'3px',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(6px)',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'nowrap',justifyContent:'flex-start',maxWidth:'100%',overflowX:'auto',WebkitOverflowScrolling:'touch',scrollbarWidth:'none',msOverflowStyle:'none'}}>
+          <div className="hero-tabs" style={{display:'flex',gap:'3px',background:'transparent',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'nowrap',justifyContent:'flex-start',maxWidth:'100%',overflowX:'auto',WebkitOverflowScrolling:'touch',scrollbarWidth:'none',msOverflowStyle:'none'}}>
             {TABS.map(tab=>{
               const on = activeCat===tab.name
               return (
@@ -700,6 +700,9 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               </button>
             </div>
           </div>
+        </div>
+        <div style={{flex:'0 0 auto',width:'640px',height:'360px',borderRadius:'12px',overflow:'hidden',background:'#000'}}>
+          <video src="/Gohbay Ad.mp4" autoPlay muted loop playsInline style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
         </div>
         </div>
       </section>
