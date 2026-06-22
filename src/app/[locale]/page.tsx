@@ -482,7 +482,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           .nav-search, .nav-searchbtn, .nav-lang, .nav-ai-pill { display: none !important; }
           .hero-section { min-height: 0 !important; background: #1f2933 !important; }
           .hero-section img { top: 0 !important; bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; }
-          .hero-section > div:first-of-type { bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.3) 100%) !important; }
+          .hero-section > div:first-of-type { display: none !important; }
           .hero-tabs { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(0,0,0,0.35) !important; }
           .hero-inner { padding: 30px 16px !important; flex-direction: column !important; }          .hero-video { order: -1 !important; width: 100% !important; height: auto !important; aspect-ratio: 3/2 !important; flex: none !important; }
           .hero-panel { width: 100% !important; padding: 14px !important; margin-top: 0 !important; }
