@@ -484,8 +484,8 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           .hero-section img { top: 0 !important; bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; }
           .hero-section > div:first-of-type { bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.3) 100%) !important; }
           .hero-tabs { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(0,0,0,0.35) !important; }
-          .hero-inner { padding: 30px 16px !important; }
-          .hero-panel { width: 100% !important; padding: 14px !important; margin-top: calc(66.667vw - 147px) !important; }
+          .hero-inner { padding: 30px 16px !important; flex-direction: column !important; }          .hero-video { order: -1 !important; width: 100% !important; height: auto !important; aspect-ratio: 3/2 !important; flex: none !important; }
+          .hero-panel { width: 100% !important; padding: 14px !important; margin-top: 0 !important; }
           .hero-filtergrid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
           .hero-searchrow { grid-template-columns: 1fr !important; }
           .hero-searchrow > button { width: 100% !important; }
@@ -701,7 +701,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
             </div>
           </div>
         </div>
-        <div style={{flex:'0 0 auto',width:'640px',height:'360px',borderRadius:'12px',overflow:'hidden',background:'#000'}}>
+        <div className="hero-video" style={{flex:'0 0 auto',width:'640px',height:'360px',borderRadius:'12px',overflow:'hidden',background:'#000'}}>
           <video src="/Gohbay Ad.mp4" autoPlay muted loop playsInline style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
         </div>
         </div>
