@@ -183,7 +183,7 @@ export default function Home() {
   const [aiOpen, setAiOpen] = useState(false)
   const [aiMessages, setAiMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([])
   const [aiInput, setAiInput] = useState('')
-  const [aiLoading, setAiLoading] = useState(false)
+  const [aiLoading, setAiLoading] = useState(false); const [mobileFilters, setMobileFilters] = useState(false)
   const [listings, setListings] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState<Set<string>>(new Set())
@@ -485,7 +485,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           .hero-section > div:first-of-type { display: none !important; }
           .hero-tabs { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: transparent !important; }
           .hero-inner { padding: 30px 16px !important; flex-direction: column !important; align-items: stretch !important; }          .hero-inner > div:not(.hero-video) { max-width: 100% !important; width: 100% !important; flex: none !important; }          .hero-video { order: -1 !important; width: 100% !important; height: auto !important; aspect-ratio: 3/2 !important; flex: none !important; }
-          .hero-panel { width: 100% !important; padding: 14px !important; margin-top: 0 !important; }
+          .hero-panel { width: 100% !important; padding: 14px !important; margin-top: 0 !important; } .hero-mobilebtns { display: flex !important; } .hero-panel { display: none !important; } .hero-panel.mob-open { display: block !important; } .hero-mobile-ai { display: flex !important; }
           .hero-filtergrid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
           .hero-searchrow { grid-template-columns: 1fr !important; }
           .hero-searchrow > button { width: 100% !important; }
@@ -572,7 +572,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
               )
             })}
           </div>
-          <div className="hero-panel" style={{width:'560px',maxWidth:'100%',background:'#fff',borderRadius:'16px',padding:'16px',boxShadow:'0 12px 40px rgba(0,0,0,0.25)'}}>
+          <div className="hero-mobilebtns" style={{display:'none',gap:'10px',marginBottom:'12px'}}> <button onClick={()=>{setAiOpen(o=>!o); if(mobileFilters)setMobileFilters(false)}} style={{flex:1,height:'46px',borderRadius:'12px',border:'1.5px solid #2563EB',background:aiOpen?'#2563EB':'#fff',color:aiOpen?'#fff':'#2563EB',fontSize:'14px',fontWeight:700,cursor:'pointer',fontFamily:'inherit',display:'flex',alignItems:'center',justifyContent:'center',gap:'6px'}}>✦ AI Assistant</button> <button onClick={()=>{setMobileFilters(o=>!o); if(aiOpen)setAiOpen(false)}} style={{flex:1,height:'46px',borderRadius:'12px',border:'1.5px solid #2563EB',background:mobileFilters?'#2563EB':'#fff',color:mobileFilters?'#fff':'#2563EB',fontSize:'14px',fontWeight:700,cursor:'pointer',fontFamily:'inherit',display:'flex',alignItems:'center',justifyContent:'center',gap:'6px'}}>⌕ Search</button> </div> {aiOpen && ( <div className="hero-mobile-ai" style={{display:'none',flexDirection:'column',background:'#fff',borderRadius:'16px',padding:'14px',marginBottom:'12px',boxShadow:'0 12px 40px rgba(0,0,0,0.2)'}}> <div style={{display:'flex',flexDirection:'column',gap:'10px',maxHeight:'260px',overflowY:'auto',marginBottom:'10px'}}> {aiMessages.length === 0 && (<div style={{textAlign:'center',color:'#9CA3AF',fontSize:'13px',padding:'16px 0'}}>Ask me anything about Gohbay…</div>)} {aiMessages.map((m,i)=>( <div key={i} style={{display:'flex',justifyContent:m.role==='user'?'flex-end':'flex-start'}}> <div style={{maxWidth:'80%',padding:'10px 14px',borderRadius:m.role==='user'?'16px 16px 4px 16px':'16px 16px 16px 4px',background:m.role==='user'?'#2563EB':'#F0F2F5',color:m.role==='user'?'#fff':'#111',fontSize:'13px'}}>{m.content}</div> </div> ))} {aiLoading && (<div style={{display:'flex',justifyContent:'flex-start'}}><div style={{padding:'10px 14px',borderRadius:'16px 16px 16px 4px',background:'#F0F2F5',color:'#999',fontSize:'13px'}}>typing…</div></div>)} </div> <div style={{display:'flex',gap:'8px'}}> <input value={aiInput} onChange={e=>setAiInput(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'){askAI(aiInput);setAiInput('')}}} placeholder="Ask a question…" style={{flex:1,height:'42px',border:'1.5px solid #e5e7eb',borderRadius:'21px',padding:'0 16px',fontSize:'14px',outline:'none',fontFamily:'inherit'}}/> <button onClick={()=>{askAI(aiInput);setAiInput('')}} disabled={aiLoading} style={{width:'42px',height:'42px',borderRadius:'50%',background:'#4F46E5',border:'none',color:'#fff',cursor:'pointer',fontSize:'16px',flexShrink:0}}>↑</button> </div> </div> )} <div className={`hero-panel ${mobileFilters?'mob-open':''}`} style={{width:'560px',maxWidth:'100%',background:'#fff',borderRadius:'16px',padding:'16px',boxShadow:'0 12px 40px rgba(0,0,0,0.25)'}}>
             <div className="hero-filtergrid" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px',marginBottom:'10px'}}>
               {activeCat==='All' && <>
                 <div><label style={heroLbl}>Category</label>
