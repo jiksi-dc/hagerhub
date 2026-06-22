@@ -484,7 +484,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           .hero-section img { top: 0 !important; bottom: auto !important; height: auto !important; aspect-ratio: 3/2 !important; }
           .hero-section > div:first-of-type { display: none !important; }
           .hero-tabs { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(0,0,0,0.35) !important; }
-          .hero-inner { padding: 30px 16px !important; flex-direction: column !important; }          .hero-video { order: -1 !important; width: 100% !important; height: auto !important; aspect-ratio: 3/2 !important; flex: none !important; }
+          .hero-inner { padding: 30px 16px !important; flex-direction: column !important; align-items: stretch !important; }          .hero-inner > div:not(.hero-video) { max-width: 100% !important; width: 100% !important; flex: none !important; }          .hero-video { order: -1 !important; width: 100% !important; height: auto !important; aspect-ratio: 3/2 !important; flex: none !important; }
           .hero-panel { width: 100% !important; padding: 14px !important; margin-top: 0 !important; }
           .hero-filtergrid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
           .hero-searchrow { grid-template-columns: 1fr !important; }
