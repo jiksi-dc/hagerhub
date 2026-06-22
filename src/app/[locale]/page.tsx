@@ -485,7 +485,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           .hero-section > div:first-of-type { display: none !important; }
           .hero-tabs { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: transparent !important; }
           .hero-inner { padding: 30px 16px !important; flex-direction: column !important; align-items: stretch !important; }          .hero-inner > div:not(.hero-video) { max-width: 100% !important; width: 100% !important; flex: none !important; }          .hero-video { order: -1 !important; width: 100% !important; height: auto !important; aspect-ratio: 3/2 !important; flex: none !important; }
-          .hero-panel { width: 100% !important; padding: 14px !important; margin-top: 0 !important; } .hero-mobilebtns { display: flex !important; } .hero-panel { display: none !important; } .hero-panel.mob-open { display: block !important; } .hero-mobile-ai { display: flex !important; }
+          .hero-panel { width: 100% !important; padding: 14px !important; margin-top: 0 !important; } .hero-mobilebtns { display: flex !important; } .hero-panel { display: none !important; } .hero-panel.mob-open { display: block !important; } .hero-mobile-ai { display: flex !important; } .hero-mobilebtns button { white-space: nowrap !important; font-size: 13px !important; height: 44px !important; padding: 0 8px !important; gap: 5px !important; border-radius: 10px !important; } .browse-box { display: none !important; }
           .hero-filtergrid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
           .hero-searchrow { grid-template-columns: 1fr !important; }
           .hero-searchrow > button { width: 100% !important; }
@@ -711,7 +711,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
         {activeCat !== 'All' && <FilterPanel/>}
         <div style={{minWidth:0}}>
           {activeCat==='All' && (
-            <div style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px 24px',marginBottom:'24px'}}>
+            <div className="browse-box" style={{background:'#fff',borderRadius:'14px',border:'1px solid #F3F4F6',padding:'20px 24px',marginBottom:'24px'}}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>
                 <h2 style={{fontSize:'15px',fontWeight:700,color:'#111'}}>{t('home.browse')}</h2>
                 <span style={{fontSize:'12px',color:'#6B7280',cursor:'pointer'}}>{t('home.seeAll')}</span>
