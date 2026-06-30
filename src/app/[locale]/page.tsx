@@ -702,7 +702,7 @@ else if (activeCat!=='All') q = q.eq('category',activeCat)
           </div>
         </div>
         <div className="hero-video" style={{flex:'0 0 auto',width:'640px',height:'360px',borderRadius:'12px',overflow:'hidden',background:'#000'}}>
-          <video src="/Gohbay Ad.mp4" autoPlay muted loop playsInline style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+          <video src="/new ad.mp4" autoPlay muted loop playsInline style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
         </div>
         </div>
       </section>
