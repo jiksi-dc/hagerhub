@@ -72,7 +72,7 @@ export default function AIAssistant() {
           <div style={{background:'linear-gradient(135deg,#9CA3AF,#05613d)',padding:'16px',display:'flex',alignItems:'center',gap:'10px'}}>
             <div style={{width:'36px',height:'36px',background:'rgba(255,255,255,0.2)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px'}}>✦</div>
             <div>
-              <div style={{color:'white',fontWeight:800,fontSize:'14px'}}>Gohbay AI</div>
+              <div style={{color:'white',fontWeight:800,fontSize:'14px'}}>Ethiofy AI</div>
               <div style={{color:'rgba(255,255,255,0.7)',fontSize:'11px'}}>Ethiopia's Marketplace Assistant</div>
             </div>
           </div>
