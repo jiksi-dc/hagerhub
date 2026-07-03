@@ -6,17 +6,17 @@ import '../globals.css'
 import '../desktop.css'
 
 export const metadata: Metadata = {
-title: { default: "Gohbay — Ethiopia's #1 Marketplace", template: "%s | Gohbay" },
-description: "Buy and sell properties, vehicles, machinery, jobs and more in Ethiopia. Gohbay is Ethiopia's largest online marketplace.",
-keywords: ['Ethiopia marketplace', 'buy sell Ethiopia', 'properties Ethiopia', 'jobs Ethiopia', 'Gohbay'],
+title: { default: "Ethiofy — Ethiopia's #1 Marketplace", template: "%s | Ethiofy" },
+description: "Buy and sell properties, vehicles, machinery, jobs and more in Ethiopia. Ethiofy is Ethiopia's largest online marketplace.",
+keywords: ['Ethiopia marketplace', 'buy sell Ethiopia', 'properties Ethiopia', 'jobs Ethiopia', 'Ethiofy'],
 manifest: '/manifest.json',
-appleWebApp: { capable: true, statusBarStyle: 'black', title: 'Gohbay' },
+appleWebApp: { capable: true, statusBarStyle: 'black', title: 'Ethiofy' },
 openGraph: {
-siteName: 'Gohbay',
+siteName: 'Ethiofy',
 type: 'website',
 locale: 'en_ET',
 url: 'https://hagerhub.vercel.app',
-images: [{ url: 'https://hagerhub.vercel.app/og-image.png', width: 1200, height: 630, alt: "Gohbay — Ethiopia's #1 Marketplace" }],
+images: [{ url: 'https://hagerhub.vercel.app/og-image.png', width: 1200, height: 630, alt: "Ethiofy — Ethiopia's #1 Marketplace" }],
 },
 twitter: { card: 'summary_large_image', site: '@hagerhub' },
 robots: { index: true, follow: true },
