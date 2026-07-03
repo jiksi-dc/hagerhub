@@ -24,6 +24,6 @@ export default function InstallButton() {
       onClick={async () => { deferred.prompt(); const r = await deferred.userChoice; if (r.outcome === 'accepted') setDeferred(null) }}
       style={{position:'fixed',bottom:'18px',left:'18px',zIndex:200,background:'#111',color:'#fff',border:'none',borderRadius:'24px',padding:'10px 18px',fontSize:'13px',fontWeight:700,cursor:'pointer',boxShadow:'0 4px 16px rgba(0,0,0,0.25)',fontFamily:'inherit',display:'flex',alignItems:'center',gap:'7px'}}>
       ⬇ Install Gohbay App
-    </button>
+    </buttonEthiofy
   )
 }
