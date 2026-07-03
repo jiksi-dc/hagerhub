@@ -144,7 +144,7 @@ export default function Admin() {
       <div style={{ fontSize: '40px' }}>🔒</div>
       <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#111', margin: 0 }}>Admin access only</h1>
       <p style={{ fontSize: '14px', color: '#6B7280', maxWidth: '360px', margin: 0 }}>
-        This area is restricted to the Gohbay owner account. Sign in with the owner account to continue.
+        This area is restricted to the Ethiofy owner account. Sign in with the owner account to continue.
       </p>
       <a href={`/${locale}/login`} style={{ ...btn(GREEN), padding: '10px 20px', textDecoration: 'none', fontSize: '13px' }}>Go to login</a>
     </div>
@@ -172,7 +172,7 @@ export default function Admin() {
       {/* Sidebar */}
       <aside style={{ width: '220px', background: '#0F1115', color: '#fff', padding: '20px 14px', display: 'flex', flexDirection: 'column', gap: '4px', position: 'sticky', top: 0, height: '100vh', flexShrink: 0 }}>
         <div style={{ padding: '4px 10px 18px' }}>
-          <div style={{ fontSize: '16px', fontWeight: 900, letterSpacing: '2px' }}>GOHBAY</div>
+          <div style={{ fontSize: '16px', fontWeight: 900, letterSpacing: '2px' }}>ETHIOFY</div>
           <div style={{ fontSize: '9px', color: '#6B7280', letterSpacing: '1.5px', marginTop: '2px' }}>ADMIN CONSOLE</div>
         </div>
         {NAV.map(n => (
