@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { getImageProps } from 'next/image'
 import { useTranslations, useLocale } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
@@ -176,6 +177,34 @@ style={{background:'#fff',borderRadius:'14px',overflow:'hidden',border:'1px soli
 </div>
 </div>
 )
+}
+
+function EthiofyBrandLogo() {
+  const common = { alt: 'Ethiofy', sizes: '(max-width: 768px) 100vw, 320px' }
+  const {
+    props: { srcSet: desktop },
+  } = getImageProps({
+    ...common,
+    src: '/brand/ethiofy-desktop-header-logo.png',
+    width: 1240,
+    height: 300,
+  })
+  const {
+    props: { srcSet: mobile, ...rest },
+  } = getImageProps({
+    ...common,
+    src: '/brand/ethiofy-mobile-header-logo.png',
+    width: 640,
+    height: 155,
+  })
+
+  return (
+    <picture className="nav-logo">
+      <source media="(min-width: 769px)" srcSet={desktop} />
+      <source media="(max-width: 768px)" srcSet={mobile} />
+      <img {...rest} className="nav-logo-img" fetchPriority="high" />
+    </picture>
+  )
 }
 
 export default function Home() {
@@ -497,14 +526,19 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
         .cat-track-anim{animation:catmarquee 40s linear infinite}
         .cat-row-off .cat-track-anim{animation-play-state:paused}
         .cat-row:hover .cat-track-anim{animation-play-state:paused}
+        .nav-brand { display:block; width:320px; flex-shrink:0; text-decoration:none; }
+        .nav-logo { display:block; width:320px; height:76px; line-height:0; overflow:hidden; }
+        .nav-logo-img { display:block; width:320px; height:76px; object-fit:cover; }
+        .nav-sub { display:block; width:320px; text-align:center; font-size:11px; font-weight:700; letter-spacing:1.5px; color:#374151; margin-top:1px; }
 
         @media (max-width: 768px) {
           .nav-inner { padding: 0 0 10px !important; gap: 8px !important; height: auto !important; flex-wrap: wrap !important; }
-          .nav-inner > a:first-of-type { width: 100% !important; display: block !important; }
-          .nav-logo { width: 100% !important; height: auto !important; aspect-ratio: 4.21; }
+          .nav-brand { width:100% !important; display:block !important; }
+          .nav-logo { width:100% !important; height:auto !important; overflow:visible !important; }
+          .nav-logo-img { width:100% !important; height:auto !important; }
           .nav-actions { display: none !important; }
-          .nav-taglines { display: block !important; width: 100%; margin: 0 0 4px; }
-          .nav-sub { display: none !important; }
+          .nav-taglines { display:block !important; width:100%; margin:0 0 4px; }
+          .nav-sub { display:none !important; }
           .nav-mobilebtns { display: flex !important; width: 100%; gap: 8px; padding: 0 12px; }
           .nav-mobilebtns > * { flex: 1 1 0 !important; min-width: 0 !important; }
           .nav-mobilebtns button, .nav-mobilebtns a { width: 100% !important; height: 30px !important; font-size: 10px !important; font-weight: 700 !important; padding: 0 !important; white-space: nowrap !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important; border-radius: 10px !important; }
@@ -542,8 +576,9 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
 
       <nav style={{position:'sticky',top:0,zIndex:100,background:'#F9FAFB',borderBottom:'1px solid #EBEBEB'}}>
         <div className="nav-inner" style={{maxWidth:'1280px',margin:'0 auto',padding:'0 20px',height:'88px',display:'flex',alignItems:'center',gap:'12px'}}>
-          <a href={`/${locale}`} style={{textDecoration:'none',flexShrink:0}}>
-            <span className="nav-logo" style={{display:'block',width:'320px',height:'76px',overflow:'hidden',position:'relative'}}><img src="/logo4-flat.jpeg" alt="ETHIOFY" style={{position:'absolute',width:'139.1%',maxWidth:'none',left:'-20.3%',top:'-101.3%'}} /></span><span className="nav-sub" style={{display:'block',width:'320px',textAlign:'center',fontSize:'11px',fontWeight:700,letterSpacing:'1.5px',color:'#374151',marginTop:'1px'}}>ETHIOPIA&apos;S No. 1 MARKETPLACE</span>
+          <a className="nav-brand" href={`/${locale}`} aria-label="Ethiofy home">
+            <EthiofyBrandLogo />
+            <span className="nav-sub">ETHIOPIA&apos;S No. 1 MARKETPLACE</span>
           </a>
           <div className="nav-taglines" style={{display:'none'}}><div style={{fontSize:'16px',fontWeight:800,color:'#111',textAlign:'center'}}>Ethiopia&apos;s No. 1 Marketplace</div><div style={{fontSize:'13px',color:'#4B5563',textAlign:'center',marginTop:'2px'}}>Buy. Sell. Rent/Lease. Hire/Work. Discover Ethiopia.</div></div>
           <button className="nav-ai-pill" onClick={() => { if (search.trim()) askAI(search); else setAiOpen(o => !o) }} style={{ display:'inline-flex', alignItems:'center', gap:'6px', height:'38px', padding:'0 12px', borderRadius:'8px', background:'#2563EB', border:'1.5px solid #2563EB', color:'#fff', fontSize:'12px', fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', flexShrink:0 }}>
