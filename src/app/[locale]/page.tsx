@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { getImageProps } from 'next/image'
+import Image from 'next/image'
 import { useTranslations, useLocale } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import AuthButton from '@/components/AuthButton'
@@ -180,30 +180,18 @@ style={{background:'#fff',borderRadius:'14px',overflow:'hidden',border:'1px soli
 }
 
 function EthiofyBrandLogo() {
-  const common = { alt: 'Ethiofy', sizes: '(max-width: 768px) 100vw, 320px' }
-  const {
-    props: { srcSet: desktop },
-  } = getImageProps({
-    ...common,
-    src: '/brand/ethiofy-desktop-header-logo.png',
-    width: 1240,
-    height: 300,
-  })
-  const {
-    props: { srcSet: mobile, ...rest },
-  } = getImageProps({
-    ...common,
-    src: '/brand/ethiofy-mobile-header-logo.png',
-    width: 640,
-    height: 155,
-  })
-
   return (
-    <picture className="nav-logo">
-      <source media="(min-width: 769px)" srcSet={desktop} />
-      <source media="(max-width: 768px)" srcSet={mobile} />
-      <img {...rest} className="nav-logo-img" fetchPriority="high" />
-    </picture>
+    <span className="nav-logo">
+      <Image
+        src="/brand/ethiofy-unified-header-logo.jpeg"
+        alt="Ethiofy"
+        width={1376}
+        height={768}
+        className="nav-logo-img"
+        sizes="(max-width: 394px) 76vw, (max-width: 768px) 300px, 320px"
+        priority
+      />
+    </span>
   )
 }
 
@@ -527,15 +515,14 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
         .cat-row-off .cat-track-anim{animation-play-state:paused}
         .cat-row:hover .cat-track-anim{animation-play-state:paused}
         .nav-brand { display:block; width:320px; flex-shrink:0; text-decoration:none; }
-        .nav-logo { display:block; width:320px; height:76px; line-height:0; overflow:hidden; }
-        .nav-logo-img { display:block; width:320px; height:76px; object-fit:cover; }
+        .nav-logo { position:relative; display:block; width:320px; height:76px; line-height:0; overflow:hidden; background:#f9fafb; }
+        .nav-logo-img { position:absolute; display:block; width:140%; max-width:none; height:auto; left:49.3%; top:60%; transform:translate(-50%,-50%); }
         .nav-sub { display:block; width:320px; text-align:center; font-size:11px; font-weight:700; letter-spacing:1.5px; color:#374151; margin-top:1px; }
 
         @media (max-width: 768px) {
           .nav-inner { padding: 0 0 10px !important; gap: 8px !important; height: auto !important; flex-wrap: wrap !important; }
           .nav-brand { width:100% !important; display:flex !important; justify-content:center !important; padding:6px 16px 0 !important; }
-          .nav-logo { width:min(76vw, 300px) !important; height:auto !important; overflow:visible !important; }
-          .nav-logo-img { width:100% !important; height:auto !important; }
+          .nav-logo { width:min(76vw, 300px) !important; height:auto !important; aspect-ratio:80 / 19; overflow:hidden !important; }
           .nav-actions { display: none !important; }
           .nav-taglines { display: block !important; width: 100%; margin: 0 0 4px; }
           .nav-sub { display: none !important; }
