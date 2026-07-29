@@ -102,7 +102,7 @@ const CONTACT_COLS = PUBLIC_COLS + ',contact_phone,contact_name'
 
 const HouseAdBanner = ({ locale }: { locale: string }) => (
   <a href={`/${locale}/advertise`} className="house-ad" style={{display:'block',position:'relative',width:'100%',aspectRatio:'16 / 9',borderRadius:'18px',overflow:'hidden',boxShadow:'0 6px 20px rgba(0,0,0,0.12)',textDecoration:'none'}}>
-    <video src="/ethiofy_ad_video_6.mp4" autoPlay muted loop playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/>
+    <video ref={el=>{if(el){el.muted=true;el.play().catch(()=>{})}}} src="/ethiofy_ad_video_6.mp4" autoPlay muted loop playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/>
     <div className="house-ad-sheen" style={{position:'absolute',inset:0,pointerEvents:'none'}}/>
   </a>
 )
