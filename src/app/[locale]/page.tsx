@@ -631,7 +631,7 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
             <span className="nav-sub">ETHIOPIA&apos;S No. 1 MARKETPLACE</span>
           </a>
           <div className="nav-taglines" style={{display:'none'}}><div style={{fontSize:'16px',fontWeight:800,color:'#111',textAlign:'center'}}>Ethiopia&apos;s No. 1 Marketplace</div><div style={{fontSize:'13px',color:'#4B5563',textAlign:'center',marginTop:'2px'}}>Buy. Sell. Rent/Lease. Hire/Work. Discover Ethiopia.</div></div>
-          <button className="nav-ai-pill" onClick={() => { if (search.trim()) askAI(search); else setAiOpen(o => !o) }} style={{ display:'inline-flex', alignItems:'center', gap:'6px', height:'38px', padding:'0 12px', borderRadius:'8px', background:'#2563EB', border:'1.5px solid #2563EB', color:'#fff', fontSize:'12px', fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', flexShrink:0 }}>
+          <button className="nav-ai-pill" onClick={() => { if (search.trim()) askAI(search); else setAiOpen(o => !o) }} style={{ display:'inline-flex', alignItems:'center', gap:'6px', height:'38px', padding:'0 12px', borderRadius:'8px', background:'#fff', border:'1px solid #E5E7EB', color:'#111', fontSize:'12px', fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', flexShrink:0 }}>
             <span style={{ fontSize:'15px', lineHeight:0 }}>✦</span> AI Assistant
           </button>
           <div className="nav-search" style={{flex:1,maxWidth:'640px',position:'relative'}}>
@@ -666,7 +666,7 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
             </div>
           <div className="nav-actions" style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
             <AuthButton/>
-            <a href={`/${locale}/post`} style={{fontSize:'13px',fontWeight:600,padding:'9px 18px',background:'#111',color:'white',borderRadius:'8px',textDecoration:'none',border:'none',whiteSpace:'nowrap'}}>
+            <a href={`/${locale}/post`} style={{fontSize:'13px',fontWeight:600,padding:'9px 18px',background:'#fff',color:'#111',borderRadius:'8px',textDecoration:'none',border:'1px solid #E5E7EB',whiteSpace:'nowrap'}}>
               {t('nav.post')}
             </a>
             <span className="nav-lang"><LanguageSwitcher/></span>
@@ -823,7 +823,7 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
               <div><label style={heroLbl}>Keyword</label>
                 <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('nav.search')} style={heroField}/></div>
               <button onClick={()=>{const el=document.getElementById('results');if(el)el.scrollIntoView({behavior:'smooth'})}}
-                style={{height:'30px',background:'#2563EB',color:'white',border:'none',borderRadius:'8px',padding:'0 14px',fontSize:'13px',fontWeight:700,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+                style={{height:'30px',background:'#fff',color:'#111',border:'1px solid #E5E7EB',borderRadius:'8px',padding:'0 14px',fontSize:'13px',fontWeight:700,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
                 ⌕ {t('nav.searchBtn')}
               </button>
             </div>
