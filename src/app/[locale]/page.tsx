@@ -102,7 +102,7 @@ const CONTACT_COLS = PUBLIC_COLS + ',contact_phone,contact_name'
 
 const HouseAdBanner = ({ locale }: { locale: string }) => (
   <a href={`/${locale}/advertise`} className="house-ad" style={{display:'block',position:'relative',width:'100%',borderRadius:'18px',overflow:'hidden',boxShadow:'0 6px 20px rgba(0,0,0,0.12)',textDecoration:'none'}}>
-    <video ref={el=>{if(el){el.muted=true;el.play().catch(()=>{})}}} src="/ethiofy_ad_video_6.mp4" autoPlay muted loop playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/>
+    <video ref={el=>{if(el){el.muted=true;el.play().catch(()=>{})}}} src="/ethiofy_ad_strip_desktop.mp4" autoPlay muted loop playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}/>
     <div className="house-ad-sheen" style={{position:'absolute',inset:0,pointerEvents:'none'}}/>
   </a>
 )
@@ -551,7 +551,7 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
         @keyframes houseAdSheen{0%{transform:translateX(-120%) skewX(-18deg);opacity:0}12%{opacity:.5}30%{transform:translateX(220%) skewX(-18deg);opacity:0}100%{transform:translateX(220%) skewX(-18deg);opacity:0}}
         .house-ad-img{animation:houseAdDrift 14s ease-in-out infinite;will-change:transform}
         .house-ad-sheen::after{content:'';position:absolute;top:0;left:0;width:36%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.55),transparent);animation:houseAdSheen 7s ease-in-out infinite}
-        .house-ad{transition:transform .25s ease,box-shadow .25s ease;height:180px}
+        .house-ad{transition:transform .25s ease,box-shadow .25s ease;height:280px}
         @media (max-width:768px){.house-ad{height:auto;aspect-ratio:2.94 / 1}}
         .house-ad:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,0.18)}
         @media (prefers-reduced-motion: reduce){.house-ad-img{animation:none}.house-ad-sheen::after{animation:none;display:none}}
