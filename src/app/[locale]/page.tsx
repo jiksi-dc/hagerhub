@@ -575,7 +575,7 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
         .nav-brand { display:block; width:320px; flex-shrink:0; text-decoration:none; }
         .nav-logo { position:relative; display:block; width:320px; height:76px; line-height:0; overflow:hidden; background:#f9fafb; }
         .nav-logo-img { position:absolute; display:block; width:140%; max-width:none; height:auto; left:49.3%; top:60%; transform:translate(-50%,-50%); }
-        .nav-sub { display:block; width:320px; text-align:center; font-size:11px; font-weight:700; letter-spacing:1.5px; color:#374151; margin-top:1px; }
+        .nav-sub { display:none; }
 
         @media (max-width: 768px) {
           .nav-inner { padding: 0 0 10px !important; gap: 8px !important; height: auto !important; flex-wrap: wrap !important; }
@@ -679,7 +679,7 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
         <div className="hero-inner" style={{position:'relative',maxWidth:'1180px',margin:'0 auto',width:'100%',padding:'56px 20px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'48px'}}>
         <div style={{maxWidth:'480px',flex:'0 0 auto',display:'flex',flexDirection:'column',alignItems:'flex-start'}}>
           <div className="cats-wrap" style={{display:'none'}}><div className="nav-cats">{TABS.filter(tab=>tab.name!=='All').map(tab=>{const on=activeCat===tab.name;return (<button key={tab.key} onClick={()=>setActiveCat(on?'All':tab.name)} style={{fontSize:'14px',fontWeight:700,color:on?'#fff':'#6B7280',background:on?'#17532A':'transparent',padding:'7px 11px',border:'none',borderRadius:'999px',whiteSpace:'nowrap',flexShrink:0,fontFamily:'inherit',cursor:'pointer'}}>{(tab as any).label || tab.name}</button>)})}</div></div><div className="nav-mobilebtns" style={{display:'none'}}><AuthButton/><button onClick={()=>{setMobileFilters(o=>!o); if(aiOpen)setAiOpen(false)}} style={{flex:1,height:'44px',borderRadius:'10px',border:'1px solid #E5E7EB',background:'#fff',color:'#111',fontSize:'12px',fontWeight:700,cursor:'pointer',fontFamily:'inherit'}}>Search</button><button onClick={()=>{setAiOpen(o=>!o); if(mobileFilters)setMobileFilters(false)}} style={{flex:1,height:'44px',borderRadius:'10px',border:'1px solid #E5E7EB',background:'#fff',color:'#111',fontSize:'12px',fontWeight:700,cursor:'pointer',fontFamily:'inherit'}}>AI Assistant</button><a href={`/${locale}/post`} style={{flex:1,height:'44px',display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid #E5E7EB',background:'#fff',color:'#111',borderRadius:'10px',fontSize:'12px',fontWeight:700,textDecoration:'none'}}>+ Post Ad</a></div><div className="hero-title" style={{textAlign:'left',marginBottom:'22px'}}>
-            <h1 style={{fontSize:'48px',fontWeight:900,color:'#000',letterSpacing:'-0.5px',margin:0,lineHeight:1.1}}>Discover Ethiopia</h1>
+            <h1 style={{fontSize:'48px',fontWeight:900,color:'#000',letterSpacing:'-0.5px',margin:0,lineHeight:1.1}}>Ethiopia&apos;s No. 1 Marketplace</h1>
             <p style={{fontSize:'20px',color:'#000',marginTop:'8px'}}>Buy. Sell. Rent/Lease. Hire/Work. Discover Ethiopia.</p>
           </div>
           <div className="hero-tabs" style={{display:'flex',gap:'3px',background:'transparent',padding:'4px',borderRadius:'12px',marginBottom:'14px',flexWrap:'nowrap',justifyContent:'flex-start',maxWidth:'100%',overflowX:'auto',WebkitOverflowScrolling:'touch',scrollbarWidth:'thin',msOverflowStyle:'none'}}>
