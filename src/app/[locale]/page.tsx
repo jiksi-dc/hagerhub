@@ -231,7 +231,6 @@ const [featuredListings, setFeaturedListings] = useState<any[]>([])
     { key:'classifieds',name:'Classifieds' },
     { key:'machinery',  name:'Machinery' },
     { key:'jobs',       name:'Jobs' },
-    { key:'discover',   name:'Discover', label:'Discover Ethiopia' },
   ]
 
   useEffect(()=>{
@@ -576,7 +575,7 @@ else if (activeCat!=='All') q = q.ilike('category',activeCat)
         .nav-brand { display:block; width:320px; flex-shrink:0; text-decoration:none; }
         .nav-logo { position:relative; display:block; width:320px; height:76px; line-height:0; overflow:hidden; background:#f9fafb; }
         .nav-logo-img { position:absolute; display:block; width:140%; max-width:none; height:auto; left:49.3%; top:60%; transform:translate(-50%,-50%); }
-        .nav-sub { display:none; }
+        .nav-sub { display:block; width:320px; text-align:center; font-size:11px; font-weight:700; letter-spacing:1.5px; color:#374151; margin-top:1px; }
 
         @media (max-width: 768px) {
           .nav-inner { padding: 0 0 10px !important; gap: 8px !important; height: auto !important; flex-wrap: wrap !important; }
