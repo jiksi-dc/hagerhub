@@ -61,7 +61,8 @@ const [similar, setSimilar] = useState<Partial<Listing>[]>([])
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.from('listings').select(LISTING_COLS as any).eq('id', id).single()
+    supabase.from('listings').select(LISTING_COLS as any).eq('id', id)
+        .eq('status', 'active').single()
       .then(({ data: raw }) => {
         const data: any = raw
         setListing(data)
