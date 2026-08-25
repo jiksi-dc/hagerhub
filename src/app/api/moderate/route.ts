@@ -54,6 +54,6 @@ Respond in JSON format only:
     return NextResponse.json(result)
   } catch (error) {
     console.error('Moderation error:', error)
-    return NextResponse.json({ approved: true, reason: 'Moderation service unavailable', risk_level: 'low', flags: [] })
+    return NextResponse.json({ approved: false, reason: 'We could not verify this listing right now. Please try posting again in a few minutes.', risk_level: 'high', flags: ['moderation_error'] })
   }
 }
