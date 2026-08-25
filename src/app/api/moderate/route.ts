@@ -41,14 +41,13 @@ Respond in JSON format only:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5-20250929',
         max_tokens: 500,
         messages: [{ role: 'user', content: prompt }]
       })
     })
 
     const data = await response.json()
-    if(!data || !data.content){ return NextResponse.json({ approved:false, reason:'debug', risk_level:'high', flags:['moderation_error'], _debug: JSON.stringify(data).slice(0,500) }) }
     const text = data.content[0].text
     const result = JSON.parse(text.replace(/```json|```/g, '').trim())
 
