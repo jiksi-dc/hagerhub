@@ -48,6 +48,7 @@ Respond in JSON format only:
     })
 
     const data = await response.json()
+    if(!data || !data.content){ return NextResponse.json({ approved:false, reason:'debug', risk_level:'high', flags:['moderation_error'], _debug: JSON.stringify(data).slice(0,500) }) }
     const text = data.content[0].text
     const result = JSON.parse(text.replace(/```json|```/g, '').trim())
 
